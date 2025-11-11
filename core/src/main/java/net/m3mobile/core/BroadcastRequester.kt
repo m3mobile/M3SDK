@@ -9,15 +9,20 @@ import androidx.core.os.bundleOf
 abstract class BroadcastRequester {
 
     protected abstract val requestAction: String
-    protected abstract val typeKey: String
-    protected abstract val typeValue: String
+    protected open val typeKey: String = ""
+    protected open val typeValue: String = ""
     protected open val extras: Bundle = bundleOf()
     protected abstract val context: Context
 
     fun runBroadcast() {
         val intent = Intent(requestAction)
-            .putExtras(extras)
-            .putExtra(typeKey, typeValue)
+
+        if (!extras.isEmpty)
+            intent.putExtras(extras)
+
+        if(typeKey.isNotEmpty()) {
+            intent.putExtra(typeKey, typeValue)
+        }
         context.sendBroadcast(intent)
     }
 }
