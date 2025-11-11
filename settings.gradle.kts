@@ -19,6 +19,9 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "M3SDK"
 include(":app")
 include(":core")
+include(":sdk")
+include(":sdk:startup")
