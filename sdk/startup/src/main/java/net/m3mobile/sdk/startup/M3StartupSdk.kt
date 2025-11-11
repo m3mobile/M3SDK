@@ -1,5 +1,7 @@
 package net.m3mobile.sdk.startup
 
-interface M3StartupSdk
+import android.content.Context
 
-internal object M3StartupSdkImpl
+interface M3StartUpSdk
+
+internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk
