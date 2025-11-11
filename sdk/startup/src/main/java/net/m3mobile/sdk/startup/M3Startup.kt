@@ -13,9 +13,10 @@ object M3StartUp {
 
     @JvmStatic
     lateinit var instance: M3StartUpSdk
+        private set
 
     @JvmSynthetic
-    internal fun init(context: Context){
+    internal fun init(context: Context) {
         instance = M3StartUpSdkImpl(context)
     }
 }
