@@ -14,18 +14,17 @@ object DeviceSupportProxy {
      * [DeviceSupportAsserter.assertIsDeviceSupported]를 사용하여 현재 기기가 해당 기능을 지원하는지 먼저 확인합니다.
      * 지원되지 않는 기기일 경우 예외가 발생합니다.
      *
-     * @param T 프록시를 생성할 인터페이스 타입.
-     * @param implFactory `T`의 실제 구현 객체를 제공하는 람다 함수.
-     * @return `T` 타입의 프록시 객체.
+     * @param T 프록시를 생성할 인터페이스 타입
+     * @param implementation `T`의 실제 구현 객체
+     * @return `T` 타입의 프록시 객체
      */
     @JvmSynthetic
-    inline fun <reified T: Any> create(implFactory: () -> T): T {
+    inline fun <reified T: Any> create(implementation: T): T {
         val interfaceClass = T::class.java
-        val impl = implFactory()
         val handler = InvocationHandler { _, method, args ->
             DeviceSupportAsserter.assertIsDeviceSupported(method)
 
-            method(impl, *(args ?: emptyArray()))
+            method(implementation, *(args ?: emptyArray()))
         }
 
         return Proxy.newProxyInstance(
