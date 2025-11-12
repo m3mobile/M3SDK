@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -35,10 +36,27 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.kotlin.reflect)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            afterEvaluate {
+                from(components["release"])
+            }
+
+            groupId = "net.m3mobile.sdk"
+            artifactId = "core"
+            version = "1.0-LOCAL"
+        }
+    }
 }
