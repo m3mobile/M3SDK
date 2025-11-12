@@ -1,4 +1,4 @@
-package net.m3mobile.core.support
+package net.m3mobile.core.device
 
 import net.m3mobile.core.InternalM3Api
 import java.lang.reflect.InvocationHandler

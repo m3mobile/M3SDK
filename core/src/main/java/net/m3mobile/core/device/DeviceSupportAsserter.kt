@@ -1,9 +1,8 @@
-package net.m3mobile.core.support
+package net.m3mobile.core.device
 
 import net.m3mobile.core.InternalM3Api
 import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.UnsupportedDeviceModelException
-import net.m3mobile.core.getDeviceModel
 import java.lang.reflect.Method
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set

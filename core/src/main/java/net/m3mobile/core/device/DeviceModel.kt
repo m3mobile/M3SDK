@@ -1,6 +1,7 @@
-package net.m3mobile.core
+package net.m3mobile.core.device
 
 import android.os.Build
+import net.m3mobile.core.InternalM3Api
 
 @InternalM3Api
 enum class DeviceModel {

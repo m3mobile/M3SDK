@@ -1,5 +1,7 @@
 package net.m3mobile.core
 
+import net.m3mobile.core.device.DeviceModel
+
 /**
  * Marks declarations that are part of the M3SDK's internal API.
  *
