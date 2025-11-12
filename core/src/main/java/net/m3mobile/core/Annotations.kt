@@ -23,10 +23,10 @@ annotation class InternalM3Api
  *
  * Functions without this annotation are considered to be callable on all models.
  *
- * @property models An array of model names that support the annotated function.
+ * @property models An array of models that support the annotated function.
  * @see UnsupportedDeviceModelException
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-annotation class SupportedModels(vararg val models: String)
+annotation class SupportedModels(vararg val models: DeviceModel)
