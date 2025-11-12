@@ -1,5 +1,11 @@
 package net.m3mobile.core
 
+/**
+ * Marks declarations that are part of the M3SDK's internal API.
+ *
+ * This annotation signifies that a class, function, or property is intended for internal use
+ * within the M3SDK library only. It is not part of the public API and its usage is not supported.
+ */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @RequiresOptIn(

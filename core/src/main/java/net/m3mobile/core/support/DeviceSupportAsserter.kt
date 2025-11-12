@@ -14,10 +14,10 @@ object DeviceSupportAsserter {
     private val apiMethodsAvailabilityCache = ConcurrentHashMap<Method, Boolean>()
 
     /**
-     * 현재 디바이스의 모델이 해당 메서드를 지원하는지 런타임에 확인합니다.
+     * 현재 디바이스의 모델이 해당 메서드를 지원하는지 검사합니다.
      *
      * @param method 지원 여부를 검사할 메서드
-     * @throws UnsupportedDeviceModelException 지원되지 않는 모델일 경우
+     * @throws UnsupportedDeviceModelException 지원하지 않는 모델일 경우
      */
     @JvmSynthetic
     fun assertIsDeviceSupported(method: Method) {
