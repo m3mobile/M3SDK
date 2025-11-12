@@ -13,6 +13,7 @@ object M3StartUp {
 
     /**
      * Provides access to the M3 StartUp SDK.
+     *
      * This is the main entry point for interacting with the M3 StartUp settings
      * and is automatically initialized by the M3 library.
      */
