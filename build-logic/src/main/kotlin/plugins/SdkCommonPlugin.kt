@@ -5,10 +5,15 @@ import extensions.api
 import extensions.catalog
 import extensions.configureKotlinAndroid
 import extensions.implementation
+import extensions.moduleVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -20,11 +25,26 @@ class SdkCommonPlugin: Plugin<Project> {
             pluginManager.run {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
+                apply("maven-publish")
             }
 
             tasks.withType<KotlinCompile>().configureEach {
                 compilerOptions {
                     freeCompilerArgs.add("-opt-in=net.m3mobile.core.InternalM3Api")
+                }
+            }
+
+            afterEvaluate {
+                extensions.configure<PublishingExtension> {
+                    publications {
+                        create<MavenPublication>("release") {
+                            from(components["release"])
+
+                            groupId = "net.m3mobile.sdk"
+                            artifactId = project.name
+                            version = moduleVersion.get()
+                        }
+                    }
                 }
             }
 
