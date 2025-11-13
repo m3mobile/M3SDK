@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -22,7 +23,6 @@ dependencyResolutionManagement {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "M3SDK"
 include(":app")
-include(":build-logic")
 include(":core")
 include(":sdk")
 include(":sdk:startup")
