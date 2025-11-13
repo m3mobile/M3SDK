@@ -1,4 +1,10 @@
 [versions]
+############### Project ###############
+projectCompileSdk = "36"
+projectTargetSdk = "36"
+projectMinSdk = "24"
+#######################################
+
 agp = "8.13.0"
 kotlin = "2.0.21"
 coreKtx = "1.10.1"
@@ -45,3 +51,5 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
+# build-logic plugins
+sdk-common = { id = "net.m3mobile.plugin.sdk.common", version = "unspecified" }
