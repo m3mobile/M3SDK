@@ -6,4 +6,9 @@ interface ScannerApi {
      * Starts scan.
      */
     fun startScan()
+
+    /**
+     * Cancels scan.
+     */
+    fun cancelScan()
 }
