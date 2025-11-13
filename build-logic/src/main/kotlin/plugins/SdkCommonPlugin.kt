@@ -66,7 +66,10 @@ class SdkCommonPlugin: Plugin<Project> {
                 }
 
                 publishing {
-                    singleVariant("release")
+                    singleVariant("release") {
+                        withSourcesJar()
+                        withJavadocJar()
+                    }
                 }
             }
 
