@@ -2,7 +2,7 @@ package net.m3mobile.sdk.keytool.requester.wakeup
 
 import android.content.Context
 import androidx.core.os.bundleOf
-import net.m3mobile.core.BroadcastRequester
+import net.m3mobile.core.requester.BroadcastRequester
 import net.m3mobile.sdk.keytool.constants.ExtraKey
 import net.m3mobile.sdk.keytool.constants.RequestAction
 

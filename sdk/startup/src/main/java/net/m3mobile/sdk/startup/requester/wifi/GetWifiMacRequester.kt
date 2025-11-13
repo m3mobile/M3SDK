@@ -2,7 +2,7 @@ package net.m3mobile.sdk.startup.requester.wifi
 
 import android.content.Context
 import android.content.Intent
-import net.m3mobile.core.AwaitableBroadcastRequester
+import net.m3mobile.core.requester.AwaitableBroadcastRequester
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.ResponseAction
 import net.m3mobile.sdk.startup.constants.TypeKey

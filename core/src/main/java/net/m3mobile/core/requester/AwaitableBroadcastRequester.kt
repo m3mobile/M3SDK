@@ -1,4 +1,4 @@
-package net.m3mobile.core
+package net.m3mobile.core.requester
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
+import net.m3mobile.core.InternalM3Api
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 

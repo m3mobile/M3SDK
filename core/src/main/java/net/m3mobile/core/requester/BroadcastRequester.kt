@@ -1,9 +1,10 @@
-package net.m3mobile.core
+package net.m3mobile.core.requester
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import net.m3mobile.core.InternalM3Api
 
 @InternalM3Api
 abstract class BroadcastRequester {
