@@ -14,7 +14,5 @@ publishingConfig {
 
 dependencies {
 
-    ksp(projects.sdkProcessor)
-    
     implementation(libs.kotlin.reflect)
 }
