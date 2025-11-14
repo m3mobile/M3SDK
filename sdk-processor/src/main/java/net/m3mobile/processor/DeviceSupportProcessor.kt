@@ -48,8 +48,9 @@ class DeviceSupportProcessor(
             val supportMapForModule = mutableMapOf<String, Set<String>>()
 
             functions.forEach { func ->
-                val key =
-                    func.parentDeclaration?.qualifiedName?.asString() + "." + func.simpleName.asString()
+                val key = func.parentDeclaration?.qualifiedName?.asString() +
+                        "." + func.simpleName.asString() +
+                        func.parameters.map { it.type }.joinToString(prefix = "(", postfix=")")
                 val supportedAnnotation = func.annotations.firstOrNull {
                     it.annotationType.resolve().declaration.qualifiedName?.asString() == supportedModelsClassName
                 }
