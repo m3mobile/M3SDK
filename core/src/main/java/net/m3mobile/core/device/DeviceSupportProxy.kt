@@ -22,7 +22,8 @@ object DeviceSupportProxy {
     inline fun <reified T: Any> create(implementation: T): T {
         val interfaceClass = T::class.java
         val handler = InvocationHandler { _, method, args ->
-            DeviceSupportAsserter.assertIsDeviceSupported(method)
+            val methodKey = method.declaringClass.name + "." + method.name
+            DeviceSupportAsserter.assertIsDeviceSupported(methodKey, method.name)
 
             method(implementation, *(args ?: emptyArray()))
         }
