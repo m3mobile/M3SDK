@@ -27,7 +27,11 @@ enum class DeviceModel {
     SL10,
     SL10K,
     SL20,
-    SL20P
+    SL20P;
+
+    companion object {
+        val setOfEntriesName = entries.map { it.name }.toSet()
+    }
 }
 
 @InternalM3Api
