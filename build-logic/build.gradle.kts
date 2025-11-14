@@ -3,9 +3,10 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.android.gradlePlugin)
-    implementation(libs.kotlin.gradlePlugin)
-    implementation(libs.kotlin.compiler.embeddable)
+    compileOnly(libs.android.gradlePlugin)
+    compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.kotlin.compiler.embeddable)
+    compileOnly(libs.ksp.gradlePlugin)
 }
 
 gradlePlugin {

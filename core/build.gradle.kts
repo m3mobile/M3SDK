@@ -13,5 +13,6 @@ publishingConfig {
 }
 
 dependencies {
+
     implementation(libs.kotlin.reflect)
 }

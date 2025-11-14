@@ -29,7 +29,7 @@ annotation class InternalM3Api
  * @see UnsupportedModels
  * @see UnsupportedDeviceModelException
  */
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
 annotation class SupportedModels(vararg val models: DeviceModel)
@@ -50,7 +50,7 @@ annotation class SupportedModels(vararg val models: DeviceModel)
  * @see SupportedModels
  * @see UnsupportedDeviceModelException
  */
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
 annotation class UnsupportedModels(vararg val models: DeviceModel)
