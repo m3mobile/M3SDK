@@ -41,7 +41,6 @@ class DeviceSupportProcessor(
         if (annotatedFunctions.isEmpty())
             return emptyList()
 
-
         val functionsByFile = annotatedFunctions.groupBy { it.containingFile!! }
 
         val allModelNames = resolver.getAllDeviceModelNames()
@@ -49,7 +48,8 @@ class DeviceSupportProcessor(
             val supportMapForModule = mutableMapOf<String, Set<String>>()
 
             functions.forEach { func ->
-                val key = func.parentDeclaration?.qualifiedName?.asString() + "." + func.simpleName.asString()
+                val key =
+                    func.parentDeclaration?.qualifiedName?.asString() + "." + func.simpleName.asString()
                 val supportedAnnotation = func.annotations.firstOrNull {
                     it.annotationType.resolve().declaration.qualifiedName?.asString() == supportedModelsClassName
                 }
@@ -59,7 +59,10 @@ class DeviceSupportProcessor(
 
                 val finalSupportedModels = when {
                     supportedAnnotation != null -> getModelsFromAnnotation(supportedAnnotation)
-                    unsupportedAnnotation != null -> allModelNames - getModelsFromAnnotation(unsupportedAnnotation)
+                    unsupportedAnnotation != null -> allModelNames - getModelsFromAnnotation(
+                        unsupportedAnnotation
+                    )
+
                     else -> return@forEach
                 }
                 supportMapForModule[key] = finalSupportedModels
@@ -74,29 +77,39 @@ class DeviceSupportProcessor(
             val providerPackageName = "net.m3mobile.sdk.generated"
 
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
-                .addType(TypeSpec.classBuilder(providerClassName)
-                    .addSuperinterface(ClassName.bestGuess(providerInterfaceName))
-                    .addFunction(FunSpec.builder("getSupportMap")
-                        .addModifiers(KModifier.OVERRIDE)
-                        .returns(Map::class.asClassName().parameterizedBy(String::class.asClassName(), Set::class.asClassName().parameterizedBy(String::class.asClassName())))
-                        .addCode(buildCodeBlock {
-                            add("return mapOf(\n")
-                            indent()
-                            supportMapForModule.forEach { (key, models) ->
-                                val formatPlaceholders = models.joinToString { "%S" }
-                                val args = arrayOf(key) + models.toTypedArray()
-                                add("%S to setOf($formatPlaceholders),\n", *args)
-                            }
-                            unindent()
-                            add(")")
-                            })
-                        .build())
-                    .build())
+                .addType(
+                    TypeSpec.classBuilder(providerClassName)
+                        .addSuperinterface(ClassName.bestGuess(providerInterfaceName))
+                        .addFunction(
+                            FunSpec.builder("getSupportMap")
+                                .addModifiers(KModifier.OVERRIDE)
+                                .returns(
+                                    Map::class.asClassName().parameterizedBy(
+                                        String::class.asClassName(),
+                                        Set::class.asClassName()
+                                            .parameterizedBy(String::class.asClassName())
+                                    )
+                                )
+                                .addCode(buildCodeBlock {
+                                    add("return mapOf(\n")
+                                    indent()
+                                    supportMapForModule.forEach { (key, models) ->
+                                        val formatPlaceholders = models.joinToString { "%S" }
+                                        val args = arrayOf(key) + models.toTypedArray()
+                                        add("%S to setOf($formatPlaceholders),\n", *args)
+                                    }
+                                    unindent()
+                                    add(")")
+                                })
+                                .build()
+                        )
+                        .build()
+                )
                 .build()
 
             try {
                 fileSpec.writeTo(codeGenerator, Dependencies(true, file))
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 logger.error("Error writing file for ${file.fileName}: ${e.message}")
             }
 
@@ -122,12 +135,14 @@ class DeviceSupportProcessor(
         val modelsArgument = annotation.arguments.firstOrNull { it.name?.asString() == "models" }
 
         @Suppress("UNCHECKED_CAST")
-        val modelDeclarations = (modelsArgument?.value as? List<KSType>)?.map { it.declaration } ?: return emptySet()
+        val modelDeclarations =
+            (modelsArgument?.value as? List<KSType>)?.map { it.declaration } ?: return emptySet()
         return modelDeclarations.map { it.simpleName.asString() }.toSet()
     }
 
     private fun Resolver.getAllDeviceModelNames(): Set<String> {
-        val deviceModelClass = getClassDeclarationByName("net.m3mobile.core.device.DeviceModel") ?: return emptySet()
+        val deviceModelClass =
+            getClassDeclarationByName("net.m3mobile.core.device.DeviceModel") ?: return emptySet()
         return deviceModelClass.declarations
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.classKind == ClassKind.ENUM_ENTRY }
