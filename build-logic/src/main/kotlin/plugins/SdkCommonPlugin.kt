@@ -5,6 +5,7 @@ import extensions.api
 import extensions.catalog
 import extensions.configureKotlinAndroid
 import extensions.implementation
+import extensions.ksp
 import extensions.moduleVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -26,7 +27,8 @@ class SdkCommonPlugin: Plugin<Project> {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.android")
                 apply("maven-publish")
-                apply("com.google.devtools.ksp")
+                if (project.name != "core")
+                    apply("com.google.devtools.ksp")
             }
 
             tasks.withType<KotlinCompile>().configureEach {
@@ -74,15 +76,14 @@ class SdkCommonPlugin: Plugin<Project> {
                 }
             }
 
-            afterEvaluate {
-                dependencies {
-                    if (project.name != "core") {
-                        api(project(":core"))
-                    }
-
-                    implementation(catalog.findLibrary("startup-runtime").get())
-                    implementation(catalog.findLibrary("androidx-core-ktx").get())
+            dependencies {
+                if (project.name != "core") {
+                    api(project(":core"))
+                    ksp(project(":sdk-processor"))
                 }
+
+                implementation(catalog.findLibrary("startup-runtime").get())
+                implementation(catalog.findLibrary("androidx-core-ktx").get())
             }
         }
     }
