@@ -6,4 +6,5 @@ internal object TypeValue {
     const val GET_WIFI_MAC = "get_wifi_mac"
     const val AIRPLANE = "airplane"
     const val INSTALL_APK = "apk_install"
+    const val APPLICATION = "application"
 }
