@@ -19,6 +19,7 @@ material = "1.13.0"
 startup = "1.2.0"
 jetbrainsKotlinJvm = "2.0.21"
 ksp = "2.0.21-1.0.27"
+kotlin-poet = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-embeddable", version.ref = "kotlin" }
+ksp-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
+kotlin-poet = { group = "com.squareup:kotlinpoet", name = "ksp", version.ref = "kotlin-poet" }
 
 # Gradle
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
