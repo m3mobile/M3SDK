@@ -121,6 +121,7 @@ class DeviceSupportProcessor(
     private fun getModelsFromAnnotation(annotation: KSAnnotation): Set<String> {
         val modelsArgument = annotation.arguments.firstOrNull { it.name?.asString() == "models" }
 
+        @Suppress("UNCHECKED_CAST")
         val modelDeclarations = (modelsArgument?.value as? List<KSType>)?.map { it.declaration } ?: return emptySet()
         return modelDeclarations.map { it.simpleName.asString() }.toSet()
     }
