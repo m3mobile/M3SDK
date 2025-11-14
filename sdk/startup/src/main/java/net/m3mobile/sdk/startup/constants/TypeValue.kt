@@ -1,0 +1,8 @@
+package net.m3mobile.sdk.startup.constants
+
+internal object TypeValue {
+
+    const val GET_SERIAL_NUMBER = "get_serial"
+    const val GET_WIFI_MAC = "get_wifi_mac"
+    const val AIRPLANE = "airplane"
+}

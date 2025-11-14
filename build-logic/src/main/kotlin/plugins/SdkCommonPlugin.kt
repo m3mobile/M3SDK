@@ -64,11 +64,20 @@ class SdkCommonPlugin: Plugin<Project> {
                         )
                     }
                 }
+
+                publishing {
+                    singleVariant("release") {
+                        withSourcesJar()
+                        withJavadocJar()
+                    }
+                }
             }
 
             afterEvaluate {
                 dependencies {
-                    api(project(":core"))
+                    if (project.name != "core") {
+                        api(project(":core"))
+                    }
 
                     implementation(catalog.findLibrary("startup-runtime").get())
                     implementation(catalog.findLibrary("androidx-core-ktx").get())

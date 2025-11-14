@@ -15,7 +15,7 @@ object DeviceSupportAsserter {
      * 어노테이션 파싱 및 지원 여부 계산에 드는 반복적인 오버헤드를 줄입니다.
      */
     private val supportInfoCache = ConcurrentHashMap<Method, MethodSupportInfo>()
-    private val currentDeviceModel by lazy {
+    internal val currentDeviceModel by lazy {
         getCurrentDeviceModel()
     }
 
