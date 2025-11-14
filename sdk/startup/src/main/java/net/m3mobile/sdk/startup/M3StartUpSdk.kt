@@ -4,6 +4,8 @@ import android.content.Context
 import net.m3mobile.core.device.DeviceSupportProxy
 import net.m3mobile.sdk.startup.api.AirplaneModeApi
 import net.m3mobile.sdk.startup.api.AirplaneModeApiImpl
+import net.m3mobile.sdk.startup.api.AppApi
+import net.m3mobile.sdk.startup.api.AppApiImpl
 import net.m3mobile.sdk.startup.api.SerialApi
 import net.m3mobile.sdk.startup.api.SerialApiImpl
 import net.m3mobile.sdk.startup.api.WifiApi
@@ -16,10 +18,12 @@ import net.m3mobile.sdk.startup.api.WifiApiImpl
 interface M3StartUpSdk :
     SerialApi,
     WifiApi,
-    AirplaneModeApi
+    AirplaneModeApi,
+    AppApi
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
         SerialApi by DeviceSupportProxy.create<SerialApi>(SerialApiImpl(context)),
         WifiApi by DeviceSupportProxy.create<WifiApi>(WifiApiImpl(context)),
-        AirplaneModeApi by DeviceSupportProxy.create<AirplaneModeApi>(AirplaneModeApiImpl(context))
+        AirplaneModeApi by DeviceSupportProxy.create<AirplaneModeApi>(AirplaneModeApiImpl(context)),
+        AppApi by DeviceSupportProxy.create<AppApi>(AppApiImpl(context))
