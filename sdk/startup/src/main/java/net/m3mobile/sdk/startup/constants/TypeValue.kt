@@ -11,4 +11,5 @@ internal object TypeValue {
     const val DATETIME = "datetime"
     const val NTP = "ntp"
     const val TIMEZONE = "timezone"
+    const val USB_SETTING = "usb_setting"
 }
