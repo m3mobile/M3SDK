@@ -35,4 +35,12 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL20)
     fun disableCaptivePortalDetection()
+
+    /**
+     * Sets the Wi-Fi frequency band.
+     *
+     * @param band The desired [WifiFrequencyBandMode] to set.
+     */
+    @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    fun setWifiFrequencyBand(band: WifiFrequencyBandMode)
 }
