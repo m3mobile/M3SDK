@@ -12,4 +12,5 @@ internal object TypeValue {
     const val NTP = "ntp"
     const val TIMEZONE = "timezone"
     const val USB_SETTING = "usb_setting"
+    const val CAPTIVE_PORTAL = "captive_portal"
 }

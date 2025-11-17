@@ -2,6 +2,8 @@ package net.m3mobile.sdk.startup.api
 
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
+import net.m3mobile.core.UnsupportedModels
+import net.m3mobile.core.device.DeviceModel
 
 interface WifiApi {
 
@@ -21,4 +23,16 @@ interface WifiApi {
      * @return A [Job] representing the coroutine that is executing the request.
      */
     fun getWifiMac(callback: RequestCallback<String>): Job
+
+    /**
+     * Enables captive portal detection for Wi-Fi.
+     */
+    @UnsupportedModels(DeviceModel.SL20)
+    fun enableCaptivePortalDetection()
+
+    /**
+     * Disables captive portal detection for Wi-Fi.
+     */
+    @UnsupportedModels(DeviceModel.SL20)
+    fun disableCaptivePortalDetection()
 }
