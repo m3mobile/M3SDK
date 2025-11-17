@@ -7,4 +7,5 @@ internal object TypeValue {
     const val AIRPLANE = "airplane"
     const val INSTALL_APK = "apk_install"
     const val APPLICATION = "application"
+    const val PERMISSION = "permission"
 }
