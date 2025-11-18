@@ -14,4 +14,5 @@ internal object TypeValue {
     const val USB_SETTING = "usb_setting"
     const val CAPTIVE_PORTAL = "captive_portal"
     const val WIFI_FREQUENCY_BAND = "wifi_freq_band"
+    const val WIFI_COUNTRY_CODE = "wifi_country_code"
 }

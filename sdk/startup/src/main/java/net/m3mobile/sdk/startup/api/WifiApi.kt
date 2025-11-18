@@ -43,4 +43,12 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     fun setWifiFrequencyBand(band: WifiFrequencyBandMode)
+
+    /**
+     * Sets the Wi-Fi country code.
+     *
+     * @param countryCode The two-letter ISO 3166-1 alpha-2 country code (e.g., "US", "KR", "DE").
+     */
+    @UnsupportedModels(DeviceModel.SL10, DeviceModel.SL10K)
+    fun setWifiCountry(countryCode: String)
 }

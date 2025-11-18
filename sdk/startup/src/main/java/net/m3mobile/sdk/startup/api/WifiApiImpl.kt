@@ -8,6 +8,7 @@ import net.m3mobile.sdk.startup.requester.wifi.DisableCaptivePortalDetectionRequ
 import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetFrequencyBandRequester
+import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
 
 internal class WifiApiImpl(private val context: Context): WifiApi {
 
@@ -36,6 +37,10 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun setWifiFrequencyBand(band: WifiFrequencyBandMode) {
         SetFrequencyBandRequester(context, band).runBroadcast()
+    }
+
+    override fun setWifiCountry(countryCode: String) {
+        SetWifiCountryRequester(context, countryCode).runBroadcast()
     }
 }
 
