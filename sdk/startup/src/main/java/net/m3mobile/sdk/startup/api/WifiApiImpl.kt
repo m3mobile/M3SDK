@@ -12,7 +12,6 @@ import net.m3mobile.sdk.startup.requester.wifi.DisableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
-import net.m3mobile.sdk.startup.requester.wifi.SetFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetRoamingTriggerRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiChannelRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
