@@ -1,37 +1,31 @@
 package net.m3mobile.sdk.startup.api
 
 import android.content.Context
-import androidx.core.os.bundleOf
-import net.m3mobile.sdk.startup.requester.usb.SetUsbModeRequester
+import net.m3mobile.sdk.startup.requester.usb.SetUsbModeMidiRequester
+import net.m3mobile.sdk.startup.requester.usb.SetUsbModeMtpRequester
+import net.m3mobile.sdk.startup.requester.usb.SetUsbModeNoneRequester
+import net.m3mobile.sdk.startup.requester.usb.SetUsbModePtpRequester
+import net.m3mobile.sdk.startup.requester.usb.SetUsbModeRndisRequester
 
 class UsbApiImpl(private val context: Context): UsbApi {
 
-    override fun setUsbMode(mode: UsbMode) {
-        SetUsbModeRequester(context, bundleOf("usb_mode" to mode.name.lowercase()))
-            .runBroadcast()
+    override fun setUsbModeMtp() {
+        SetUsbModeMtpRequester(context).runBroadcast()
     }
-}
 
-/**
- * An enum class to define the USB connection mode of the device.
- * Used with [UsbApi.setUsbMode] to configure how the device behaves when connected via USB.
- */
-enum class UsbMode {
-    /** Media Transfer Protocol */
-    MTP,
+    override fun setUsbModeRndis() {
+        SetUsbModeRndisRequester(context).runBroadcast()
+    }
 
-    /**
-     * Remote NDIS (RNDIS) mode.
-     * Functions as a virtual Ethernet link. Typically used for tethering or network access.
-     */
-    RNDIS,
+    override fun setUsbModeMidi() {
+        SetUsbModeMidiRequester(context).runBroadcast()
+    }
 
-    /** Musical Instrument Digital Interface */
-    MIDI,
+    override fun setUsbModePtp() {
+        SetUsbModePtpRequester(context).runBroadcast()
+    }
 
-    /** Picture Transfer Protocol */
-    PTP,
-
-    /** Disable USB function */
-    NONE
+    override fun setUsbModeNone() {
+        SetUsbModeNoneRequester(context).runBroadcast()
+    }
 }

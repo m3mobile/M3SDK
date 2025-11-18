@@ -2,17 +2,52 @@ package net.m3mobile.sdk.startup.requester.usb
 
 import android.content.Context
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.BroadcastRequester
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
 
-internal class SetUsbModeRequester(
-    override val context: Context,
-    override val extras: Bundle
-): BroadcastRequester() {
+internal abstract class SetUsbModeRequester: BroadcastRequester() {
 
     override val requestAction = RequestAction.SYSTEM
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.USB_SETTING
+    override val extras = bundleOf("usb_mode" to mode)
+    abstract val mode: String
+}
+
+internal class SetUsbModeMtpRequester(
+    override val context: Context
+): SetUsbModeRequester() {
+
+    override val mode = "mtp"
+}
+
+internal class SetUsbModeRndisRequester(
+    override val context: Context
+): SetUsbModeRequester() {
+
+    override val mode = "rndis"
+}
+
+internal class SetUsbModeMidiRequester(
+    override val context: Context
+): SetUsbModeRequester() {
+
+    override val mode = "midi"
+}
+
+internal class SetUsbModePtpRequester(
+    override val context: Context
+): SetUsbModeRequester() {
+
+    override val mode = "ptp"
+}
+
+internal class SetUsbModeNoneRequester(
+    override val context: Context
+): SetUsbModeRequester() {
+
+    override val mode = "none"
 }

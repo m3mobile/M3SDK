@@ -3,12 +3,27 @@ package net.m3mobile.sdk.startup.api
 interface UsbApi {
 
     /**
-     * Sets the USB connection mode for the device.
-     *
-     * This function switches the device's USB behavior, for example,
-     * to MTP (Media Transfer Protocol) or charging only.
-     *
-     * @param mode The desired [UsbMode] to activate.
+     * Sets the USB connection mode to MTP.
      */
-    fun setUsbMode(mode: UsbMode)
+    fun setUsbModeMtp()
+
+    /**
+     * Sets the USB connection mode to RNDIS.
+     */
+    fun setUsbModeRndis()
+
+    /**
+     * Sets the USB connection mode to MIDI.
+     */
+    fun setUsbModeMidi()
+
+    /**
+     * Sets the USB connection mode to PTP.
+     */
+    fun setUsbModePtp()
+
+    /**
+     * Disables all USB data connections, setting the mode to charging only.
+     */
+    fun setUsbModeNone()
 }
