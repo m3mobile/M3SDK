@@ -7,14 +7,14 @@ interface AppApi {
      *
      * @param filePath The absolute path to the .apk file to install
      */
-    fun installApkFromLocal(filePath: String)
+    fun installLocalApk(filePath: String)
 
     /**
      * Installs an APK from a remote URL.
      *
      * @param url The URL of the APK file
      */
-    fun installApkFromRemote(url: String)
+    fun installRemoteApk(url: String)
 
     /**
      * Enables a specified application package.
