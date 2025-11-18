@@ -108,4 +108,30 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
     fun setRoamingDelta(index: Int)
+
+    /**
+     * Sets the Wi-Fi sleep policy to "Never".
+     *
+     * This keeps the Wi-Fi on at all times, even when the device's screen is off.
+     * This can increase power consumption but ensures continuous connectivity.
+     */
+    fun setWifiSleepPolicyNever()
+
+    /**
+     * Sets the Wi-Fi sleep policy to "Only when plugged in".
+     *
+     * With this policy, the Wi-Fi be kept on when the device is connected to a power
+     * source (charging). When on battery power, Wi-Fi will sleep when the screen turns off.
+     * This offers a balance between connectivity and battery life.
+     */
+    fun setWifiSleepPolicyPluggedOnly()
+
+    /**
+     * Sets the Wi-Fi sleep policy to "Always" (also known as "While screen is off").
+     *
+     * This allows the Wi-Fi to turn off when the device's screen is off and it's
+     * not connected to a power source, in order to save battery. Wi-Fi will automatically
+     * reconnect when the screen is turned back on.
+     */
+    fun setWifiSleepPolicyAlways()
 }
