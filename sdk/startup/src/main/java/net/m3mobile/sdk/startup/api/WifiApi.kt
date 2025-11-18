@@ -158,4 +158,22 @@ interface WifiApi {
      * @see setWifiStabilityNormal
      */
     fun setWifiStabilityHigh()
+
+    /**
+     * Sets the available Wi-Fi channels for the device to scan and connect to.
+     *
+     * This function allows you to restrict the device's Wi-Fi operations to a specific set of channels.
+     * By default, all channels supported by the device's regulatory domain (country code) are enabled.
+     * Use this to limit scanning and connection attempts to only the channels used by your network infrastructure,
+     * which can improve connection times and reduce interference.
+     *
+     * **Note:** When using both 2.4GHz and 5GHz bands, all desired channels for both bands must be
+     * passed in a single call to this method. The device does not retain previous settings;
+     * each call overwrites the existing channel list.
+     *
+     * @param channels A variable number of integer arguments representing the Wi-Fi channels to enable.
+     *                 For example, to enable 2.4GHz channels 1, 6, 11 and 5GHz channels 36, 40,
+     *                 you would call `setWifiChannel(1, 6, 11, 36, 40)`.
+     */
+    fun setWifiChannel(vararg channels: Int)
 }

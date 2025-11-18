@@ -11,6 +11,7 @@ import net.m3mobile.sdk.startup.requester.wifi.EnableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetRoamingTriggerRequester
+import net.m3mobile.sdk.startup.requester.wifi.SetWifiChannelRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiSleepPolicyAlwaysRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiSleepPolicyNeverRequester
@@ -85,6 +86,10 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun setWifiStabilityHigh() {
         SetWifiStabilityHighRequester(context).runBroadcast()
+    }
+
+    override fun setWifiChannel(vararg channels: Int) {
+        SetWifiChannelRequester(context, channels.map { it.toString() }.toTypedArray())
     }
 }
 
