@@ -67,4 +67,45 @@ interface WifiApi {
      * Wi-Fi network is available.
      */
     fun disableOpenNetworkNotification()
+
+    /**
+     * Sets the Wi-Fi roaming trigger level.
+     *
+     * This function defines the signal strength (RSSI) threshold at which the device will
+     * start scanning for a better access point to roam to. A lower value means the device
+    ll wait longer before looking for a new AP, while a higher value will make it roam more
+     * aggressively.
+     *
+     * This setting works in conjunction with [setRoamingDelta].
+     *
+     * @param index An index between 0 and 4
+     * - `0`: -80dBm
+     * - `1`: -75dBm
+     * - `2`: -70dBm
+     * - `3`: -65dBm
+     * - `4`: -60dBm
+     */
+    @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
+    fun setRoamingTrigger(index: Int)
+
+    /**
+     * Sets the Wi-Fi roaming delta.
+     *
+     * This value represents the minimum required signal strength difference (in dB) between
+     * the current access point (AP) and a potential new AP for a roam to occur. A larger delta
+     * makes roaming less likely, as the new AP must be significantly stronger. A smaller delta
+     * allows for more frequent roaming.
+     *
+     * This setting works in conjunction with [setRoamingTrigger].
+     * @param index An index between 0 and 6
+     * - `0`: 30dB
+     * - `1`: 25dB
+     * - `2`: 20dB
+     * - `3`: 15dB
+     * - `4`: 10dB
+     * - `5`: 5dB
+     * - `6`: 0dB
+     */
+    @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
+    fun setRoamingDelta(index: Int)
 }

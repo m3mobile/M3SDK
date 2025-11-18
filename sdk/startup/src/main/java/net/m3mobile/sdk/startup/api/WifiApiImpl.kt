@@ -10,6 +10,7 @@ import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionReque
 import net.m3mobile.sdk.startup.requester.wifi.EnableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetFrequencyBandRequester
+import net.m3mobile.sdk.startup.requester.wifi.SetRoamingTriggerRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
 
 internal class WifiApiImpl(private val context: Context): WifiApi {
@@ -51,6 +52,14 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun disableOpenNetworkNotification() {
         DisableOpenNetworkNotiRequester(context).runBroadcast()
+    }
+
+    override fun setRoamingTrigger(index: Int) {
+        SetRoamingTriggerRequester(context, index).runBroadcast()
+    }
+
+    override fun setRoamingDelta(index: Int) {
+        SetRoamingTriggerRequester(context, index).runBroadcast()
     }
 }
 

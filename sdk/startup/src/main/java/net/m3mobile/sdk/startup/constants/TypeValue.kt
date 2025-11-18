@@ -17,4 +17,6 @@ internal object TypeValue {
     const val WIFI_COUNTRY_CODE = "wifi_country_code"
     const val WIFI_OPEN_NOTIFICATION = "wifi_open_noti"
     const val VOLUME = "volume"
+    const val WIFI_ROAMING_TRIGGER = "wifi_roam_trigger"
+    const val WIFI_ROAMING_DELTA = "wifi_roam_delta"
 }
