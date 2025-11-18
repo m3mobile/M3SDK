@@ -16,4 +16,5 @@ internal object TypeValue {
     const val WIFI_FREQUENCY_BAND = "wifi_freq_band"
     const val WIFI_COUNTRY_CODE = "wifi_country_code"
     const val WIFI_OPEN_NOTIFICATION = "wifi_open_noti"
+    const val VOLUME = "volume"
 }

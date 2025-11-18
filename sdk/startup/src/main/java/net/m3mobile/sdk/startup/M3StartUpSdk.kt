@@ -14,6 +14,8 @@ import net.m3mobile.sdk.startup.api.TimeApi
 import net.m3mobile.sdk.startup.api.TimeApiImpl
 import net.m3mobile.sdk.startup.api.UsbApi
 import net.m3mobile.sdk.startup.api.UsbApiImpl
+import net.m3mobile.sdk.startup.api.VolumeApi
+import net.m3mobile.sdk.startup.api.VolumeApiImpl
 import net.m3mobile.sdk.startup.api.WifiApi
 import net.m3mobile.sdk.startup.api.WifiApiImpl
 
@@ -28,7 +30,8 @@ interface M3StartUpSdk :
     AppApi,
     PermissionApi,
     TimeApi,
-    UsbApi
+    UsbApi,
+    VolumeApi
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
@@ -38,4 +41,5 @@ internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
         AppApi by DeviceSupportProxy.create<AppApi>(AppApiImpl(context)),
         PermissionApi by DeviceSupportProxy.create<PermissionApi>(PermissionApiImpl(context)),
         TimeApi by DeviceSupportProxy.create<TimeApi>(TimeApiImpl(context)),
-        UsbApi by DeviceSupportProxy.create<UsbApi>(UsbApiImpl(context))
+        UsbApi by DeviceSupportProxy.create<UsbApi>(UsbApiImpl(context)),
+        VolumeApi by DeviceSupportProxy.create<VolumeApi>(VolumeApiImpl(context))
