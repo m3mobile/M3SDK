@@ -62,7 +62,7 @@ class DeviceSupportProcessor(
                     supportedAnnotation != null -> getModelsFromAnnotation(supportedAnnotation)
                     unsupportedAnnotation != null -> allModelNames - getModelsFromAnnotation(
                         unsupportedAnnotation
-                    )
+                    ) - "UNKNOWN"
 
                     else -> return@forEach
                 }
