@@ -37,12 +37,22 @@ interface WifiApi {
     fun disableCaptivePortalDetection()
 
     /**
-     * Sets the Wi-Fi frequency band.
-     *
-     * @param band The desired [WifiFrequencyBandMode] to set.
+     * Allows the use of all Wi-Fi frequency bands supported by the device.
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
-    fun setWifiFrequencyBand(band: WifiFrequencyBandMode)
+    fun allowAllWifiFrequencyBand()
+
+    /**
+     * Restricts the Wi-Fi frequency band to 2.4GHz only.
+     */
+    @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    fun allowOnly2_4GHzWifiFrequencyBand()
+
+    /**
+     * Restricts the Wi-Fi frequency band to 5GHz only.
+     */
+    @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    fun allowOnly5GHzWifiFrequencyBand()
 
     /**
      * Sets the Wi-Fi country code.

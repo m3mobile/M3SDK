@@ -4,6 +4,9 @@ import android.content.Context
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.launchOnMain
+import net.m3mobile.sdk.startup.requester.wifi.AllowAllFrequencyBandRequester
+import net.m3mobile.sdk.startup.requester.wifi.AllowOnly2_4GHzFrequencyBandRequester
+import net.m3mobile.sdk.startup.requester.wifi.AllowOnly5GHzFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.DisableCaptivePortalDetectionRequester
 import net.m3mobile.sdk.startup.requester.wifi.DisableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionRequester
@@ -44,8 +47,16 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
         DisableCaptivePortalDetectionRequester(context).runBroadcast()
     }
 
-    override fun setWifiFrequencyBand(band: WifiFrequencyBandMode) {
-        SetFrequencyBandRequester(context, band).runBroadcast()
+    override fun allowAllWifiFrequencyBand() {
+        AllowAllFrequencyBandRequester(context).runBroadcast()
+    }
+
+    override fun allowOnly2_4GHzWifiFrequencyBand() {
+        AllowOnly2_4GHzFrequencyBandRequester(context).runBroadcast()
+    }
+
+    override fun allowOnly5GHzWifiFrequencyBand() {
+        AllowOnly5GHzFrequencyBandRequester(context).runBroadcast()
     }
 
     override fun setWifiCountry(countryCode: String) {
@@ -91,17 +102,4 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
     override fun setWifiChannel(vararg channels: Int) {
         SetWifiChannelRequester(context, channels.map { it.toString() }.toTypedArray())
     }
-}
-
-enum class WifiFrequencyBandMode {
-    /**
-     * Supports all bands.
-     */
-    ALL,
-
-    /** Only 2.4GHz band */
-    _2GHz,
-
-    /** Only 5GHz band */
-    _5GHz,
 }
