@@ -134,4 +134,28 @@ interface WifiApi {
      * reconnect when the screen is turned back on.
      */
     fun setWifiSleepPolicyAlways()
+
+    /**
+     * Sets the Wi-Fi stability to the "Normal" level.
+     *
+     * This mode offers a standard balance between Wi-Fi performance and power consumption,
+     * suitable for general use cases.
+     *
+     * Please note that this feature does not work on Android 13 or later.
+     *
+     * @see setWifiStabilityHigh
+     */
+    fun setWifiStabilityNormal()
+
+    /**
+     * Sets Wi-Fi stability to the "High" level.
+     *
+     * This mode optimizes Wi-Fi for performance by keeping the CPU active, which can
+     * increase power consumption.
+     *
+     * Please note that this feature does not work on Android 13 or later.
+     *
+     * @see setWifiStabilityNormal
+     */
+    fun setWifiStabilityHigh()
 }

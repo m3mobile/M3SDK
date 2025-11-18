@@ -15,6 +15,8 @@ import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiSleepPolicyAlwaysRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiSleepPolicyNeverRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiSleepPolicyPluggedOnlyRequester
+import net.m3mobile.sdk.startup.requester.wifi.SetWifiStabilityHighRequester
+import net.m3mobile.sdk.startup.requester.wifi.SetWifiStabilityNormalRequester
 
 internal class WifiApiImpl(private val context: Context): WifiApi {
 
@@ -75,6 +77,14 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun setWifiSleepPolicyAlways() {
         SetWifiSleepPolicyAlwaysRequester(context).runBroadcast()
+    }
+
+    override fun setWifiStabilityNormal() {
+        SetWifiStabilityNormalRequester(context).runBroadcast()
+    }
+
+    override fun setWifiStabilityHigh() {
+        SetWifiStabilityHighRequester(context).runBroadcast()
     }
 }
 

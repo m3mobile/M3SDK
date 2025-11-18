@@ -20,4 +20,5 @@ internal object TypeValue {
     const val WIFI_ROAMING_TRIGGER = "wifi_roam_trigger"
     const val WIFI_ROAMING_DELTA = "wifi_roam_delta"
     const val WIFI_SLEEP = "wifi_sleep"
+    const val WIFI_STABILITY = "wifi_stability"
 }
