@@ -5,7 +5,9 @@ import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.launchOnMain
 import net.m3mobile.sdk.startup.requester.wifi.DisableCaptivePortalDetectionRequester
+import net.m3mobile.sdk.startup.requester.wifi.DisableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionRequester
+import net.m3mobile.sdk.startup.requester.wifi.EnableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
@@ -41,6 +43,14 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun setWifiCountry(countryCode: String) {
         SetWifiCountryRequester(context, countryCode).runBroadcast()
+    }
+
+    override fun enableOpenNetworkNotification() {
+        EnableOpenNetworkNotiRequester(context).runBroadcast()
+    }
+
+    override fun disableOpenNetworkNotification() {
+        DisableOpenNetworkNotiRequester(context).runBroadcast()
     }
 }
 

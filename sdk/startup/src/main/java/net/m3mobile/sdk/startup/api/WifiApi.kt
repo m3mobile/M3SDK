@@ -51,4 +51,20 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL10, DeviceModel.SL10K)
     fun setWifiCountry(countryCode: String)
+
+    /**
+     * Enables the "Open network notification".
+     *
+     * When this is enabled, the device will notify the user whenever an open Wi-Fi network
+     * is available in the vicinity.
+     */
+    fun enableOpenNetworkNotification()
+
+    /**
+     * Disables the "Open network notification".
+     *
+     * When this is disabled, the device will no longer notify the user when an open
+     * Wi-Fi network is available.
+     */
+    fun disableOpenNetworkNotification()
 }
