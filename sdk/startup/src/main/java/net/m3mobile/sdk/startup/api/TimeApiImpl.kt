@@ -14,21 +14,7 @@ import java.util.Locale
 internal class TimeApiImpl(private val context: Context): TimeApi {
 
     override fun setDateTime(dateTime: LocalDateTime) {
-        val dateString =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                .format(dateTime)
-            else SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(dateTime)
-        val timeString =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) DateTimeFormatter.ofPattern("HH:mm:ss")
-                .format(dateTime)
-            else SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(dateTime)
-
-        SetDateTimeRequester(
-            context, bundleOf(
-                "date" to dateString,
-                "time" to timeString
-            )
-        ).request()
+        SetDateTimeRequester(context, dateTime).request()
     }
 
     override fun setNtpServer(host: String) {
