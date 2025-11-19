@@ -9,7 +9,7 @@ import net.m3mobile.sdk.startup.requester.serial.GetSerialNumberRequester
 internal class SerialApiImpl(private val context: Context): SerialApi {
 
     override suspend fun getSerialNumber(): String {
-        return GetSerialNumberRequester(context = context).requestResult()
+        return GetSerialNumberRequester(context = context).fetch()
     }
 
     override fun getSerialNumber(callback: RequestCallback<String>): Job {

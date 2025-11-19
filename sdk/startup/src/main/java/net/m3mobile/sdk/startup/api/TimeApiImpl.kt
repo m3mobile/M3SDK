@@ -28,14 +28,14 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
                 "date" to dateString,
                 "time" to timeString
             )
-        ).runBroadcast()
+        ).request()
     }
 
     override fun setNtpServer(host: String) {
-        SetNtpServerRequester(context, bundleOf("ntp_server" to host)).runBroadcast()
+        SetNtpServerRequester(context, bundleOf("ntp_server" to host)).request()
     }
 
     override fun setTimezone(timezone: String) {
-        SetTimezoneRequester(context, bundleOf("timezone" to timezone)).runBroadcast()
+        SetTimezoneRequester(context, bundleOf("timezone" to timezone)).request()
     }
 }

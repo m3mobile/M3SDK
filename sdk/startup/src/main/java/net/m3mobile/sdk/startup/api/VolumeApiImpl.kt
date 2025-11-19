@@ -11,26 +11,26 @@ import net.m3mobile.sdk.startup.requester.volume.SetRingtoneVolumeRequester
 internal class VolumeApiImpl(private val context: Context): VolumeApi {
 
     override fun setMediaVolume(value: Int) {
-        SetMediaVolumeRequester(context, value).runBroadcast()
+        SetMediaVolumeRequester(context, value).request()
     }
 
     override fun setRingtoneVolume(value: Int) {
-        SetRingtoneVolumeRequester(context, value).runBroadcast()
+        SetRingtoneVolumeRequester(context, value).request()
     }
 
     override fun setNotificationVolume(value: Int) {
-        SetNotificationVolumeRequester(context, value).runBroadcast()
+        SetNotificationVolumeRequester(context, value).request()
     }
 
     override fun setAlarmVolume(value: Int) {
-        SetAlarmVolumeRequester(context, value).runBroadcast()
+        SetAlarmVolumeRequester(context, value).request()
     }
 
     override fun enableVibrationMode() {
-        EnableVibrationModeRequester(context).runBroadcast()
+        EnableVibrationModeRequester(context).request()
     }
 
     override fun disableVibrationMode() {
-        DisableVibrationModeRequester(context).runBroadcast()
+        DisableVibrationModeRequester(context).request()
     }
 }

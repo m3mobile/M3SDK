@@ -9,18 +9,18 @@ import net.m3mobile.sdk.startup.requester.app.InstallRemoteApkRequester
 class AppApiImpl(private val context: Context): AppApi {
 
     override fun installLocalApk(filePath: String) {
-        InstallLocalApkRequester(context, filePath)
+        InstallLocalApkRequester(context, filePath).request()
     }
 
     override fun installRemoteApk(url: String) {
-        InstallRemoteApkRequester(context, url).runBroadcast()
+        InstallRemoteApkRequester(context, url).request()
     }
 
     override fun enableApp(packageName: String) {
-        EnableAppRequester(context, packageName).runBroadcast()
+        EnableAppRequester(context, packageName).request()
     }
 
     override fun disableApp(packageName: String) {
-        DisableAppRequester(context, packageName).runBroadcast()
+        DisableAppRequester(context, packageName).request()
     }
 }

@@ -10,22 +10,22 @@ import net.m3mobile.sdk.startup.requester.usb.SetUsbModeRndisRequester
 class UsbApiImpl(private val context: Context): UsbApi {
 
     override fun setUsbModeMtp() {
-        SetUsbModeMtpRequester(context).runBroadcast()
+        SetUsbModeMtpRequester(context).request()
     }
 
     override fun setUsbModeRndis() {
-        SetUsbModeRndisRequester(context).runBroadcast()
+        SetUsbModeRndisRequester(context).request()
     }
 
     override fun setUsbModeMidi() {
-        SetUsbModeMidiRequester(context).runBroadcast()
+        SetUsbModeMidiRequester(context).request()
     }
 
     override fun setUsbModePtp() {
-        SetUsbModePtpRequester(context).runBroadcast()
+        SetUsbModePtpRequester(context).request()
     }
 
     override fun setUsbModeNone() {
-        SetUsbModeNoneRequester(context).runBroadcast()
+        SetUsbModeNoneRequester(context).request()
     }
 }

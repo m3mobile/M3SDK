@@ -8,10 +8,10 @@ import net.m3mobile.sdk.startup.requester.permission.RevokePermissionRequester
 class PermissionApiImpl(private val context: Context): PermissionApi {
 
     override fun grantPermission(packageName: String, permission: String) {
-        GrantPermissionRequester(context, packageName, permission).runBroadcast()
+        GrantPermissionRequester(context, packageName, permission).request()
     }
 
     override fun revokePermission(packageName: String, permission: String) {
-        RevokePermissionRequester(context, packageName, permission).runBroadcast()
+        RevokePermissionRequester(context, packageName, permission).request()
     }
 }

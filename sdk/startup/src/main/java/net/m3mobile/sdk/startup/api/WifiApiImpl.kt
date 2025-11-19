@@ -24,7 +24,7 @@ import net.m3mobile.sdk.startup.requester.wifi.SetWifiStabilityNormalRequester
 internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override suspend fun getWifiMac(): String {
-        return GetWifiMacRequester(context).requestResult()
+        return GetWifiMacRequester(context).fetch()
     }
 
     override fun getWifiMac(callback: RequestCallback<String>): Job {
@@ -39,66 +39,66 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
     }
 
     override fun enableCaptivePortalDetection() {
-        EnableCaptivePortalDetectionRequester(context).runBroadcast()
+        EnableCaptivePortalDetectionRequester(context).request()
     }
 
     override fun disableCaptivePortalDetection() {
-        DisableCaptivePortalDetectionRequester(context).runBroadcast()
+        DisableCaptivePortalDetectionRequester(context).request()
     }
 
     override fun allowAllWifiFrequencyBand() {
-        AllowAllFrequencyBandRequester(context).runBroadcast()
+        AllowAllFrequencyBandRequester(context).request()
     }
 
     override fun allowOnly2_4GHzWifiFrequencyBand() {
-        AllowOnly2_4GHzFrequencyBandRequester(context).runBroadcast()
+        AllowOnly2_4GHzFrequencyBandRequester(context).request()
     }
 
     override fun allowOnly5GHzWifiFrequencyBand() {
-        AllowOnly5GHzFrequencyBandRequester(context).runBroadcast()
+        AllowOnly5GHzFrequencyBandRequester(context).request()
     }
 
     override fun setWifiCountry(countryCode: String) {
-        SetWifiCountryRequester(context, countryCode).runBroadcast()
+        SetWifiCountryRequester(context, countryCode).request()
     }
 
     override fun enableOpenNetworkNotification() {
-        EnableOpenNetworkNotiRequester(context).runBroadcast()
+        EnableOpenNetworkNotiRequester(context).request()
     }
 
     override fun disableOpenNetworkNotification() {
-        DisableOpenNetworkNotiRequester(context).runBroadcast()
+        DisableOpenNetworkNotiRequester(context).request()
     }
 
     override fun setRoamingTrigger(index: Int) {
-        SetRoamingTriggerRequester(context, index).runBroadcast()
+        SetRoamingTriggerRequester(context, index).request()
     }
 
     override fun setRoamingDelta(index: Int) {
-        SetRoamingTriggerRequester(context, index).runBroadcast()
+        SetRoamingTriggerRequester(context, index).request()
     }
 
     override fun setWifiSleepPolicyNever() {
-        SetWifiSleepPolicyNeverRequester(context).runBroadcast()
+        SetWifiSleepPolicyNeverRequester(context).request()
     }
 
     override fun setWifiSleepPolicyPluggedOnly() {
-        SetWifiSleepPolicyPluggedOnlyRequester(context).runBroadcast()
+        SetWifiSleepPolicyPluggedOnlyRequester(context).request()
     }
 
     override fun setWifiSleepPolicyAlways() {
-        SetWifiSleepPolicyAlwaysRequester(context).runBroadcast()
+        SetWifiSleepPolicyAlwaysRequester(context).request()
     }
 
     override fun setWifiStabilityNormal() {
-        SetWifiStabilityNormalRequester(context).runBroadcast()
+        SetWifiStabilityNormalRequester(context).request()
     }
 
     override fun setWifiStabilityHigh() {
-        SetWifiStabilityHighRequester(context).runBroadcast()
+        SetWifiStabilityHighRequester(context).request()
     }
 
     override fun setWifiChannel(vararg channels: Int) {
-        SetWifiChannelRequester(context, channels.map { it.toString() }.toTypedArray())
+        SetWifiChannelRequester(context, channels.map { it.toString() }.toTypedArray()).request()
     }
 }
