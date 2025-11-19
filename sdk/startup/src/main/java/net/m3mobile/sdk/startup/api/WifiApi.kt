@@ -185,5 +185,6 @@ interface WifiApi {
      *                 For example, to enable 2.4GHz channels 1, 6, 11 and 5GHz channels 36, 40,
      *                 you would call `setWifiChannel(1, 6, 11, 36, 40)`.
      */
+    @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     fun setWifiChannel(vararg channels: Int)
 }
