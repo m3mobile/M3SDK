@@ -18,10 +18,10 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
     }
 
     override fun setNtpServer(host: String) {
-        SetNtpServerRequester(context, bundleOf("ntp_server" to host)).request()
+        SetNtpServerRequester(context, host).request()
     }
 
     override fun setTimezone(timezone: String) {
-        SetTimezoneRequester(context, bundleOf("timezone" to timezone)).request()
+        SetTimezoneRequester(context, timezone).request()
     }
 }
