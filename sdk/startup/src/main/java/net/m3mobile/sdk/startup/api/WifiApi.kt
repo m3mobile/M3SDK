@@ -195,4 +195,9 @@ interface WifiApi {
      * @see AccessPoint.Builder
      */
     fun setAccessPoint(accessPoint: AccessPoint)
+
+    /**
+     * Removes all configured Wi-Fi networks from the device.
+     */
+    fun clearSavedWifiNetworks()
 }

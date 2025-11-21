@@ -24,4 +24,5 @@ internal object TypeValue {
     const val WIFI_CHANNEL = "wifi_channel"
     const val APN = "apn"
     const val ACCESS_POINT = "access_point"
+    const val CLEAR_WIFI = "remove_all_wifi"
 }

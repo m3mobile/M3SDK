@@ -7,6 +7,7 @@ import net.m3mobile.core.launchOnMain
 import net.m3mobile.sdk.startup.requester.wifi.AllowAllFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.AllowOnly2_4GHzFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.AllowOnly5GHzFrequencyBandRequester
+import net.m3mobile.sdk.startup.requester.wifi.ClearSavedWifiNetworksRequester
 import net.m3mobile.sdk.startup.requester.wifi.DisableCaptivePortalDetectionRequester
 import net.m3mobile.sdk.startup.requester.wifi.DisableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionRequester
@@ -105,6 +106,10 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun setAccessPoint(accessPoint: AccessPoint) {
         SetAccessPointRequester(context, accessPoint).request()
+    }
+
+    override fun clearSavedWifiNetworks() {
+        ClearSavedWifiNetworksRequester(context).request()
     }
 }
 
