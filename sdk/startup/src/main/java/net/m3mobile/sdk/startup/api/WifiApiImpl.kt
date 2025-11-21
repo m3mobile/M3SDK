@@ -13,6 +13,7 @@ import net.m3mobile.sdk.startup.requester.wifi.DisableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableCaptivePortalDetectionRequester
 import net.m3mobile.sdk.startup.requester.wifi.EnableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
+import net.m3mobile.sdk.startup.requester.wifi.RemoveWifiNetworkRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetAccessPointRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetRoamingTriggerRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiChannelRequester
@@ -110,6 +111,10 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
 
     override fun clearSavedWifiNetworks() {
         ClearSavedWifiNetworksRequester(context).request()
+    }
+
+    override fun removeWifiNetwork(ssid: String) {
+        RemoveWifiNetworkRequester(context, ssid).request()
     }
 }
 

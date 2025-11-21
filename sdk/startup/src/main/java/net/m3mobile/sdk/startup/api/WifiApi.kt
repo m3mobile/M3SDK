@@ -200,4 +200,11 @@ interface WifiApi {
      * Removes all configured Wi-Fi networks from the device.
      */
     fun clearSavedWifiNetworks()
+
+    /**
+     * Removes a specific Wi-Fi network configuration from the device.
+     *
+     * @param ssid SSID of the network to remove.
+     */
+    fun removeWifiNetwork(ssid: String)
 }
