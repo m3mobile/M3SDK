@@ -187,6 +187,8 @@ data class AccessPoint private constructor(
     }
 
     companion object {
+        
+        @JvmStatic
         fun builder() = Builder()
     }
 }
