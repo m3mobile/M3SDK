@@ -22,4 +22,5 @@ internal object TypeValue {
     const val WIFI_SLEEP = "wifi_sleep"
     const val WIFI_STABILITY = "wifi_stability"
     const val WIFI_CHANNEL = "wifi_channel"
+    const val APN = "apn"
 }
