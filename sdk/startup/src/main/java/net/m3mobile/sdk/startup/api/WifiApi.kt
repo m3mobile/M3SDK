@@ -187,4 +187,12 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     fun setWifiChannel(vararg channels: Int)
+
+    /**
+     * Configures a specific Wi-Fi Access Point (AP) on the device.
+     *
+     * @param accessPoint
+     * @see AccessPoint.Builder
+     */
+    fun setAccessPoint(accessPoint: AccessPoint)
 }
