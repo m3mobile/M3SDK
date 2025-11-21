@@ -3,7 +3,7 @@ package net.m3mobile.sdk.startup.api
 import android.os.Build
 import androidx.annotation.RequiresApi
 
-interface VolumeApi {
+interface DeviceApi {
 
     /**
      * Sets the media volume level.

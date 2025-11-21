@@ -8,7 +8,7 @@ import net.m3mobile.sdk.startup.requester.volume.SetMediaVolumeRequester
 import net.m3mobile.sdk.startup.requester.volume.SetNotificationVolumeRequester
 import net.m3mobile.sdk.startup.requester.volume.SetRingtoneVolumeRequester
 
-internal class VolumeApiImpl(private val context: Context): VolumeApi {
+internal class DeviceApiImpl(private val context: Context): DeviceApi {
 
     override fun setMediaVolume(value: Int) {
         SetMediaVolumeRequester(context, value).request()
