@@ -2,26 +2,7 @@ package net.m3mobile.sdk.startup
 
 import android.content.Context
 import net.m3mobile.core.device.DeviceSupportProxy
-import net.m3mobile.sdk.startup.api.AirplaneModeApi
-import net.m3mobile.sdk.startup.api.AirplaneModeApiImpl
-import net.m3mobile.sdk.startup.api.AppApi
-import net.m3mobile.sdk.startup.api.AppApiImpl
-import net.m3mobile.sdk.startup.api.NetworkApi
-import net.m3mobile.sdk.startup.api.NetworkApiImpl
-import net.m3mobile.sdk.startup.api.PermissionApi
-import net.m3mobile.sdk.startup.api.PermissionApiImpl
-import net.m3mobile.sdk.startup.api.SerialApi
-import net.m3mobile.sdk.startup.api.SerialApiImpl
-import net.m3mobile.sdk.startup.api.TimeApi
-import net.m3mobile.sdk.startup.api.TimeApiImpl
-import net.m3mobile.sdk.startup.api.UsbApi
-import net.m3mobile.sdk.startup.api.UsbApiImpl
-import net.m3mobile.sdk.startup.api.DeviceApi
-import net.m3mobile.sdk.startup.api.DeviceApiImpl
-import net.m3mobile.sdk.startup.api.QuickTileApi
-import net.m3mobile.sdk.startup.api.QuickTileApiImpl
-import net.m3mobile.sdk.startup.api.WifiApi
-import net.m3mobile.sdk.startup.api.WifiApiImpl
+import net.m3mobile.sdk.startup.api.*
 
 @Deprecated(
     message = "This interface is not intended for public use. Use M3StartUp.instance directly.",
@@ -37,7 +18,8 @@ interface M3StartUpSdk :
     UsbApi,
     DeviceApi,
     NetworkApi,
-    QuickTileApi
+    QuickTileApi,
+    StartUpSettingApi
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
@@ -50,4 +32,5 @@ internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
         UsbApi by DeviceSupportProxy.create<UsbApi>(UsbApiImpl(context)),
         DeviceApi by DeviceSupportProxy.create<DeviceApi>(DeviceApiImpl(context)),
         NetworkApi by DeviceSupportProxy.create<NetworkApi>(NetworkApiImpl(context)),
-        QuickTileApi by DeviceSupportProxy.create<QuickTileApi>(QuickTileApiImpl(context))
+        QuickTileApi by DeviceSupportProxy.create<QuickTileApi>(QuickTileApiImpl(context)),
+        StartUpSettingApi by DeviceSupportProxy.create<StartUpSettingApi>(StartUpSettingApiImpl(context))

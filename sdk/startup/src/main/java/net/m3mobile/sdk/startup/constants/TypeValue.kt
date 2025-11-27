@@ -28,4 +28,5 @@ internal object TypeValue {
     const val REMOVE_WIFI = "remove_wifi_by_ssid"
     const val DISPLAY = "display"
     const val QUICK_TILE = "quick_tile"
+    const val OPTION = "option"
 }
