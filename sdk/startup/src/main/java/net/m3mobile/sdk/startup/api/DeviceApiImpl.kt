@@ -1,6 +1,8 @@
 package net.m3mobile.sdk.startup.api
 
 import android.content.Context
+import net.m3mobile.sdk.startup.params.DisplaySetting
+import net.m3mobile.sdk.startup.requester.device.SetDisplaySettingRequester
 import net.m3mobile.sdk.startup.requester.volume.DisableVibrationModeRequester
 import net.m3mobile.sdk.startup.requester.volume.EnableVibrationModeRequester
 import net.m3mobile.sdk.startup.requester.volume.SetAlarmVolumeRequester
@@ -32,5 +34,9 @@ internal class DeviceApiImpl(private val context: Context): DeviceApi {
 
     override fun disableVibrationMode() {
         DisableVibrationModeRequester(context).request()
+    }
+
+    override fun setDisplaySetting(displaySetting: DisplaySetting) {
+        SetDisplaySettingRequester(context, displaySetting).request()
     }
 }

@@ -2,6 +2,7 @@ package net.m3mobile.sdk.startup.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import net.m3mobile.sdk.startup.params.DisplaySetting
 
 interface DeviceApi {
 
@@ -63,4 +64,11 @@ interface DeviceApi {
      * Disables the vibration mode.
      */
     fun disableVibrationMode()
+
+    /**
+     * Sets the device's display settings based on the provided configuration.
+     *
+     * @param displaySetting The [DisplaySetting] object containing the desired display configurations.
+     */
+    fun setDisplaySetting(displaySetting: DisplaySetting)
 }
