@@ -3,12 +3,12 @@ package net.m3mobile.sdk.startup.api
 import android.content.Context
 import net.m3mobile.sdk.startup.params.DisplaySetting
 import net.m3mobile.sdk.startup.requester.device.SetDisplaySettingRequester
-import net.m3mobile.sdk.startup.requester.volume.DisableVibrationModeRequester
-import net.m3mobile.sdk.startup.requester.volume.EnableVibrationModeRequester
-import net.m3mobile.sdk.startup.requester.volume.SetAlarmVolumeRequester
-import net.m3mobile.sdk.startup.requester.volume.SetMediaVolumeRequester
-import net.m3mobile.sdk.startup.requester.volume.SetNotificationVolumeRequester
-import net.m3mobile.sdk.startup.requester.volume.SetRingtoneVolumeRequester
+import net.m3mobile.sdk.startup.requester.device.DisableVibrationModeRequester
+import net.m3mobile.sdk.startup.requester.device.EnableVibrationModeRequester
+import net.m3mobile.sdk.startup.requester.device.SetAlarmVolumeRequester
+import net.m3mobile.sdk.startup.requester.device.SetMediaVolumeRequester
+import net.m3mobile.sdk.startup.requester.device.SetNotificationVolumeRequester
+import net.m3mobile.sdk.startup.requester.device.SetRingtoneVolumeRequester
 
 internal class DeviceApiImpl(private val context: Context): DeviceApi {
 

@@ -1,4 +1,4 @@
-package net.m3mobile.sdk.startup.requester.volume
+package net.m3mobile.sdk.startup.requester.device
 
 import android.content.Context
 import androidx.core.os.bundleOf
