@@ -10,6 +10,7 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.squareup.kotlinpoet.ClassName
@@ -44,13 +45,22 @@ class DeviceSupportProcessor(
         val functionsByFile = annotatedFunctions.groupBy { it.containingFile!! }
 
         val allModelNames = resolver.getAllDeviceModelNames()
+        
+        val generatedProviders = mutableListOf<String>()
+        val allSourceFiles = mutableListOf<KSFile>()
+
         functionsByFile.forEach { (file, functions) ->
             val supportMapForModule = mutableMapOf<String, Set<String>>()
 
             functions.forEach { func ->
                 val key = func.parentDeclaration?.qualifiedName?.asString() +
-                        "." + func.simpleName.asString() +
-                        func.parameters.map { it.type }.joinToString(prefix = "(", postfix=")")
+                        "." + func.simpleName.asString()
+                
+                val methodSignature = func.parameters.joinToString(prefix = "(", postfix = ")") { 
+                    it.type.resolve().declaration.qualifiedName?.asString() ?: "ErrorType"
+                }
+                val fullKey = key + methodSignature
+
                 val supportedAnnotation = func.annotations.firstOrNull {
                     it.annotationType.resolve().declaration.qualifiedName?.asString() == supportedModelsClassName
                 }
@@ -66,7 +76,7 @@ class DeviceSupportProcessor(
 
                     else -> return@forEach
                 }
-                supportMapForModule[key] = finalSupportedModels
+                supportMapForModule[fullKey] = finalSupportedModels
             }
 
             if (supportMapForModule.isEmpty())
@@ -76,6 +86,9 @@ class DeviceSupportProcessor(
                 .substringBeforeLast(".")
                 .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "DeviceSupportProvider"
             val providerPackageName = "net.m3mobile.sdk.generated"
+            
+            generatedProviders.add("$providerPackageName.$providerClassName")
+            allSourceFiles.add(file)
 
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
                 .addType(
@@ -113,19 +126,24 @@ class DeviceSupportProcessor(
             } catch (e: Exception) {
                 logger.error("Error writing file for ${file.fileName}: ${e.message}")
             }
+        }
 
+        if (generatedProviders.isNotEmpty()) {
             try {
                 val serviceFile = codeGenerator.createNewFile(
-                    dependencies = Dependencies(true, file),
+                    dependencies = Dependencies(true, *allSourceFiles.toTypedArray()),
                     packageName = "META-INF.services",
                     fileName = providerInterfaceName,
                     extensionName = ""
                 )
-                serviceFile.bufferedWriter(Charsets.UTF_8).use {
-                    it.write("$providerPackageName.$providerClassName")
+                serviceFile.bufferedWriter(Charsets.UTF_8).use { writer ->
+                    generatedProviders.forEach { providerClass ->
+                        writer.write(providerClass)
+                        writer.newLine()
+                    }
                 }
             } catch (e: Exception) {
-                logger.error("Error writing service file for ${file.fileName}: ${e.message}")
+                logger.error("Error writing service file: ${e.message}")
             }
         }
 
