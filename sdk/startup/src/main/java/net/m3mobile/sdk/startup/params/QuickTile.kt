@@ -3,9 +3,9 @@ package net.m3mobile.sdk.startup.params
 /**
  * Represents the configuration for a Quick Settings Tile.
  *
- * @param id A unique identifier for the tile
- * @param name The display name of the tile to be shown in the Quick Settings UI
- * @param position The index for the tile's placement within the panel
+ * @property id A unique identifier for the tile
+ * @property name The display name of the tile to be shown in the Quick Settings UI
+ * @property position The index for the tile's placement within the panel
  * @see QuickTileId
  */
 data class QuickTile(

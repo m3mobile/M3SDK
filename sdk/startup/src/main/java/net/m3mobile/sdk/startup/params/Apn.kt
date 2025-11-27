@@ -123,6 +123,6 @@ data class Apn private constructor(
 
     companion object {
         @JvmStatic
-        fun builder() = Builder()
+        fun builder(): NameBuilder = Builder()
     }
 }
