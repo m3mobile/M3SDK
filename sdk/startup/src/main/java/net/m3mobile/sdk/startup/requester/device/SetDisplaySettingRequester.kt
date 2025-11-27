@@ -13,7 +13,7 @@ internal class SetDisplaySettingRequester(
     displaySetting: DisplaySetting
 ): BroadcastRequester() {
 
-    override val requestAction = RequestAction.SYSTEM
+    override val requestAction = RequestAction.CONFIG
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.DISPLAY
     override val extras = buildDisplaySettingExtras(displaySetting)

@@ -9,7 +9,7 @@ import net.m3mobile.sdk.startup.constants.TypeValue
 
 internal abstract class VolumeRequester: BroadcastRequester() {
 
-    override val requestAction = RequestAction.SYSTEM
+    override val requestAction = RequestAction.CONFIG
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.VOLUME
 }
