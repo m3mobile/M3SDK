@@ -3,10 +3,10 @@ package net.m3mobile.sdk.startup.requester.network
 import android.content.Context
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.FinishRequiredBroadcastRequester
-import net.m3mobile.sdk.startup.api.Apn
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
+import net.m3mobile.sdk.startup.params.Apn
 
 internal class SetApnRequester(
     override val context: Context,
