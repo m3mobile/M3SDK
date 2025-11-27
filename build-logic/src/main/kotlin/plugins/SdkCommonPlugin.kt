@@ -59,6 +59,11 @@ class SdkCommonPlugin: Plugin<Project> {
                     consumerProguardFiles("consumer-rules.pro")
                 }
 
+                sourceSets.configureEach {
+                    val kspResources = file("build/generated/ksp/$name/resources")
+                    resources.srcDir(kspResources)
+                }
+
                 buildTypes {
                     release {
                         proguardFiles(
