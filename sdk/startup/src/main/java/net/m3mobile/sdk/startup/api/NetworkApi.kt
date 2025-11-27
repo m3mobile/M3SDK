@@ -1,5 +1,7 @@
 package net.m3mobile.sdk.startup.api
 
+import net.m3mobile.sdk.startup.params.Apn
+
 interface NetworkApi {
 
     /**

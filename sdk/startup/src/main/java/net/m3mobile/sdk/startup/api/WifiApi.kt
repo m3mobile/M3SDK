@@ -4,6 +4,7 @@ import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.UnsupportedModels
 import net.m3mobile.core.device.DeviceModel
+import net.m3mobile.sdk.startup.params.AccessPoint
 
 interface WifiApi {
 
