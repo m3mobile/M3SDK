@@ -5,28 +5,31 @@ package net.m3mobile.sdk.startup.params
  *
  * @property id A unique identifier for the tile
  * @property name The display name of the tile to be shown in the Quick Settings UI
- * @property position The index for the tile's placement within the panel
  * @see QuickTileId
  */
 data class QuickTile(
     val id: QuickTileId,
     val name: String,
-    val position: Int
 )
 
 enum class QuickTileId(internal val value: String) {
     WIFI("wifi"),
-    BLUETOOTH("bluetooth"),
-    AIRPLANE_MODE("airplane_mode"),
-    BATTERY_SAVER("battery_saver"),
-    LOCATION("location"),
-    DO_NOT_DISTURB("do_not_disturb"),
-    BRIGHTNESS("screen_brightness"),
-    SOUND("sound"),
-    ROTATION("screen_rotation"),
+    BLUETOOTH("bt"),
     FLASHLIGHT("flashlight"),
-    NFC("nfc"),
+    DO_NOT_DISTURB("dnd"),
+    AUTO_ROTATION("rotation"),
+    BATTERY_SAVER("battery"),
+    AIRPLANE_MODE("airplane"),
+    NIGHT_LIGHT("night"),
+    SCREEN_RECORD("screenrecord"),
+    QR_CODE_SCANNER("qr_code_scanner"),
+    ALARM("alarm"),
+    DEVICE_CONTROLS("controls"),
+    WALLET("wallet"),
+    SCREEN_CAST("cast"),
+    LOCATION("location"),
     HOTSPOT("hotspot"),
-    CAST("cast"),
-    NIGHT_LIGHT("night_light")
+    COLOR_INVERSION("inversion"),
+    DATA_SAVER("saver"),
+    DARK_THEME("dark"),
 }

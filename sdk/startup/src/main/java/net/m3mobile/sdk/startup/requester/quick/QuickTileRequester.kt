@@ -9,7 +9,6 @@ import net.m3mobile.sdk.startup.constants.TypeValue
 import org.json.JSONArray
 import org.json.JSONObject
 import net.m3mobile.sdk.startup.params.QuickTile
-import net.m3mobile.sdk.startup.params.QuickTileId
 
 internal abstract class QuickTileRequester: FinishRequiredBroadcastRequester() {
 
@@ -18,7 +17,7 @@ internal abstract class QuickTileRequester: FinishRequiredBroadcastRequester() {
     override val typeValue = TypeValue.QUICK_TILE
 }
 
-internal class AddQuickTileRequester(
+internal class SetQuickTileRequester(
     override val context: Context,
     vararg quickTile: QuickTile
 ) : QuickTileRequester() {
@@ -30,32 +29,10 @@ internal class AddQuickTileRequester(
 
     private fun buildQuickTilesJsonString(vararg quickTiles: QuickTile): String {
         return JSONArray().apply {
-            quickTiles.forEach { (id, name, position) ->
+            quickTiles.forEach { (id, name) ->
                 put(JSONObject().apply {
-                    put("tile_id", id.value)
-                    put("tile_name", name)
-                    put("position", position)
-                })
-            }
-        }.toString()
-    }
-}
-
-internal class RemoveQuickTileRequester(
-    override val context: Context,
-    vararg quickTileId: QuickTileId
-) : QuickTileRequester() {
-
-    override val extras = bundleOf(
-        "quick_tile_action" to "remove",
-        "quick_tile_items" to buildQuickTileIdsJsonString(*quickTileId)
-    )
-
-    private fun buildQuickTileIdsJsonString(vararg quickTileId: QuickTileId): String {
-        return JSONArray().apply {
-            quickTileId.forEach { id ->
-                put(JSONObject().apply {
-                    put("tile_id", id.value)
+                    put("id", id.value)
+                    put("displayName", name)
                 })
             }
         }.toString()
