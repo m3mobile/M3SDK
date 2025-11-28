@@ -14,3 +14,16 @@ class UnsupportedDeviceModelException(message: String) : RuntimeException(messag
         "Supported models are: ${supportedModels.joinToString(", ")}."
     )
 }
+
+/**
+ * Exception thrown when a feature requires a specific version of an application that is not met.
+ *
+ * This exception indicates that the current environment does not satisfy the
+ * minimum version requirements needed to execute the requested method or feature.
+ */
+class UnsatisfiedVersionException(message: String) : RuntimeException(message) {
+    constructor(methodName: String, appName: String, appVersion: String, requiredVersion: String) : this(
+        "\"$methodName\" is not available on the current $appName version '${appVersion}'. " +
+                "Required $appName version is '$requiredVersion'."
+    )
+}

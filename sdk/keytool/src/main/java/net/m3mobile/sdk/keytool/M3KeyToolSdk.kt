@@ -1,7 +1,7 @@
 package net.m3mobile.sdk.keytool
 
 import android.content.Context
-import net.m3mobile.core.device.DeviceSupportProxy
+import net.m3mobile.core.proxy.ApiProxyFactory
 import net.m3mobile.sdk.keytool.api.KeyApi
 import net.m3mobile.sdk.keytool.api.KeyApiImpl
 import net.m3mobile.sdk.keytool.api.WakeUpApi
@@ -17,5 +17,5 @@ interface M3KeyToolSdk :
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3KeyToolSdkImpl(context: Context): M3KeyToolSdk,
-        WakeUpApi by DeviceSupportProxy.create<WakeUpApi>(WakeUpApiImpl(context)),
-        KeyApi by DeviceSupportProxy.create<KeyApi>(KeyApiImpl(context))
+        WakeUpApi by ApiProxyFactory.create<WakeUpApi>(WakeUpApiImpl(context)),
+        KeyApi by ApiProxyFactory.create<KeyApi>(KeyApiImpl(context))
