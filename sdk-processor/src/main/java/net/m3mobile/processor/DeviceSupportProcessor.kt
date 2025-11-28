@@ -54,12 +54,8 @@ class DeviceSupportProcessor(
 
             functions.forEach { func ->
                 val key = func.parentDeclaration?.qualifiedName?.asString() +
-                        "." + func.simpleName.asString()
-                
-                val methodSignature = func.parameters.joinToString(prefix = "(", postfix = ")") { 
-                    it.type.resolve().declaration.qualifiedName?.asString() ?: "ErrorType"
-                }
-                val fullKey = key + methodSignature
+                        "." + func.simpleName.asString() +
+                        func.parameters.map { it.type }.joinToString(prefix = "(", postfix=")")
 
                 val supportedAnnotation = func.annotations.firstOrNull {
                     it.annotationType.resolve().declaration.qualifiedName?.asString() == supportedModelsClassName
@@ -76,7 +72,7 @@ class DeviceSupportProcessor(
 
                     else -> return@forEach
                 }
-                supportMapForModule[fullKey] = finalSupportedModels
+                supportMapForModule[key] = finalSupportedModels
             }
 
             if (supportMapForModule.isEmpty())
