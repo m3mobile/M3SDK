@@ -9,7 +9,6 @@ import net.m3mobile.sdk.startup.api.*
     level = DeprecationLevel.HIDDEN
 )
 interface M3StartUpSdk :
-    SerialApi,
     WifiApi,
     AirplaneModeApi,
     AppApi,
@@ -23,7 +22,6 @@ interface M3StartUpSdk :
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
-        SerialApi by DeviceSupportProxy.create<SerialApi>(SerialApiImpl(context)),
         WifiApi by DeviceSupportProxy.create<WifiApi>(WifiApiImpl(context)),
         AirplaneModeApi by DeviceSupportProxy.create<AirplaneModeApi>(AirplaneModeApiImpl(context)),
         AppApi by DeviceSupportProxy.create<AppApi>(AppApiImpl(context)),

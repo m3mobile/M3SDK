@@ -2,6 +2,8 @@ package net.m3mobile.sdk.startup.api
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import kotlinx.coroutines.Job
+import net.m3mobile.core.RequestCallback
 import net.m3mobile.sdk.startup.params.DisplaySetting
 
 interface DeviceApi {
@@ -71,4 +73,24 @@ interface DeviceApi {
      * @param displaySetting The [DisplaySetting] object containing the desired display configurations.
      */
     fun setDisplaySetting(displaySetting: DisplaySetting)
+
+    /**
+     * Gets the serial number of the device.
+     *
+     * This is a suspending function and must be called from a coroutine scope.
+     *
+     * @return The serial number of the device as a [String].
+     */
+    suspend fun getSerialNumber(): String
+
+    /**
+     * Asynchronously retrieves the device's serial number.
+     *
+     * This function initiates a request to get the serial number and returns the result
+     * via a callback on the main thread.
+     *
+     * @param callback A callback to receive the result.
+     * @return A [Job] representing the coroutine that is executing the request. This can be used to cancel the operation.
+     */
+    fun getSerialNumber(callback: RequestCallback<String>): Job
 }

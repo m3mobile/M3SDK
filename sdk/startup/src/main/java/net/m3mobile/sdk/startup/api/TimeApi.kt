@@ -9,7 +9,6 @@ interface TimeApi {
      */
     fun setDateTime(dateTime: LocalDateTime)
 
-
     /**
      * Sets the NTP server for automatic time synchronization.
      *
