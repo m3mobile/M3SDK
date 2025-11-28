@@ -19,9 +19,13 @@ annotation class InternalM3Api
 /**
  * Specifies the M3 Mobile device models that a particular function supports.
  *
- * This annotation is used internally by the M3SDK to check if a function is compatible with the
- * current device model. If the device model is not in the list of supported models,
+ * When `STRICT_MODE` is enabled,
+ * if the device model is not in the list of supported models,
  * an [UnsupportedDeviceModelException] will be thrown when the function is called.
+ *
+ * When `STRICT_MODE` is disabled, no exception is thrown.
+ *
+ * `STRICT_MODE` is disabled by default. To enable it, please refer to the SDK documentation.
  *
  * Functions without this annotation and [UnsupportedModels] are considered to be callable on all models.
  *
@@ -37,9 +41,13 @@ annotation class SupportedModels(vararg val models: DeviceModel)
 /**
  * Specifies the M3 Mobile device models that a particular function does NOT support.
  *
- * This annotation is used internally by the M3SDK to check if a function is incompatible with the
- * current device model. If the current device model is in the list of unsupported models,
+ * When `STRICT_MODE` is enabled,
+ * if the device model is not in the list of supported models,
  * an [UnsupportedDeviceModelException] will be thrown when the function is called.
+ *
+ * When `STRICT_MODE` is disabled, no exception is thrown.
+ *
+ * `STRICT_MODE` is disabled by default. To enable it, please refer to the SDK documentation.
  *
  * This provides an alternative to [SupportedModels] for cases where a function works on most models
  * but needs to be explicitly blocked on a few.
