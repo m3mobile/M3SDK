@@ -12,6 +12,8 @@ interface TimeApi {
     /**
      * Sets the NTP server for automatic time synchronization.
      *
+     * Note that this setting will take effect from the next boot.
+     *
      * @param host The hostname or IP address of the NTP server.
      */
     fun setNtpServer(host: String)
