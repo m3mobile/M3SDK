@@ -2,6 +2,7 @@ package net.m3mobile.sdk.startup.api
 
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
+import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.core.UnsupportedModels
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.sdk.startup.params.AccessPoint
@@ -11,56 +12,78 @@ interface WifiApi {
     /**
      * Retrieves the Wi-Fi MAC address of the device.
      *
-     * This is a suspend function and should be called from a coroutine.
+     * StartUp version `6.4.11` or later is required.
      *
      * @return The Wi-Fi MAC address as a String.
      */
+    @RequiresStartUp("6.4.11")
     suspend fun getWifiMac(): String
 
     /**
      * Asynchronously gets the device's Wi-Fi MAC address.
      *
+     * StartUp version `6.4.11` or later is required.
+     *
      * @param callback A callback to handle the result.
      * @return A [Job] representing the coroutine that is executing the request.
      */
+    @RequiresStartUp("6.4.11")
     fun getWifiMac(callback: RequestCallback<String>): Job
 
     /**
      * Enables captive portal detection for Wi-Fi.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
     @UnsupportedModels(DeviceModel.SL20)
+    @RequiresStartUp("6.2.14")
     fun enableCaptivePortalDetection()
 
     /**
      * Disables captive portal detection for Wi-Fi.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
     @UnsupportedModels(DeviceModel.SL20)
+    @RequiresStartUp("6.2.14")
     fun disableCaptivePortalDetection()
 
     /**
      * Allows the use of all Wi-Fi frequency bands supported by the device.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    @RequiresStartUp("6.2.14")
     fun allowAllWifiFrequencyBand()
 
     /**
      * Restricts the Wi-Fi frequency band to 2.4GHz only.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    @RequiresStartUp("6.2.14")
     fun allowOnly2_4GHzWifiFrequencyBand()
 
     /**
      * Restricts the Wi-Fi frequency band to 5GHz only.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    @RequiresStartUp("6.2.14")
     fun allowOnly5GHzWifiFrequencyBand()
 
     /**
      * Sets the Wi-Fi country code.
      *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @param countryCode The two-letter ISO 3166-1 alpha-2 country code (e.g., "US", "KR", "DE").
      */
     @UnsupportedModels(DeviceModel.SL10, DeviceModel.SL10K)
+    @RequiresStartUp("6.2.14")
     fun setWifiCountry(countryCode: String)
 
     /**
@@ -68,7 +91,10 @@ interface WifiApi {
      *
      * When this is enabled, the device will notify the user whenever an open Wi-Fi network
      * is available in the vicinity.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
+    @RequiresStartUp("6.2.14")
     fun enableOpenNetworkNotification()
 
     /**
@@ -76,7 +102,10 @@ interface WifiApi {
      *
      * When this is disabled, the device will no longer notify the user when an open
      * Wi-Fi network is available.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
+    @RequiresStartUp("6.2.14")
     fun disableOpenNetworkNotification()
 
     /**
@@ -89,6 +118,8 @@ interface WifiApi {
      *
      * This setting works in conjunction with [setRoamingDelta].
      *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @param index An index between 0 and 4
      * - `0`: -80dBm
      * - `1`: -75dBm
@@ -97,6 +128,7 @@ interface WifiApi {
      * - `4`: -60dBm
      */
     @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
+    @RequiresStartUp("6.2.14")
     fun setRoamingTrigger(index: Int)
 
     /**
@@ -108,6 +140,9 @@ interface WifiApi {
      * allows for more frequent roaming.
      *
      * This setting works in conjunction with [setRoamingTrigger].
+     *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @param index An index between 0 and 6
      * - `0`: 30dB
      * - `1`: 25dB
@@ -118,6 +153,7 @@ interface WifiApi {
      * - `6`: 0dB
      */
     @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
+    @RequiresStartUp("6.2.14")
     fun setRoamingDelta(index: Int)
 
     /**
@@ -125,7 +161,10 @@ interface WifiApi {
      *
      * This keeps the Wi-Fi on at all times, even when the device's screen is off.
      * This can increase power consumption but ensures continuous connectivity.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
+    @RequiresStartUp("6.2.14")
     fun setWifiSleepPolicyNever()
 
     /**
@@ -134,7 +173,10 @@ interface WifiApi {
      * With this policy, the Wi-Fi be kept on when the device is connected to a power
      * source (charging). When on battery power, Wi-Fi will sleep when the screen turns off.
      * This offers a balance between connectivity and battery life.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
+    @RequiresStartUp("6.2.14")
     fun setWifiSleepPolicyPluggedOnly()
 
     /**
@@ -143,7 +185,10 @@ interface WifiApi {
      * This allows the Wi-Fi to turn off when the device's screen is off and it's
      * not connected to a power source, in order to save battery. Wi-Fi will automatically
      * reconnect when the screen is turned back on.
+     *
+     * StartUp version `6.2.14` or later is required.
      */
+    @RequiresStartUp("6.2.14")
     fun setWifiSleepPolicyAlways()
 
     /**
@@ -154,8 +199,11 @@ interface WifiApi {
      *
      * Please note that this feature does not work on Android 13 or later.
      *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @see setWifiStabilityHigh
      */
+    @RequiresStartUp("6.2.14")
     fun setWifiStabilityNormal()
 
     /**
@@ -166,8 +214,11 @@ interface WifiApi {
      *
      * Please note that this feature does not work on Android 13 or later.
      *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @see setWifiStabilityNormal
      */
+    @RequiresStartUp("6.2.14")
     fun setWifiStabilityHigh()
 
     /**
@@ -182,30 +233,42 @@ interface WifiApi {
      * passed in a single call to this method. The device does not retain previous settings;
      * each call overwrites the existing channel list.
      *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @param channels A variable number of integer arguments representing the Wi-Fi channels to enable.
      *                 For example, to enable 2.4GHz channels 1, 6, 11 and 5GHz channels 36, 40,
      *                 you would call `setWifiChannel(1, 6, 11, 36, 40)`.
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
+    @RequiresStartUp("6.2.14")
     fun setWifiChannel(vararg channels: Int)
 
     /**
      * Configures a specific Wi-Fi Access Point (AP) on the device.
      *
+     * StartUp version `6.2.14` or later is required.
+     *
      * @param accessPoint
      * @see AccessPoint.Builder
      */
+    @RequiresStartUp("6.2.14")
     fun setAccessPoint(accessPoint: AccessPoint)
 
     /**
      * Removes all configured Wi-Fi networks from the device.
+     *
+     * StartUp version `6.4.11` or later is required.
      */
+    @RequiresStartUp("6.4.11")
     fun clearSavedWifiNetworks()
 
     /**
      * Removes a specific Wi-Fi network configuration from the device.
      *
+     * StartUp version `6.4.11` or later is required.
+     *
      * @param ssid SSID of the network to remove.
      */
+    @RequiresStartUp("6.4.11")
     fun removeWifiNetwork(ssid: String)
 }

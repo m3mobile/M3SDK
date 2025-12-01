@@ -16,6 +16,7 @@ import net.m3mobile.sdk.startup.requester.wifi.EnableOpenNetworkNotiRequester
 import net.m3mobile.sdk.startup.requester.wifi.GetWifiMacRequester
 import net.m3mobile.sdk.startup.requester.wifi.RemoveWifiNetworkRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetAccessPointRequester
+import net.m3mobile.sdk.startup.requester.wifi.SetRoamingDeltaRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetRoamingTriggerRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiChannelRequester
 import net.m3mobile.sdk.startup.requester.wifi.SetWifiCountryRequester
@@ -79,7 +80,7 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
     }
 
     override fun setRoamingDelta(index: Int) {
-        SetRoamingTriggerRequester(context, index).request()
+        SetRoamingDeltaRequester(context, index).request()
     }
 
     override fun setWifiSleepPolicyNever() {

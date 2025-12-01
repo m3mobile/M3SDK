@@ -15,5 +15,5 @@ internal class SetRoamingTriggerRequester(
     override val requestAction = RequestAction.CONFIG
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.WIFI_ROAMING_TRIGGER
-    override val extras = bundleOf("value" to index)
+    override val extras = bundleOf("value" to index.toString())
 }

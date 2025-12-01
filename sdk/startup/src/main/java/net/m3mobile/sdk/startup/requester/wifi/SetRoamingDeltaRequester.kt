@@ -15,5 +15,5 @@ internal class SetRoamingDeltaRequester(
     override val requestAction = RequestAction.CONFIG
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.WIFI_ROAMING_DELTA
-    override val extras = bundleOf("value" to index)
+    override val extras = bundleOf("value" to index.toString())
 }

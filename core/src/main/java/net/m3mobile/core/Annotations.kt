@@ -65,10 +65,10 @@ annotation class UnsupportedModels(vararg val models: DeviceModel)
 
 /**
  * This indicates that the API will only function if the version of the StartUp app
- * installed on the device is equal to or greater than the specified value.
+ * installed on the device is equal to or later than the specified value.
  *
  * When `STRICT_MODE` is enabled, an [UnsatisfiedVersionException] exception is thrown
- * if the installed `StartUp` app version is lower than the specified value.
+ * if the installed `StartUp` app version is earlier than the specified value.
  *
  * When `STRICT_MODE` is disabled, no exception is thrown.
  *
@@ -76,11 +76,11 @@ annotation class UnsupportedModels(vararg val models: DeviceModel)
  *
  * Example:
  * ```
- * @SinceStartUp("6.1.2")
- * fun someAPI() // This API will only function if the StartUp version installed on the device is 6.1.2 or higher.
+ * @RequiresStartUp("1.1.2")
+ * fun someAPI() // This API will only function if the StartUp version installed on the device is 1.1.2 or later.
  * ```
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-annotation class SinceStartUp(val version: String)
+annotation class RequiresStartUp(val version: String)

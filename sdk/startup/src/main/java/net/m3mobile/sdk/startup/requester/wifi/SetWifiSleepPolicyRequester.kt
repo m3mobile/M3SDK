@@ -12,7 +12,8 @@ internal abstract class SetWifiSleepPolicyRequester(): BroadcastRequester() {
     override val requestAction = RequestAction.CONFIG
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.WIFI_SLEEP
-    override val extras = bundleOf("value" to value)
+    override val extras
+        get() = bundleOf("value" to value)
     protected abstract val value: Int
 }
 
