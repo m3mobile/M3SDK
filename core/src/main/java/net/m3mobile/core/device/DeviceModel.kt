@@ -3,6 +3,10 @@ package net.m3mobile.core.device
 import android.os.Build
 import net.m3mobile.core.InternalM3Api
 
+internal val currentDeviceModel by lazy {
+    initCurrentDeviceModel()
+}
+
 @InternalM3Api
 enum class DeviceModel {
     UNKNOWN,
@@ -39,7 +43,7 @@ enum class DeviceModel {
 
 @InternalM3Api
 @JvmSynthetic
-internal fun getCurrentDeviceModel(): DeviceModel {
+internal fun initCurrentDeviceModel(): DeviceModel {
     return if (Build.MODEL.contains("M3SM10_LTE")) {
         DeviceModel.SM10LTE
     } else if (Build.MODEL.contains("M3SM10")) {

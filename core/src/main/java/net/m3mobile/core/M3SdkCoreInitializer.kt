@@ -11,6 +11,7 @@ class M3SdkCoreInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
         Configurations.run {
+            this.appContext = context.applicationContext
             context.initIsStrictMode()
         }
     }

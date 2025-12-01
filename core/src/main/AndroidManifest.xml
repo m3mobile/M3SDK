@@ -2,6 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="net.m3mobile.core">
 
+    <queries>
+        <package android:name="com.m3.startup" />
+    </queries>
+
     <application>
         <meta-data
             android:name="net.m3mobile.core.STRICT_MODE"

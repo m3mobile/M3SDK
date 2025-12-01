@@ -3,7 +3,7 @@ package net.m3mobile.sdk.startup.api
 import android.content.Context
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
-import net.m3mobile.core.launchOnMain
+import net.m3mobile.core.utils.launchOnMain
 import net.m3mobile.sdk.startup.params.AccessPoint
 import net.m3mobile.sdk.startup.requester.wifi.AllowAllFrequencyBandRequester
 import net.m3mobile.sdk.startup.requester.wifi.AllowOnly2_4GHzFrequencyBandRequester

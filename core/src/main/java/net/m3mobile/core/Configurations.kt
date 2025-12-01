@@ -7,6 +7,7 @@ import kotlin.properties.Delegates
 @InternalM3Api
 object Configurations {
 
+    lateinit var appContext: Context
     var isStrictMode by Delegates.notNull<Boolean>()
 
     @JvmSynthetic

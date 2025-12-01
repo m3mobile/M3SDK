@@ -2,6 +2,9 @@ package net.m3mobile.core.proxy
 
 import net.m3mobile.core.Configurations
 import net.m3mobile.core.InternalM3Api
+import net.m3mobile.core.inspection.InspectDeviceSupport
+import net.m3mobile.core.inspection.InspectStartUpVersionSatisfied
+import net.m3mobile.core.inspection.Inspector
 import net.m3mobile.core.proxy.ApiProxyFactory.inspections
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Proxy
@@ -10,10 +13,10 @@ import java.lang.reflect.Proxy
 object ApiProxyFactory {
 
     val inspections by lazy {
-        buildList {
+        buildList<Inspector> {
             if (Configurations.isStrictMode) {
                 add(InspectDeviceSupport())
-                add(InspectAppVersionSatisfied())
+                add(InspectStartUpVersionSatisfied())
             }
         }
     }

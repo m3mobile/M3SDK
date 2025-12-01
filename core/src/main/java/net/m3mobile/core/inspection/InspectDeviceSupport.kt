@@ -1,30 +1,23 @@
-package net.m3mobile.core.device
+package net.m3mobile.core.inspection
 
 import net.m3mobile.core.InternalM3Api
 import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.UnsupportedDeviceModelException
 import net.m3mobile.core.UnsupportedModels
+import net.m3mobile.core.device.DeviceModel
+import net.m3mobile.core.device.currentDeviceModel
+import net.m3mobile.core.source.DeviceSupportMapSource
 import java.util.ServiceLoader
 
+/**
+ * Method를 실행한 디바이스 모델이 해당 Method를 지원하는지 검사합니다.
+ *
+ * 지원하지 않는 디바이스 모델일 경우 호출부로 [UnsupportedDeviceModelException]를 던집니다.
+ */
 @InternalM3Api
-object DeviceSupportAsserter {
+class InspectDeviceSupport: MethodInspector<DeviceSupportMapSource, Set<String>>() {
 
-    internal val currentDeviceModel by lazy {
-        getCurrentDeviceModel()
-    }
-
-    /**
-     * **key** 전체 메서드 이름
-     *
-     * **value** 지원하는 기기 집합
-     */
-    private val deviceSupportMap: Map<String, Set<String>> by lazy {
-        val serviceLoader = ServiceLoader.load(DeviceSupportProvider::class.java)
-        serviceLoader.fold(mutableMapOf()) { acc, provider ->
-            acc.putAll(provider.getSupportMap())
-            acc
-        }
-    }
+    override val serviceLoader = ServiceLoader.load(DeviceSupportMapSource::class.java)
 
     /**
      * 현재 디바이스 모델이 해당 메서드를 지원하는지 검사합니다.
@@ -34,9 +27,8 @@ object DeviceSupportAsserter {
      *
      * @throws UnsupportedDeviceModelException 지원하지 않는 모델일 경우
      */
-    @JvmSynthetic
-    fun assertIsDeviceSupported(methodKey: String, methodName: String) {
-        val supportedModels = deviceSupportMap[methodKey] ?: DeviceModel.setOfEntriesName
+    override fun assert(methodKey: String, methodName: String) {
+        val supportedModels = methodMap[methodKey] ?: DeviceModel.setOfEntriesName
 
         if (currentDeviceModel.name !in supportedModels) {
             throw UnsupportedDeviceModelException(

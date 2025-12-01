@@ -1,94 +1,119 @@
 package net.m3mobile.processor
 
+import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSType
+import com.squareup.kotlinpoet.ANY
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.buildCodeBlock
 import com.squareup.kotlinpoet.ksp.writeTo
 import java.util.Locale
 
-class StartUpSupportProcessor(
+class DeviceSupportMapSourceProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val annotationName = "net.m3mobile.core.RequiresStartUp"
-        val providerInterfaceName = "net.m3mobile.core.startup.StartUpSupportProvider"
+        val supportedModelsClassName = "net.m3mobile.core.SupportedModels"
+        val unsupportedModelsClassName = "net.m3mobile.core.UnsupportedModels"
+        val providerInterfaceName = "net.m3mobile.core.source.DeviceSupportMapSource"
 
-        val annotatedFunctions = resolver.getSymbolsWithAnnotation(annotationName)
-            .filterIsInstance<KSFunctionDeclaration>()
-            .toSet()
+        val annotatedFunctions = (
+                resolver.getSymbolsWithAnnotation(supportedModelsClassName) +
+                        resolver.getSymbolsWithAnnotation(unsupportedModelsClassName)
+                ).filterIsInstance<KSFunctionDeclaration>().toSet()
 
         if (annotatedFunctions.isEmpty())
             return emptyList()
 
         val functionsByFile = annotatedFunctions.groupBy { it.containingFile!! }
+
+        val allModelNames = resolver.getAllDeviceModelNames()
+        
         val generatedProviders = mutableListOf<String>()
         val allSourceFiles = mutableListOf<KSFile>()
 
         functionsByFile.forEach { (file, functions) ->
-            val versionMap = mutableMapOf<String, String>()
+            val supportMapForModule = mutableMapOf<String, Set<String>>()
 
             functions.forEach { func ->
                 val key = func.parentDeclaration?.qualifiedName?.asString() +
                         "." + func.simpleName.asString() +
                         func.parameters.map { it.type }.joinToString(prefix = "(", postfix=")")
-                
-                val annotation = func.annotations.firstOrNull {
-                    it.annotationType.resolve().declaration.qualifiedName?.asString() == annotationName
-                } ?: return@forEach
 
-                val version = annotation.arguments.firstOrNull { it.name?.asString() == "version" }?.value as? String
-                
-                if (version != null) {
-                    versionMap[key] = version
+                val supportedAnnotation = func.annotations.firstOrNull {
+                    it.annotationType.resolve().declaration.qualifiedName?.asString() == supportedModelsClassName
                 }
+                val unsupportedAnnotation = func.annotations.firstOrNull {
+                    it.annotationType.resolve().declaration.qualifiedName?.asString() == unsupportedModelsClassName
+                }
+
+                val finalSupportedModels = when {
+                    supportedAnnotation != null -> getModelsFromAnnotation(supportedAnnotation)
+                    unsupportedAnnotation != null -> allModelNames - getModelsFromAnnotation(
+                        unsupportedAnnotation
+                    ) - "UNKNOWN"
+
+                    else -> return@forEach
+                }
+                supportMapForModule[key] = finalSupportedModels
             }
 
-            if (versionMap.isEmpty()) return@forEach
+            if (supportMapForModule.isEmpty())
+                return@forEach
 
             val providerClassName = file.fileName
                 .substringBeforeLast(".")
-                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "StartUpSupportProvider"
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "DeviceSupportMapSource"
             val providerPackageName = "net.m3mobile.sdk.generated"
-
+            
             generatedProviders.add("$providerPackageName.$providerClassName")
             allSourceFiles.add(file)
 
+            val suppressAnnotation = AnnotationSpec.builder(Suppress::class)
+                .addMember("%S", "UNCHECKED_CAST")
+                .build()
+            val typeV = TypeVariableName("V", ANY)
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
                 .addType(
                     TypeSpec.classBuilder(providerClassName)
                         .addSuperinterface(ClassName.bestGuess(providerInterfaceName))
                         .addFunction(
-                            FunSpec.builder("getStartUpVersionMap")
+                            FunSpec.builder("get")
                                 .addModifiers(KModifier.OVERRIDE)
+                                .addTypeVariable(typeV)
                                 .returns(
-                                    Map::class.asClassName().parameterizedBy(
-                                        String::class.asClassName(),
-                                        String::class.asClassName()
-                                    )
+                                    Map::class.asClassName()
+                                        .parameterizedBy(String::class.asClassName(), typeV)
                                 )
+                                .addAnnotation(suppressAnnotation)
                                 .addCode(buildCodeBlock {
                                     add("return mapOf(\n")
                                     indent()
-                                    versionMap.forEach { entry ->
-                                        add("%S to %S,\n", entry.key, entry.value)
+                                    supportMapForModule.forEach { (key, models) ->
+                                        add("%S to setOf(${models.joinToString { "\"$it\"" }}),\n", key)
                                     }
                                     unindent()
-                                    add(")")
+                                    add(") as Map<String, V>")
                                 })
                                 .build()
                         )
@@ -104,7 +129,7 @@ class StartUpSupportProcessor(
         }
 
         if (generatedProviders.isNotEmpty()) {
-             try {
+            try {
                 val serviceFile = codeGenerator.createNewFile(
                     dependencies = Dependencies(true, *allSourceFiles.toTypedArray()),
                     packageName = "META-INF.services",
@@ -123,5 +148,24 @@ class StartUpSupportProcessor(
         }
 
         return emptyList()
+    }
+
+    private fun getModelsFromAnnotation(annotation: KSAnnotation): Set<String> {
+        val modelsArgument = annotation.arguments.firstOrNull { it.name?.asString() == "models" }
+
+        @Suppress("UNCHECKED_CAST")
+        val modelDeclarations =
+            (modelsArgument?.value as? List<KSType>)?.map { it.declaration } ?: return emptySet()
+        return modelDeclarations.map { it.simpleName.asString() }.toSet()
+    }
+
+    private fun Resolver.getAllDeviceModelNames(): Set<String> {
+        val deviceModelClass =
+            getClassDeclarationByName("net.m3mobile.core.device.DeviceModel") ?: return emptySet()
+        return deviceModelClass.declarations
+            .filterIsInstance<KSClassDeclaration>()
+            .filter { it.classKind == ClassKind.ENUM_ENTRY }
+            .map { it.simpleName.asString() }
+            .toSet()
     }
 }
