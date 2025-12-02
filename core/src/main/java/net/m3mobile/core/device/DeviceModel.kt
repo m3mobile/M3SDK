@@ -41,9 +41,7 @@ enum class DeviceModel {
     }
 }
 
-@InternalM3Api
-@JvmSynthetic
-internal fun initCurrentDeviceModel(): DeviceModel {
+private fun initCurrentDeviceModel(): DeviceModel {
     return if (Build.MODEL.contains("M3SM10_LTE")) {
         DeviceModel.SM10LTE
     } else if (Build.MODEL.contains("M3SM10")) {
