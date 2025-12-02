@@ -2,12 +2,9 @@ package net.m3mobile.core.inspection
 
 import android.content.pm.PackageManager
 import android.os.Build
-import net.m3mobile.core.Configurations
 import net.m3mobile.core.InternalM3Api
-import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.UnsatisfiedVersionException
-import net.m3mobile.core.UnsupportedDeviceModelException
-import net.m3mobile.core.UnsupportedModels
+import net.m3mobile.core.appContext
 import net.m3mobile.core.source.MethodMapSource
 
 /**
@@ -40,7 +37,7 @@ abstract class InspectAppVersionSatisfied<T: MethodMapSource> : MethodInspector<
 
     private fun getAppVersionName(): String? {
         return try {
-            val packageManager = Configurations.appContext.packageManager
+            val packageManager = appContext.packageManager
 
             val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 packageManager.getPackageInfo(

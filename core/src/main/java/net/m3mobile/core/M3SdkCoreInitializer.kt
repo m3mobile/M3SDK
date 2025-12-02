@@ -10,10 +10,7 @@ import androidx.startup.Initializer
 class M3SdkCoreInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
-        Configurations.run {
-            this.appContext = context.applicationContext
-            context.initIsStrictMode()
-        }
+        appContext = context.applicationContext
     }
 
     override fun dependencies(): List<Class<out Initializer<*>?>?> {

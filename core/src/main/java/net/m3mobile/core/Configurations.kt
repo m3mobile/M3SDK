@@ -1,18 +1,14 @@
+@file:JvmSynthetic
 package net.m3mobile.core
 
 import android.content.Context
 import android.content.pm.PackageManager
-import kotlin.properties.Delegates
 
-@InternalM3Api
-object Configurations {
+internal lateinit var appContext: Context
 
-    lateinit var appContext: Context
-    var isStrictMode by Delegates.notNull<Boolean>()
-
-    @JvmSynthetic
-    internal fun Context.initIsStrictMode() {
-        isStrictMode = try {
+internal val IS_STRICT_MODE by lazy {
+    with(appContext) {
+        try {
             val appInfo = packageManager.getApplicationInfo(
                 packageName,
                 PackageManager.GET_META_DATA
