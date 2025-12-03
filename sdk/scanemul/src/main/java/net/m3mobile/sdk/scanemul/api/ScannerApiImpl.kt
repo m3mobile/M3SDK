@@ -7,10 +7,10 @@ import net.m3mobile.sdk.scanemul.requester.StartScanRequester
 class ScannerApiImpl(private val context: Context) : ScannerApi {
 
     override fun startScan() {
-        StartScanRequester(context).runBroadcast()
+        StartScanRequester(context).request()
     }
 
     override fun cancelScan() {
-        CancelScanRequester(context).runBroadcast()
+        CancelScanRequester(context).request()
     }
 }

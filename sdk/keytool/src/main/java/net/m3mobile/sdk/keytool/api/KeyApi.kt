@@ -1,0 +1,46 @@
+package net.m3mobile.sdk.keytool.api
+
+import net.m3mobile.core.SupportedModels
+import net.m3mobile.core.device.DeviceModel
+
+interface KeyApi {
+
+    /**
+     * Enables the Function (fn) key mode.
+     *
+     * @see disableFN
+     * @see lockFN
+     */
+    @SupportedModels(DeviceModel.SL20K)
+    fun enableFN()
+
+    /**
+     * Disables the Function (fn) key mode.
+     *
+     * @see enableFN
+     * @see lockFN
+     */
+    @SupportedModels(DeviceModel.SL20K)
+    fun disableFN()
+
+    /**
+     * Locks the Function (fn) key mode.
+     *
+     * @see enableFN
+     * @see disableFN
+     */
+    @SupportedModels(DeviceModel.SL20K)
+    fun lockFN()
+
+    /**
+     * Sets the specific function for a key.
+     *
+     * @param key Key code to set the function
+     * @param function Function name to be assigned.
+     * Please check the [link](https://github.com/m3mobile/Android-Library-M3SDK/blob/master/docs/keytool/sl-series-key-setting-sdk-korean.md)
+     * to see the list of assignable functions.
+     * @throws IllegalArgumentException If the key or function is incorrect
+     */
+    @SupportedModels(DeviceModel.SL20, DeviceModel.SL20K, DeviceModel.SL20P)
+    fun setKeyFunction(key: String, function: String)
+}

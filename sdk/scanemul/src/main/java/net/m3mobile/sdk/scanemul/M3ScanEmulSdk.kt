@@ -1,7 +1,7 @@
 package net.m3mobile.sdk.scanemul
 
 import android.content.Context
-import net.m3mobile.core.device.DeviceSupportProxy
+import net.m3mobile.core.proxy.ApiProxyFactory
 import net.m3mobile.sdk.scanemul.api.ScannerApi
 import net.m3mobile.sdk.scanemul.api.ScannerApiImpl
 
@@ -14,4 +14,4 @@ interface M3ScanEmulSdk :
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3ScanEmulSdkImpl(context: Context) : M3ScanEmulSdk,
-        ScannerApi by DeviceSupportProxy.create<ScannerApi>(ScannerApiImpl(context))
+        ScannerApi by ApiProxyFactory.create<ScannerApi>(ScannerApiImpl(context))

@@ -9,18 +9,18 @@ import net.m3mobile.sdk.keytool.requester.wakeup.EnableRightScanWakeUpRequester
 internal class WakeUpApiImpl(private val context: Context): WakeUpApi {
 
     override fun enableLeftScanWakeUp() {
-        EnableLeftScanWakeUpRequester(context).runBroadcast()
+        EnableLeftScanWakeUpRequester(context).request()
     }
 
     override fun disableLeftScanWakeUp() {
-        DisableLeftScanWakeUpRequester(context).runBroadcast()
+        DisableLeftScanWakeUpRequester(context).request()
     }
 
     override fun enableRightScanWakeUp() {
-        EnableRightScanWakeUpRequester(context).runBroadcast()
+        EnableRightScanWakeUpRequester(context).request()
     }
 
     override fun disableRightScanWakeUp() {
-        DisableRightScanWakeUpRequester(context).runBroadcast()
+        DisableRightScanWakeUpRequester(context).request()
     }
 }

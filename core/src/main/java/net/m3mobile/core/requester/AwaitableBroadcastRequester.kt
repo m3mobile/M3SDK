@@ -22,7 +22,7 @@ abstract class AwaitableBroadcastRequester<T: Any>: BroadcastRequester() {
     protected abstract val responseAction: String
     protected open val timeoutMillis = 3000L
 
-    suspend fun requestResult(): T {
+    suspend fun fetch(): T {
         return withTimeout(timeoutMillis) {
             suspendCancellableCoroutine { continuation ->
                 val receiver = object : BroadcastReceiver() {

@@ -20,7 +20,7 @@ abstract class BroadcastRequester {
     protected open val extras: Bundle = bundleOf()
     protected abstract val context: Context
 
-    fun runBroadcast() {
+    protected fun runBroadcast() {
         val intent = Intent(requestAction)
 
         if (!extras.isEmpty)
@@ -30,5 +30,9 @@ abstract class BroadcastRequester {
             intent.putExtra(typeKey, typeValue)
         }
         context.sendBroadcast(intent)
+    }
+
+    open fun request() {
+        runBroadcast()
     }
 }

@@ -1,4 +1,4 @@
-package net.m3mobile.core
+package net.m3mobile.core.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import net.m3mobile.core.InternalM3Api
 
 @JvmSynthetic
 @InternalM3Api

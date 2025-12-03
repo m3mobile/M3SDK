@@ -1,1 +1,2 @@
-net.m3mobile.processor.DeviceSupportProcessorProvider
+net.m3mobile.processor.DeviceSupportMapSourceProcessorProvider
+net.m3mobile.processor.StartUpVersionMapSourceProcessorProvider

@@ -1,25 +1,34 @@
 package net.m3mobile.sdk.startup
 
 import android.content.Context
-import net.m3mobile.core.device.DeviceSupportProxy
-import net.m3mobile.sdk.startup.api.AirplaneModeApi
-import net.m3mobile.sdk.startup.api.AirplaneModeApiImpl
-import net.m3mobile.sdk.startup.api.SerialApi
-import net.m3mobile.sdk.startup.api.SerialApiImpl
-import net.m3mobile.sdk.startup.api.WifiApi
-import net.m3mobile.sdk.startup.api.WifiApiImpl
+import net.m3mobile.core.proxy.ApiProxyFactory
+import net.m3mobile.sdk.startup.api.*
 
 @Deprecated(
     message = "This interface is not intended for public use. Use M3StartUp.instance directly.",
     level = DeprecationLevel.HIDDEN
 )
 interface M3StartUpSdk :
-    SerialApi,
     WifiApi,
-    AirplaneModeApi
+    AirplaneModeApi,
+    AppApi,
+    PermissionApi,
+    TimeApi,
+    UsbApi,
+    DeviceApi,
+    NetworkApi,
+    QuickTileApi,
+    StartUpSettingApi
 
 @Suppress("DEPRECATION_ERROR")
 internal class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
-        SerialApi by DeviceSupportProxy.create<SerialApi>(SerialApiImpl(context)),
-        WifiApi by DeviceSupportProxy.create<WifiApi>(WifiApiImpl(context)),
-        AirplaneModeApi by DeviceSupportProxy.create<AirplaneModeApi>(AirplaneModeApiImpl(context))
+        WifiApi by ApiProxyFactory.create<WifiApi>(WifiApiImpl(context)),
+        AirplaneModeApi by ApiProxyFactory.create<AirplaneModeApi>(AirplaneModeApiImpl(context)),
+        AppApi by ApiProxyFactory.create<AppApi>(AppApiImpl(context)),
+        PermissionApi by ApiProxyFactory.create<PermissionApi>(PermissionApiImpl(context)),
+        TimeApi by ApiProxyFactory.create<TimeApi>(TimeApiImpl(context)),
+        UsbApi by ApiProxyFactory.create<UsbApi>(UsbApiImpl(context)),
+        DeviceApi by ApiProxyFactory.create<DeviceApi>(DeviceApiImpl(context)),
+        NetworkApi by ApiProxyFactory.create<NetworkApi>(NetworkApiImpl(context)),
+        QuickTileApi by ApiProxyFactory.create<QuickTileApi>(QuickTileApiImpl(context)),
+        StartUpSettingApi by ApiProxyFactory.create<StartUpSettingApi>(StartUpSettingApiImpl(context))
