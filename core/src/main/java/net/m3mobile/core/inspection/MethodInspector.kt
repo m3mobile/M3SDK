@@ -1,6 +1,8 @@
 package net.m3mobile.core.inspection
 
 import net.m3mobile.core.InternalM3Api
+import net.m3mobile.core.device.DeviceModel
+import net.m3mobile.core.device.currentDeviceModel
 import net.m3mobile.core.source.MethodMapSource
 import java.lang.reflect.Method
 import java.util.ServiceLoader
@@ -17,6 +19,9 @@ abstract class MethodInspector<T: MethodMapSource, V: Any>: Inspector {
     }
 
     override fun invoke(method: Method) {
+        if (currentDeviceModel == DeviceModel.UNKNOWN)
+            return
+        
         val methodName = method.name.substringBefore('-')
         val methodKey =
             method.declaringClass.name + "." + methodName + method.parameterTypes.joinToString(

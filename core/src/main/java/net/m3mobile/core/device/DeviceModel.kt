@@ -1,3 +1,4 @@
+@file:JvmSynthetic
 package net.m3mobile.core.device
 
 import android.os.Build
