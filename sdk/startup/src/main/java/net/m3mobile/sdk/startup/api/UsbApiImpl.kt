@@ -1,6 +1,7 @@
 package net.m3mobile.sdk.startup.api
 
 import android.content.Context
+import android.content.IntentFilter
 import net.m3mobile.sdk.startup.requester.usb.SetUsbModeMidiRequester
 import net.m3mobile.sdk.startup.requester.usb.SetUsbModeMtpRequester
 import net.m3mobile.sdk.startup.requester.usb.SetUsbModeNoneRequester
@@ -27,5 +28,17 @@ class UsbApiImpl(private val context: Context): UsbApi {
 
     override fun setUsbModeNone() {
         SetUsbModeNoneRequester(context).request()
+    }
+
+    override fun getUsbModes(): List<String> {
+        val intent = context.registerReceiver(null,
+            IntentFilter("android.hardware.usb.action.USB_STATE")
+        )
+
+        return intent?.run {
+            listOf("mtp", "ptp", "midi", "rndis", "ncm", "adb").filter {
+                getBooleanExtra(it, false)
+            }
+        } ?: emptyList()
     }
 }

@@ -13,7 +13,8 @@ internal abstract class SetUsbModeRequester: BroadcastRequester() {
     override val requestAction = RequestAction.SYSTEM
     override val typeKey = TypeKey.SETTING
     override val typeValue = TypeValue.USB_SETTING
-    override val extras = bundleOf("usb_mode" to mode)
+    override val extras
+        get() = bundleOf("usb_mode" to mode)
     abstract val mode: String
 }
 

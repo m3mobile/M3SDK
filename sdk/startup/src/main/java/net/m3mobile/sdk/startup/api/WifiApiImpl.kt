@@ -1,7 +1,6 @@
 package net.m3mobile.sdk.startup.api
 
 import android.content.Context
-import android.provider.Settings
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.utils.getGlobalInt
