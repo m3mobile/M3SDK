@@ -280,4 +280,12 @@ interface WifiApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     fun getRoamingThreshold(): Int
+
+    /**
+     * Retrieves the current Wi-Fi roaming delta value.
+     *
+     * @return The roaming delta
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getRoamingDelta(): Int
 }

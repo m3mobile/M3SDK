@@ -125,4 +125,9 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
         val threshold = context.getGlobalInt("wifi_roam_trigger", -1)
         return threshold
     }
+
+    override fun getRoamingDelta(): Int {
+        val delta = context.getGlobalInt("wifi_roam_delta", -1)
+        return delta
+    }
 }
