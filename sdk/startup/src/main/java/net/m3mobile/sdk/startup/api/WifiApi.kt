@@ -299,4 +299,12 @@ interface WifiApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     fun getWifiFrequencyBand(): Int
+
+    /**
+     * Retrieves the current Wi-Fi country code.
+     *
+     * @return The country code
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    suspend fun getWifiCountryCode(): String
 }

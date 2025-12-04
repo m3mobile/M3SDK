@@ -5,6 +5,7 @@ import android.provider.Settings
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.utils.getGlobalInt
+import net.m3mobile.core.utils.getGlobalString
 import net.m3mobile.core.utils.launchOnMain
 import net.m3mobile.sdk.startup.params.AccessPoint
 import net.m3mobile.sdk.startup.requester.wifi.AllowAllFrequencyBandRequester
@@ -134,5 +135,10 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
     override fun getWifiFrequencyBand(): Int {
         val band = context.getGlobalInt("wifi_frequency_band", -1)
         return band
+    }
+
+    override suspend fun getWifiCountryCode(): String {
+        val code = context.getGlobalString("wifi_country_code")
+        return code
     }
 }
