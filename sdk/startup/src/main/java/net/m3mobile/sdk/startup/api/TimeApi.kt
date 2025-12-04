@@ -1,6 +1,8 @@
 package net.m3mobile.sdk.startup.api
 
 import net.m3mobile.core.RequiresStartUp
+import net.m3mobile.core.SupportedModels
+import net.m3mobile.core.device.DeviceModel
 import java.time.LocalDateTime
 
 interface TimeApi {
@@ -34,4 +36,13 @@ interface TimeApi {
      */
     @RequiresStartUp("6.5.9")
     fun setTimezone(timezone: String)
+
+
+    /**
+     * Retrieves the currently configured NTP server address.
+     *
+     * @return The NTP server address
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getNtpServer(): String
 }

@@ -3,6 +3,7 @@ package net.m3mobile.sdk.startup.api
 import android.content.Context
 import android.os.Build
 import androidx.core.os.bundleOf
+import net.m3mobile.core.utils.getGlobalString
 import net.m3mobile.sdk.startup.requester.time.SetDateTimeRequester
 import net.m3mobile.sdk.startup.requester.time.SetNtpServerRequester
 import net.m3mobile.sdk.startup.requester.time.SetTimezoneRequester
@@ -23,5 +24,10 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
 
     override fun setTimezone(timezone: String) {
         SetTimezoneRequester(context, timezone).request()
+    }
+
+    override fun getNtpServer(): String {
+        val server = context.getGlobalString("ntp_server")
+        return server
     }
 }
