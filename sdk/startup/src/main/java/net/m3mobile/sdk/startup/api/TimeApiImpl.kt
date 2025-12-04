@@ -1,16 +1,12 @@
 package net.m3mobile.sdk.startup.api
 
 import android.content.Context
-import android.os.Build
-import androidx.core.os.bundleOf
+import android.content.res.Resources
 import net.m3mobile.core.utils.getGlobalString
 import net.m3mobile.sdk.startup.requester.time.SetDateTimeRequester
 import net.m3mobile.sdk.startup.requester.time.SetNtpServerRequester
 import net.m3mobile.sdk.startup.requester.time.SetTimezoneRequester
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 internal class TimeApiImpl(private val context: Context): TimeApi {
 
@@ -29,5 +25,12 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
     override fun getNtpServer(): String {
         val server = context.getGlobalString("ntp_server")
         return server
+    }
+
+    override fun getNtpInterval(): Int {
+        val intervalResId = Resources.getSystem()
+            .getIdentifier("config_ntpPollingInterval", "integer", "android")
+        val interval = Resources.getSystem().getInteger(intervalResId)
+        return interval
     }
 }

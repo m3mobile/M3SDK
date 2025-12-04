@@ -45,4 +45,12 @@ interface TimeApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     fun getNtpServer(): String
+
+    /**
+     * Retrieves the currently configured NTP synchronization interval in milliseconds.
+     *
+     * @return The NTP synchronization interval in milliseconds
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getNtpInterval(): Int
 }
