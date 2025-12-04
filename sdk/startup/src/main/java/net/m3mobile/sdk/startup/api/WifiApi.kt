@@ -288,4 +288,15 @@ interface WifiApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     fun getRoamingDelta(): Int
+
+    /**
+     * Retrieves the current preferred Wi-Fi frequency band value.
+     *
+     * @return
+     * - `0` - Automatic
+     * - `1` - 5 GHz Only
+     * - `2` - 2.4 GHz Only
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getWifiFrequencyBand(): Int
 }

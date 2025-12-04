@@ -130,4 +130,9 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
         val delta = context.getGlobalInt("wifi_roam_delta", -1)
         return delta
     }
+
+    override fun getWifiFrequencyBand(): Int {
+        val band = context.getGlobalInt("wifi_frequency_band", -1)
+        return band
+    }
 }
