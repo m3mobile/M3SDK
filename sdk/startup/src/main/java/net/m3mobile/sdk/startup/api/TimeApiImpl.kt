@@ -7,6 +7,7 @@ import net.m3mobile.sdk.startup.requester.time.SetDateTimeRequester
 import net.m3mobile.sdk.startup.requester.time.SetNtpServerRequester
 import net.m3mobile.sdk.startup.requester.time.SetTimezoneRequester
 import java.time.LocalDateTime
+import java.util.TimeZone
 
 internal class TimeApiImpl(private val context: Context): TimeApi {
 
@@ -18,7 +19,7 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
         SetNtpServerRequester(context, host).request()
     }
 
-    override fun setTimezone(timezone: String) {
+    override fun setTimeZone(timezone: String) {
         SetTimezoneRequester(context, timezone).request()
     }
 
@@ -32,5 +33,9 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
             .getIdentifier("config_ntpPollingInterval", "integer", "android")
         val interval = Resources.getSystem().getInteger(intervalResId)
         return interval
+    }
+
+    override fun getTimeZone(): String {
+        return TimeZone.getDefault().id
     }
 }
