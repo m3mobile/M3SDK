@@ -306,5 +306,5 @@ interface WifiApi {
      * @return The country code
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    suspend fun getWifiCountryCode(): String
+    fun getWifiCountryCode(): String
 }

@@ -136,7 +136,7 @@ internal class WifiApiImpl(private val context: Context): WifiApi {
         return band
     }
 
-    override suspend fun getWifiCountryCode(): String {
+    override fun getWifiCountryCode(): String {
         val code = context.getGlobalString("wifi_country_code")
         return code
     }
