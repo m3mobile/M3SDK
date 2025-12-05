@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.BroadcastRequester
+import net.m3mobile.sdk.startup.constants.ExtraKey
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
@@ -32,8 +33,8 @@ internal class SetDateTimeRequester(
                 .format(dateTime)
             else SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(dateTime)
 
-        extras.putString("date", dateString)
-        extras.putString("time", timeString)
+        extras.putString(ExtraKey.SET_DATE, dateString)
+        extras.putString(ExtraKey.SET_TIME, timeString)
         runBroadcast()
     }
 }

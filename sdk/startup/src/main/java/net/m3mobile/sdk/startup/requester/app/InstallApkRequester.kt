@@ -3,6 +3,8 @@ package net.m3mobile.sdk.startup.requester.app
 import android.content.Context
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.BroadcastRequester
+import net.m3mobile.sdk.startup.constants.ExtraKey
+import net.m3mobile.sdk.startup.constants.ExtraValue
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
@@ -20,8 +22,8 @@ internal class InstallLocalApkRequester(
 ): InstallApkRequester() {
 
     override val extras = bundleOf(
-        "type" to 0,
-        "path" to filePath
+        ExtraKey.INSTALL_APK_TYPE to ExtraValue.INSTALL_LOCAL_APK,
+        ExtraKey.INSTALL_LOCAL_APK_PATH to filePath
     )
 }
 
@@ -31,7 +33,7 @@ internal class InstallRemoteApkRequester(
 ): InstallApkRequester() {
 
     override val extras = bundleOf(
-        "type" to 1,
-        "url" to url
+        ExtraKey.INSTALL_APK_TYPE to ExtraValue.INSTALL_REMOVE_APK,
+        ExtraKey.INSTALL_REMOTE_APK_PATH to url
     )
 }
