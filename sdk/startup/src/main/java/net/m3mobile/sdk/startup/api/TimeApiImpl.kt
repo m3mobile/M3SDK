@@ -31,12 +31,18 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
 
     override fun getNtpInterval(): Int {
         val intervalResId = Resources.getSystem()
-            .getIdentifier("config_ntpPollingInterval", "integer", "android")
+            .getIdentifier(NAME_GET_NTP_INTERVAL, RESOURCE_TYPE_INTEGER, RESOURCE_PACKAGE)
         val interval = Resources.getSystem().getInteger(intervalResId)
         return interval
     }
 
     override fun getTimeZone(): String {
         return TimeZone.getDefault().id
+    }
+
+    private companion object {
+        const val NAME_GET_NTP_INTERVAL = "config_ntpPollingInterval"
+        const val RESOURCE_PACKAGE = "android"
+        const val RESOURCE_TYPE_INTEGER = "integer"
     }
 }
