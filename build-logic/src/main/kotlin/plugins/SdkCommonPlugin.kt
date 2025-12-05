@@ -36,7 +36,7 @@ class SdkCommonPlugin: Plugin<Project> {
                 }
             }
 
-            if (project.name == "startup") {
+            if (project.name == "startup" || project.name == "core") {
                 afterEvaluate {
                     extensions.configure<PublishingExtension> {
                         publications {
