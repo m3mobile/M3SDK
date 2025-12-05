@@ -6,9 +6,6 @@ plugins {
 
 android {
     namespace = "net.m3mobile.core"
-    defaultConfig {
-        manifestPlaceholders["M3SDK_STRICT_MODE"] = "false"
-    }
 }
 
 publishingConfig {

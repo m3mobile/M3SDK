@@ -7,9 +7,6 @@
     </queries>
 
     <application>
-        <meta-data
-            android:name="net.m3mobile.core.STRICT_MODE"
-            android:value="${M3SDK_STRICT_MODE}" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
