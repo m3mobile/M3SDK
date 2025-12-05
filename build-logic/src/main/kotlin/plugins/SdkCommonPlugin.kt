@@ -36,14 +36,16 @@ class SdkCommonPlugin: Plugin<Project> {
                 }
             }
 
-            afterEvaluate {
-                extensions.configure<PublishingExtension> {
-                    publications {
-                        create<MavenPublication>("release") {
-                            from(components["release"])
+            if (project.name == "startup") {
+                afterEvaluate {
+                    extensions.configure<PublishingExtension> {
+                        publications {
+                            create<MavenPublication>("release") {
+                                from(components["release"])
 
-                            groupId = catalog.findVersion("groupId").get().toString()
-                            artifactId = project.name
+                                groupId = catalog.findVersion("groupId").get().toString()
+                                artifactId = project.name
+                            }
                         }
                     }
                 }
