@@ -30,7 +30,7 @@ class UsbApiImpl(private val context: Context): UsbApi {
         SetUsbModeNoneRequester(context).request()
     }
 
-    override fun getUsbModes(): List<String> {
+    override fun getCurrentUsbModes(): List<String> {
         val intent = context.registerReceiver(null,
             IntentFilter("android.hardware.usb.action.USB_STATE")
         )

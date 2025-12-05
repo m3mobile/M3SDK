@@ -58,5 +58,5 @@ interface UsbApi {
      *
      * @return A list of strings representing the active USB modes. Empty if no active USB modes
      */
-    fun getUsbModes(): List<String>
+    fun getCurrentUsbModes(): List<String>
 }
