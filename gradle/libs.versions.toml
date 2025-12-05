@@ -3,6 +3,7 @@
 projectCompileSdk = "36"
 projectTargetSdk = "36"
 projectMinSdk = "24"
+groupId = "com.github.m3mobile"
 #######################################
 
 agp = "8.13.0"

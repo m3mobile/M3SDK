@@ -6,7 +6,6 @@ import extensions.catalog
 import extensions.configureKotlinAndroid
 import extensions.implementation
 import extensions.ksp
-import extensions.moduleVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
@@ -43,9 +42,8 @@ class SdkCommonPlugin: Plugin<Project> {
                         create<MavenPublication>("release") {
                             from(components["release"])
 
-                            groupId = "net.m3mobile.sdk"
+                            groupId = catalog.findVersion("groupId").get().toString()
                             artifactId = project.name
-                            version = moduleVersion.get()
                         }
                     }
                 }
