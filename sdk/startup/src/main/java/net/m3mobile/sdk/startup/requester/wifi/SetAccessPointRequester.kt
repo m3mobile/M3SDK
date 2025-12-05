@@ -3,6 +3,7 @@ package net.m3mobile.sdk.startup.requester.wifi
 import android.content.Context
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.BroadcastRequester
+import net.m3mobile.sdk.startup.constants.ExtraKey
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
@@ -19,24 +20,24 @@ internal class SetAccessPointRequester(
     override val extras = buildExtraBundle(accessPoint)
 
     private fun buildExtraBundle(ap: AccessPoint) = bundleOf(
-        "ssid" to ap.ssid,
-        "security" to ap.security
+        ExtraKey.SET_AP_SSID to ap.ssid,
+        ExtraKey.SET_AP_SECURITY to ap.security
     ).apply {
         if (ap.password != null)
-            putString("password", ap.password)
+            putString(ExtraKey.SET_AP_PASSWORD, ap.password)
         if (ap.enableStatic != null)
-            putBoolean("static_enable", ap.enableStatic)
+            putBoolean(ExtraKey.ENABLE_AP_STATIC, ap.enableStatic)
         if (ap.ipAddress != null)
-            putString("ip_address", ap.ipAddress)
+            putString(ExtraKey.SET_AP_IP, ap.ipAddress)
         if (ap.mask != null)
-            putString("mask", ap.mask)
+            putString(ExtraKey.SET_AP_MASK, ap.mask)
         if (ap.gateway != null)
-            putString("gateway", ap.gateway)
+            putString(ExtraKey.SET_AP_GATEWAY, ap.gateway)
         if (ap.dns != null)
-            putString("dns", ap.dns)
+            putString(ExtraKey.SET_AP_DNS, ap.dns)
         if (ap.macRandom != null)
-            putBoolean("mac_random", ap.macRandom)
+            putBoolean(ExtraKey.SET_AP_MAC_RANDOM, ap.macRandom)
         if (ap.hiddenSsid != null)
-            putBoolean("hidden_ssid", ap.hiddenSsid)
+            putBoolean(ExtraKey.SET_AP_HIDDEN_SSID, ap.hiddenSsid)
     }
 }

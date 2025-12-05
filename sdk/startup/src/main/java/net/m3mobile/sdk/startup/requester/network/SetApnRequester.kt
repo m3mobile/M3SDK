@@ -3,6 +3,7 @@ package net.m3mobile.sdk.startup.requester.network
 import android.content.Context
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.FinishRequiredBroadcastRequester
+import net.m3mobile.sdk.startup.constants.ExtraKey
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
@@ -19,35 +20,35 @@ internal class SetApnRequester(
     override val extras = buildExtraBundle(apn)
 
     private fun buildExtraBundle(apn: Apn) = bundleOf(
-        "apn_name" to apn.name,
-        "apn_url" to apn.url,
-        "apn_mcc" to apn.mcc,
-        "apn_mnc" to apn.mnc,
-        "apn_type" to apn.type
+        ExtraKey.SET_APN_NAME to apn.name,
+        ExtraKey.SET_APN_URL to apn.url,
+        ExtraKey.SET_APN_MCC to apn.mcc,
+        ExtraKey.SET_APN_MNC to apn.mnc,
+        ExtraKey.SET_APN_TYPE to apn.type
     ).apply {
         if (apn.proxy != null)
-            putString("apn_proxy", apn.proxy)
+            putString(ExtraKey.SET_APN_PROXY, apn.proxy)
         if (apn.port != null)
-            putString("apn_port", apn.port)
+            putString(ExtraKey.SET_APN_PORT, apn.port)
         if (apn.user != null)
-            putString("apn_user", apn.user)
+            putString(ExtraKey.SET_APN_USER, apn.user)
         if (apn.password != null)
-            putString("apn_server", apn.server)
+            putString(ExtraKey.SET_APN_SERVER, apn.server)
         if (apn.mmsc != null)
-            putString("apn_mmsc", apn.mmsc)
+            putString(ExtraKey.SET_APN_MMSC, apn.mmsc)
         if (apn.mmsProxy != null)
-            putString("apn_mms_proxy", apn.mmsProxy)
+            putString(ExtraKey.SET_APN_MMS_PROXY, apn.mmsProxy)
         if (apn.mmsPort != null)
-            putString("apn_mms_port", apn.mmsPort)
+            putString(ExtraKey.SET_APN_MMS_PORT, apn.mmsPort)
         if (apn.authType != null)
-            putInt("apn_auth_type", apn.authType)
+            putInt(ExtraKey.SET_APN_AUTH_TYPE, apn.authType)
         if (apn.protocol != null)
-            putInt("apn_protocol", apn.protocol)
+            putInt(ExtraKey.SET_APN_PROTOCOL, apn.protocol)
         if (apn.roaming != null)
-            putInt("apn_roaming", apn.roaming)
+            putInt(ExtraKey.SET_APN_ROAMING, apn.roaming)
         if (apn.mvno != null)
-            putInt("apn_mvno", apn.mvno)
+            putInt(ExtraKey.SET_APN_MVNO, apn.mvno)
         if (apn.mvnoValue != null)
-            putString("apn_mvno_value", apn.mvnoValue)
+            putString(ExtraKey.SET_APN_MVNO_VALUE, apn.mvnoValue)
     }
 }
