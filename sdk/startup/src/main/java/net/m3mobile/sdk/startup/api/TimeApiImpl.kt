@@ -2,6 +2,7 @@ package net.m3mobile.sdk.startup.api
 
 import android.content.Context
 import android.content.res.Resources
+import net.m3mobile.core.constants.DefaultValues
 import net.m3mobile.core.utils.getGlobalString
 import net.m3mobile.sdk.startup.requester.time.SetDateTimeRequester
 import net.m3mobile.sdk.startup.requester.time.SetNtpServerRequester
@@ -25,7 +26,7 @@ internal class TimeApiImpl(private val context: Context): TimeApi {
 
     override fun getNtpServer(): String {
         val server = context.getGlobalString("ntp_server")
-        return server
+        return server.ifEmpty { DefaultValues.NTP_SERVER }
     }
 
     override fun getNtpInterval(): Int {
