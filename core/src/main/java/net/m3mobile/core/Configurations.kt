@@ -13,7 +13,7 @@ internal val IS_STRICT_MODE by lazy {
                 packageName,
                 PackageManager.GET_META_DATA
             )
-            appInfo.metaData?.getBoolean("net.m3mobile.core.STRICT_MODE", false)!!
+            appInfo.metaData?.getBoolean("M3_STRICT_MODE", false)!!
         } catch (_: Exception) {
             false
         }
