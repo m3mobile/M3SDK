@@ -8,6 +8,6 @@ internal const val DEVICE_MODEL_CLASS_NAME = "net.m3mobile.core.device.DeviceMod
 internal const val DEVICE_SUPPORT_MAP_SOURCE_CLASS_NAME = "DeviceSupportMapSource"
 internal const val REQUIRE_STARTUP_ANNOTATION_NAME = "net.m3mobile.core.RequiresStartUp"
 internal const val SUPPORTED_MODELS_ANNOTATION_NAME = "net.m3mobile.core.SupportedModels"
-internal const val UNSUPPORTED_MODELS_ANNOTATION_NAME = "net.m3mobile.core.UnSupportedModels"
+internal const val UNSUPPORTED_MODELS_ANNOTATION_NAME = "net.m3mobile.core.UnsupportedModels"
 internal const val STARTUP_VERSION_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.StartUpVersionMapSource"
 internal const val DEVICE_SUPPORT_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.DeviceSupportMapSource"
