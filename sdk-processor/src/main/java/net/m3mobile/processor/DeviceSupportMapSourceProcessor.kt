@@ -1,5 +1,6 @@
 package net.m3mobile.processor
 
+import androidx.annotation.Keep
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -89,14 +90,17 @@ class DeviceSupportMapSourceProcessor(
             generatedProviders.add("$providerPackageName.$providerClassName")
             allSourceFiles.add(file)
 
-            val suppressAnnotation = AnnotationSpec.builder(Suppress::class)
-                .addMember("%S", "UNCHECKED_CAST")
-                .build()
+            val annotations = buildList {
+                add(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST"))
+                add(AnnotationSpec.builder(Keep::class))
+            }.map { it.build() }
+
             val typeV = TypeVariableName("V", ANY)
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
                 .addType(
                     TypeSpec.classBuilder(providerClassName)
                         .addSuperinterface(ClassName.bestGuess(providerInterfaceName))
+                        .addAnnotations(annotations)
                         .addFunction(
                             FunSpec.builder("get")
                                 .addModifiers(KModifier.OVERRIDE)
@@ -105,7 +109,6 @@ class DeviceSupportMapSourceProcessor(
                                     Map::class.asClassName()
                                         .parameterizedBy(String::class.asClassName(), typeV)
                                 )
-                                .addAnnotation(suppressAnnotation)
                                 .addCode(buildCodeBlock {
                                     add("return mapOf(\n")
                                     indent()
