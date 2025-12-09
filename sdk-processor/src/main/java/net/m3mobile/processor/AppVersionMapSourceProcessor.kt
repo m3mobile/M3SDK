@@ -54,7 +54,7 @@ class AppVersionMapSourceProcessor(
                     it.annotationType.resolve().declaration.qualifiedName?.asString() == annotationName
                 } ?: return@forEach
 
-                val version = annotation.arguments.firstOrNull { it.name?.asString() == "version" }?.value as? String
+                val version = annotation.arguments.firstOrNull { it.name?.asString() == VERSION_ANNOTATION_PROPERTY_NAME }?.value as? String
                 
                 if (version != null) {
                     versionMap[key] = version
@@ -65,8 +65,8 @@ class AppVersionMapSourceProcessor(
 
             val providerClassName = file.fileName
                 .substringBeforeLast(".")
-                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "AppVersionMapSource"
-            val providerPackageName = "net.m3mobile.sdk.generated"
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + APP_VERSION_MAP_SOURCE_CLASS_NAME
+            val providerPackageName = "$BASE_GENERATED_FILE_PACKAGE.version"
 
             generatedProviders.add("$providerPackageName.$providerClassName")
             allSourceFiles.add(file)
@@ -74,6 +74,7 @@ class AppVersionMapSourceProcessor(
             val suppressAnnotation = AnnotationSpec.builder(Suppress::class)
                 .addMember("%S", "UNCHECKED_CAST")
                 .build()
+
             val typeV = TypeVariableName("V", ANY)
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
                 .addType(
@@ -117,7 +118,7 @@ class AppVersionMapSourceProcessor(
              try {
                 val serviceFile = codeGenerator.createNewFile(
                     dependencies = Dependencies(true, *allSourceFiles.toTypedArray()),
-                    packageName = "META-INF.services",
+                    packageName = META_INF_FILE_PACKAGE,
                     fileName = providerInterfaceName,
                     extensionName = ""
                 )

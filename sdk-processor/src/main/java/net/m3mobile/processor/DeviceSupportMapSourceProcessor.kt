@@ -33,9 +33,9 @@ class DeviceSupportMapSourceProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val supportedModelsClassName = "net.m3mobile.core.SupportedModels"
-        val unsupportedModelsClassName = "net.m3mobile.core.UnsupportedModels"
-        val providerInterfaceName = "net.m3mobile.core.source.DeviceSupportMapSource"
+        val supportedModelsClassName = SUPPORTED_MODELS_ANNOTATION_NAME
+        val unsupportedModelsClassName = UNSUPPORTED_MODELS_ANNOTATION_NAME
+        val providerInterfaceName = DEVICE_SUPPORT_MAP_SOURCE_INTERFACE_NAME
 
         val annotatedFunctions = (
                 resolver.getSymbolsWithAnnotation(supportedModelsClassName) +
@@ -83,8 +83,8 @@ class DeviceSupportMapSourceProcessor(
 
             val providerClassName = file.fileName
                 .substringBeforeLast(".")
-                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "DeviceSupportMapSource"
-            val providerPackageName = "net.m3mobile.sdk.generated"
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + DEVICE_SUPPORT_MAP_SOURCE_CLASS_NAME
+            val providerPackageName = "$BASE_GENERATED_FILE_PACKAGE.device"
             
             generatedProviders.add("$providerPackageName.$providerClassName")
             allSourceFiles.add(file)
@@ -132,7 +132,7 @@ class DeviceSupportMapSourceProcessor(
             try {
                 val serviceFile = codeGenerator.createNewFile(
                     dependencies = Dependencies(true, *allSourceFiles.toTypedArray()),
-                    packageName = "META-INF.services",
+                    packageName = META_INF_FILE_PACKAGE,
                     fileName = providerInterfaceName,
                     extensionName = ""
                 )
@@ -161,7 +161,7 @@ class DeviceSupportMapSourceProcessor(
 
     private fun Resolver.getAllDeviceModelNames(): Set<String> {
         val deviceModelClass =
-            getClassDeclarationByName("net.m3mobile.core.device.DeviceModel") ?: return emptySet()
+            getClassDeclarationByName(DEVICE_MODEL_CLASS_NAME) ?: return emptySet()
         return deviceModelClass.declarations
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.classKind == ClassKind.ENUM_ENTRY }
