@@ -3,6 +3,7 @@ package net.m3mobile.sdk.startup.requester.device
 import android.content.Context
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.BroadcastRequester
+import net.m3mobile.sdk.startup.constants.ExtraKey
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
@@ -16,12 +17,12 @@ internal abstract class VolumeRequester: BroadcastRequester() {
 
 internal class DisableVibrationModeRequester(override val context: Context): VolumeRequester() {
 
-    override val extras = bundleOf("volume_vibrator" to false)
+    override val extras = bundleOf(ExtraKey.ENABLE_VOLUME_VIBRATOR to false)
 }
 
 internal class EnableVibrationModeRequester(override val context: Context): VolumeRequester() {
 
-    override val extras = bundleOf("volume_vibrator" to true)
+    override val extras = bundleOf(ExtraKey.ENABLE_VOLUME_VIBRATOR to true)
 }
 
 internal class SetAlarmVolumeRequester(
@@ -29,7 +30,7 @@ internal class SetAlarmVolumeRequester(
     value: Int
 ): VolumeRequester() {
 
-    override val extras = bundleOf("volume_alarm" to value)
+    override val extras = bundleOf(ExtraKey.SET_VOLUME_ALARM to value)
 }
 
 internal class SetMediaVolumeRequester(
@@ -37,7 +38,7 @@ internal class SetMediaVolumeRequester(
     value: Int
 ): VolumeRequester() {
 
-    override val extras = bundleOf("volume_media" to value)
+    override val extras = bundleOf(ExtraKey.SET_VOLUME_MEDIA to value)
 }
 
 internal class SetNotificationVolumeRequester(
@@ -45,7 +46,7 @@ internal class SetNotificationVolumeRequester(
     value: Int
 ): VolumeRequester() {
 
-    override val extras = bundleOf("volume_notification" to value)
+    override val extras = bundleOf(ExtraKey.SET_VOLUME_NOTIFICATION to value)
 }
 
 internal class SetRingtoneVolumeRequester(
@@ -53,5 +54,5 @@ internal class SetRingtoneVolumeRequester(
     value: Int
 ): VolumeRequester() {
 
-    override val extras = bundleOf("volume_ringtone" to value)
+    override val extras = bundleOf(ExtraKey.SET_VOLUME_RINGTONE to value)
 }

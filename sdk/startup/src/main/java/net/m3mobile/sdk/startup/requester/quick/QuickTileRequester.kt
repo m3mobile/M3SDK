@@ -3,6 +3,8 @@ package net.m3mobile.sdk.startup.requester.quick
 import android.content.Context
 import androidx.core.os.bundleOf
 import net.m3mobile.core.requester.FinishRequiredBroadcastRequester
+import net.m3mobile.sdk.startup.constants.ExtraKey
+import net.m3mobile.sdk.startup.constants.ExtraValue
 import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
@@ -23,16 +25,16 @@ internal class SetQuickTileRequester(
 ) : QuickTileRequester() {
 
     override val extras = bundleOf(
-        "quick_tile_action" to "add",
-        "quick_tile_items" to buildQuickTilesJsonString(*quickTile)
+        ExtraKey.QUICK_TILE_ACTION to ExtraValue.ADD_QUICK_TILE,
+        ExtraKey.QUICK_TILE_ITEMS to buildQuickTilesJsonString(*quickTile)
     )
 
     private fun buildQuickTilesJsonString(vararg quickTiles: QuickTile): String {
         return JSONArray().apply {
             quickTiles.forEach { (id, name) ->
                 put(JSONObject().apply {
-                    put("id", id.value)
-                    put("displayName", name)
+                    put(ExtraKey.QUICK_TILE_ID, id.value)
+                    put(ExtraKey.QUICK_TILE_DISPLAY_NAME, name)
                 })
             }
         }.toString()
@@ -42,7 +44,7 @@ internal class SetQuickTileRequester(
 internal class ResetQuickTileRequester(override val context: Context) : QuickTileRequester() {
 
     override val extras = bundleOf(
-        "quick_tile_action" to "reset",
-        "quick_tile_items" to "[]"
+        ExtraKey.QUICK_TILE_ACTION to ExtraValue.RESET_QUICK_TILE,
+        ExtraKey.QUICK_TILE_ITEMS to ExtraValue.EMPTY_QUICK_TILE_ITEMS
     )
 }

@@ -50,4 +50,13 @@ interface UsbApi {
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
     fun setUsbModeNone()
+
+    /**
+     * Retrieves the current USB connection mode.
+     *
+     * Returns a list containing the currently active USB mode strings.
+     *
+     * @return A list of strings representing the active USB modes. Empty if no active USB modes
+     */
+    fun getCurrentUsbModes(): List<String>
 }

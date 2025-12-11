@@ -3,6 +3,7 @@ package net.m3mobile.sdk.startup.api
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
+import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.UnsupportedModels
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.sdk.startup.params.AccessPoint
@@ -271,4 +272,39 @@ interface WifiApi {
      */
     @RequiresStartUp("6.4.11")
     fun removeWifiNetwork(ssid: String)
+
+    /**
+     * Retrieves the current Wi-Fi roaming threshold value.
+     *
+     * @return The roaming threshold as a negative `Int`
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getRoamingThreshold(): Int
+
+    /**
+     * Retrieves the current Wi-Fi roaming delta value.
+     *
+     * @return The roaming delta
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getRoamingDelta(): Int
+
+    /**
+     * Retrieves the current preferred Wi-Fi frequency band value.
+     *
+     * @return
+     * - `0` - Automatic
+     * - `1` - 5 GHz Only
+     * - `2` - 2.4 GHz Only
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getWifiFrequencyBand(): Int
+
+    /**
+     * Retrieves the current Wi-Fi country code.
+     *
+     * @return The country code
+     */
+    @SupportedModels(DeviceModel.US20, DeviceModel.US30)
+    fun getWifiCountryCode(): String
 }
