@@ -1,8 +1,7 @@
 package plugins
 
 import configurations.configureArtifactPublication
-import configurations.configureFreeCompilerOptions
-import configurations.configureJavaCompatibility
+import configurations.configureCompiler
 import configurations.configureLibrary
 import configurations.loadDependencies
 import configurations.loadPlugins
@@ -20,8 +19,7 @@ class SdkCommonPlugin: Plugin<Project> {
         target.run {
             loadPlugins()
 
-            configureJavaCompatibility()
-            configureFreeCompilerOptions()
+            configureCompiler()
             configureLibrary()
             if (project.name !in excludePublishModules)
                 configureArtifactPublication()

@@ -40,7 +40,7 @@ enum class DeviceModel {
     PC10;
 
     companion object {
-        val setOfEntriesName = entries.map { it.name }.toSet()
+        val setOfEntriesName = values().map { it.name }.toSet()
     }
 }
 

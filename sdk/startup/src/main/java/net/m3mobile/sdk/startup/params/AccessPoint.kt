@@ -6,7 +6,6 @@ package net.m3mobile.sdk.startup.params
  * Instances of this class cannot be created directly via the constructor.
  * Instead, use [AccessPoint.builder] to construct an instance.
  */
-@ConsistentCopyVisibility
 data class AccessPoint private constructor(
     val ssid: String,
     val security: String,
