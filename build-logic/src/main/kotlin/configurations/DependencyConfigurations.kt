@@ -17,5 +17,6 @@ internal fun Project.loadDependencies() {
 
         implementation(catalog.findLibrary("startup-runtime").get())
         implementation(catalog.findLibrary("androidx-core-ktx").get())
+        implementation(catalog.findLibrary("kotlinx-coroutines-android").get())
     }
 }
