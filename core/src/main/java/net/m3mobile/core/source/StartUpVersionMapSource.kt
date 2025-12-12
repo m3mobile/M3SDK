@@ -9,4 +9,4 @@ import androidx.annotation.Keep
  * @see net.m3mobile.processor.StartUpVersionMapSourceProcessor
  */
 @Keep
-interface StartUpVersionMapSource: MethodMapSource
+public interface StartUpVersionMapSource: MethodMapSource

@@ -9,7 +9,7 @@ import android.content.Context
  * Use [M3StartUp.instance] to get a concrete implementation of the [M3StartUpSdk] interface.
  */
 @Suppress("DEPRECATION_ERROR")
-object M3StartUp {
+public object M3StartUp {
 
     /**
      * Provides access to the M3 StartUp SDK.
@@ -18,7 +18,7 @@ object M3StartUp {
      * and is automatically initialized by the M3 library.
      */
     @JvmStatic
-    lateinit var instance: M3StartUpSdk
+    public lateinit var instance: M3StartUpSdk
         private set
 
     @JvmSynthetic

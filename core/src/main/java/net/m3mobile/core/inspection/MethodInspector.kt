@@ -8,7 +8,7 @@ import java.lang.reflect.Method
 import java.util.ServiceLoader
 
 @InternalM3Api
-abstract class MethodInspector<T: MethodMapSource, V: Any>: Inspector {
+public abstract class MethodInspector<T: MethodMapSource, V: Any>: Inspector {
 
     protected abstract val serviceLoader: ServiceLoader<T>
     protected val methodMap: Map<String, V> by lazy {

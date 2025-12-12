@@ -9,7 +9,7 @@ import android.content.Context
  * Use [M3ScanEmul.instance] to get a concrete implementation of the [M3ScanEmulSdk] interface.
  */
 @Suppress("DEPRECATION_ERROR")
-object M3ScanEmul {
+public object M3ScanEmul {
 
     /**
      * Provides access to the M3 ScanEmul SDK.
@@ -18,7 +18,7 @@ object M3ScanEmul {
      * and is automatically initialized by the M3 library.
      */
     @JvmStatic
-    lateinit var instance: M3ScanEmulSdk
+    public lateinit var instance: M3ScanEmulSdk
         private set
 
     @JvmSynthetic

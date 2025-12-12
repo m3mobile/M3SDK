@@ -4,7 +4,7 @@ import android.content.Context
 import net.m3mobile.sdk.scanemul.requester.CancelScanRequester
 import net.m3mobile.sdk.scanemul.requester.StartScanRequester
 
-class ScannerApiImpl(private val context: Context) : ScannerApi {
+internal class ScannerApiImpl(private val context: Context) : ScannerApi {
 
     override fun startScan() {
         StartScanRequester(context).request()

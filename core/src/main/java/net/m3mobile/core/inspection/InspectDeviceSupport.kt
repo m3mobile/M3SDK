@@ -15,9 +15,10 @@ import java.util.ServiceLoader
  * 지원하지 않는 디바이스 모델일 경우 호출부로 [UnsupportedDeviceModelException]를 던집니다.
  */
 @InternalM3Api
-class InspectDeviceSupport: MethodInspector<DeviceSupportMapSource, Set<String>>() {
+public class InspectDeviceSupport: MethodInspector<DeviceSupportMapSource, Set<String>>() {
 
-    override val serviceLoader = ServiceLoader.load(DeviceSupportMapSource::class.java)
+    override val serviceLoader: ServiceLoader<DeviceSupportMapSource> =
+        ServiceLoader.load(DeviceSupportMapSource::class.java)
 
     /**
      * 현재 디바이스 모델이 해당 메서드를 지원하는지 검사합니다.

@@ -3,7 +3,7 @@ package net.m3mobile.sdk.startup.api
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.sdk.startup.params.Apn
 
-interface NetworkApi {
+public interface NetworkApi {
 
     /**
      * Sets the Access Point Name (APN) configuration for the network.
@@ -18,5 +18,5 @@ interface NetworkApi {
      *            Use `Apn.builder()` to construct a valid instance.
      */
     @RequiresStartUp("6.2.14")
-    fun setApn(apn: Apn)
+    public fun setApn(apn: Apn)
 }

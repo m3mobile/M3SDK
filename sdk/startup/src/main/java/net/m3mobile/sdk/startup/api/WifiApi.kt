@@ -1,6 +1,7 @@
 package net.m3mobile.sdk.startup.api
 
 import kotlinx.coroutines.Job
+import net.m3mobile.core.InternalM3Api
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.core.SupportedModels
@@ -8,7 +9,8 @@ import net.m3mobile.core.UnsupportedModels
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.sdk.startup.params.AccessPoint
 
-interface WifiApi {
+@InternalM3Api
+public interface WifiApi {
 
     /**
      * Retrieves the Wi-Fi MAC address of the device.
@@ -19,7 +21,7 @@ interface WifiApi {
      */
     @JvmSynthetic
     @RequiresStartUp("6.4.11")
-    suspend fun getWifiMac(): String
+    public suspend fun getWifiMac(): String
 
     /**
      * Asynchronously gets the device's Wi-Fi MAC address.
@@ -30,7 +32,7 @@ interface WifiApi {
      * @return A [Job] representing the coroutine that is executing the request.
      */
     @RequiresStartUp("6.4.11")
-    fun getWifiMac(callback: RequestCallback<String>): Job
+    public fun getWifiMac(callback: RequestCallback<String>): Job
 
     /**
      * Enables captive portal detection for Wi-Fi.
@@ -39,7 +41,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL20)
     @RequiresStartUp("6.2.14")
-    fun enableCaptivePortalDetection()
+    public fun enableCaptivePortalDetection()
 
     /**
      * Disables captive portal detection for Wi-Fi.
@@ -48,7 +50,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL20)
     @RequiresStartUp("6.2.14")
-    fun disableCaptivePortalDetection()
+    public fun disableCaptivePortalDetection()
 
     /**
      * Allows the use of all Wi-Fi frequency bands supported by the device.
@@ -57,7 +59,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     @RequiresStartUp("6.2.14")
-    fun allowAllWifiFrequencyBand()
+    public fun allowAllWifiFrequencyBand()
 
     /**
      * Restricts the Wi-Fi frequency band to 2.4GHz only.
@@ -66,7 +68,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     @RequiresStartUp("6.2.14")
-    fun allowOnly2_4GHzWifiFrequencyBand()
+    public fun allowOnly2_4GHzWifiFrequencyBand()
 
     /**
      * Restricts the Wi-Fi frequency band to 5GHz only.
@@ -75,7 +77,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     @RequiresStartUp("6.2.14")
-    fun allowOnly5GHzWifiFrequencyBand()
+    public fun allowOnly5GHzWifiFrequencyBand()
 
     /**
      * Sets the Wi-Fi country code.
@@ -86,7 +88,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL10, DeviceModel.SL10K)
     @RequiresStartUp("6.2.14")
-    fun setWifiCountry(countryCode: String)
+    public fun setWifiCountry(countryCode: String)
 
     /**
      * Enables the "Open network notification".
@@ -97,7 +99,7 @@ interface WifiApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun enableOpenNetworkNotification()
+    public fun enableOpenNetworkNotification()
 
     /**
      * Disables the "Open network notification".
@@ -108,7 +110,7 @@ interface WifiApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun disableOpenNetworkNotification()
+    public fun disableOpenNetworkNotification()
 
     /**
      * Sets the Wi-Fi roaming trigger level.
@@ -131,7 +133,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
     @RequiresStartUp("6.2.14")
-    fun setRoamingTrigger(index: Int)
+    public fun setRoamingTrigger(index: Int)
 
     /**
      * Sets the Wi-Fi roaming delta.
@@ -156,7 +158,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SL10K, DeviceModel.SL10)
     @RequiresStartUp("6.2.14")
-    fun setRoamingDelta(index: Int)
+    public fun setRoamingDelta(index: Int)
 
     /**
      * Sets the Wi-Fi sleep policy to "Never".
@@ -167,7 +169,7 @@ interface WifiApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun setWifiSleepPolicyNever()
+    public fun setWifiSleepPolicyNever()
 
     /**
      * Sets the Wi-Fi sleep policy to "Only when plugged in".
@@ -179,7 +181,7 @@ interface WifiApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun setWifiSleepPolicyPluggedOnly()
+    public fun setWifiSleepPolicyPluggedOnly()
 
     /**
      * Sets the Wi-Fi sleep policy to "Always" (also known as "While screen is off").
@@ -191,7 +193,7 @@ interface WifiApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun setWifiSleepPolicyAlways()
+    public fun setWifiSleepPolicyAlways()
 
     /**
      * Sets the Wi-Fi stability to the "Normal" level.
@@ -206,7 +208,7 @@ interface WifiApi {
      * @see setWifiStabilityHigh
      */
     @RequiresStartUp("6.2.14")
-    fun setWifiStabilityNormal()
+    public fun setWifiStabilityNormal()
 
     /**
      * Sets Wi-Fi stability to the "High" level.
@@ -221,7 +223,7 @@ interface WifiApi {
      * @see setWifiStabilityNormal
      */
     @RequiresStartUp("6.2.14")
-    fun setWifiStabilityHigh()
+    public fun setWifiStabilityHigh()
 
     /**
      * Sets the available Wi-Fi channels for the device to scan and connect to.
@@ -243,7 +245,7 @@ interface WifiApi {
      */
     @UnsupportedModels(DeviceModel.SM15, DeviceModel.SL10, DeviceModel.SL10K)
     @RequiresStartUp("6.2.14")
-    fun setWifiChannel(vararg channels: Int)
+    public fun setWifiChannel(vararg channels: Int)
 
     /**
      * Configures a specific Wi-Fi Access Point (AP) on the device.
@@ -254,7 +256,7 @@ interface WifiApi {
      * @see AccessPoint.Builder
      */
     @RequiresStartUp("6.2.14")
-    fun setAccessPoint(accessPoint: AccessPoint)
+    public fun setAccessPoint(accessPoint: AccessPoint)
 
     /**
      * Removes all configured Wi-Fi networks from the device.
@@ -262,7 +264,7 @@ interface WifiApi {
      * StartUp version `6.4.11` or later is required.
      */
     @RequiresStartUp("6.4.11")
-    fun clearSavedWifiNetworks()
+    public fun clearSavedWifiNetworks()
 
     /**
      * Removes a specific Wi-Fi network configuration from the device.
@@ -272,7 +274,7 @@ interface WifiApi {
      * @param ssid SSID of the network to remove.
      */
     @RequiresStartUp("6.4.11")
-    fun removeWifiNetwork(ssid: String)
+    public fun removeWifiNetwork(ssid: String)
 
     /**
      * Retrieves the current Wi-Fi roaming threshold value.
@@ -280,7 +282,7 @@ interface WifiApi {
      * @return The roaming threshold as a negative `Int`
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    fun getRoamingThreshold(): Int
+    public fun getRoamingThreshold(): Int
 
     /**
      * Retrieves the current Wi-Fi roaming delta value.
@@ -288,7 +290,7 @@ interface WifiApi {
      * @return The roaming delta
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    fun getRoamingDelta(): Int
+    public fun getRoamingDelta(): Int
 
     /**
      * Retrieves the current preferred Wi-Fi frequency band value.
@@ -299,7 +301,7 @@ interface WifiApi {
      * - `2` - 2.4 GHz Only
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    fun getWifiFrequencyBand(): Int
+    public fun getWifiFrequencyBand(): Int
 
     /**
      * Retrieves the current Wi-Fi country code.
@@ -307,5 +309,5 @@ interface WifiApi {
      * @return The country code
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    fun getWifiCountryCode(): String
+    public fun getWifiCountryCode(): String
 }

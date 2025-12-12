@@ -6,7 +6,7 @@ package net.m3mobile.sdk.startup.params
  * Instances of this class cannot be created directly via the constructor.
  * Instead, use [AccessPoint.builder] to construct an instance.
  */
-data class AccessPoint private constructor(
+public data class AccessPoint private constructor(
     val ssid: String,
     val security: String,
     val password: String?,
@@ -19,12 +19,12 @@ data class AccessPoint private constructor(
     val hiddenSsid: Boolean?
 ) {
 
-    interface SsidBuilder {
-        fun setSsid(ssid: String): SecurityBuilder
+    public interface SsidBuilder {
+        public fun setSsid(ssid: String): SecurityBuilder
     }
 
-    interface SecurityBuilder {
-        fun setSecurity(security: String): Builder
+    public interface SecurityBuilder {
+        public fun setSecurity(security: String): Builder
     }
 
     /**
@@ -36,7 +36,7 @@ data class AccessPoint private constructor(
      *      .build()
      * ```
      */
-    class Builder internal constructor(): SsidBuilder, SecurityBuilder {
+    public class Builder internal constructor(): SsidBuilder, SecurityBuilder {
         private lateinit var ssid: String
         private lateinit var security: String
         private var password: String? = null
@@ -48,18 +48,18 @@ data class AccessPoint private constructor(
         private var macRandom: Boolean? = null
         private var hiddenSsid: Boolean? = null
 
-        override fun setSsid(ssid: String) = apply { this.ssid = ssid } as SecurityBuilder
-        override fun setSecurity(security: String) = apply { this.security = security }
-        fun setPassword(password: String) = apply { this.password = password }
-        fun setEnableStatic(enable: Boolean) = apply { this.enableStatic = enable }
-        fun setIpAddress(ipAddress: String) = apply { this.ipAddress = ipAddress }
-        fun setMask(mask: String) = apply { this.mask = mask }
-        fun setGateway(gateway: String) = apply { this.gateway = gateway }
-        fun setDns(dns: String) = apply { this.dns = dns }
-        fun setMacRandom(macRandom: Boolean) = apply { this.macRandom = macRandom }
-        fun setHiddenSsid(hiddenSsid: Boolean) = apply { this.hiddenSsid = hiddenSsid }
+        public override fun setSsid(ssid: String): SecurityBuilder = apply { this.ssid = ssid } as SecurityBuilder
+        public override fun setSecurity(security: String): Builder = apply { this.security = security }
+        public fun setPassword(password: String): Builder = apply { this.password = password }
+        public fun setEnableStatic(enable: Boolean): Builder = apply { this.enableStatic = enable }
+        public fun setIpAddress(ipAddress: String): Builder = apply { this.ipAddress = ipAddress }
+        public fun setMask(mask: String): Builder = apply { this.mask = mask }
+        public fun setGateway(gateway: String): Builder = apply { this.gateway = gateway }
+        public fun setDns(dns: String): Builder = apply { this.dns = dns }
+        public fun setMacRandom(macRandom: Boolean): Builder = apply { this.macRandom = macRandom }
+        public fun setHiddenSsid(hiddenSsid: Boolean): Builder = apply { this.hiddenSsid = hiddenSsid }
 
-        fun build() = AccessPoint(
+        public fun build(): AccessPoint = AccessPoint(
             ssid = ssid,
             security = security,
             password = password,
@@ -73,9 +73,9 @@ data class AccessPoint private constructor(
         )
     }
 
-    companion object {
+    public companion object {
 
         @JvmStatic
-        fun builder(): SsidBuilder = Builder()
+        public fun builder(): SsidBuilder = Builder()
     }
 }

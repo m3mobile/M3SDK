@@ -7,12 +7,12 @@ package net.m3mobile.sdk.startup.params
  * @property name The display name of the tile to be shown in the Quick Settings UI
  * @see QuickTileId
  */
-data class QuickTile(
+public data class QuickTile(
     val id: QuickTileId,
     val name: String,
 )
 
-enum class QuickTileId(internal val value: String) {
+public enum class QuickTileId(internal val value: String) {
     WIFI("wifi"),
     BLUETOOTH("bt"),
     FLASHLIGHT("flashlight"),

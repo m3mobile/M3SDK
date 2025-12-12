@@ -9,7 +9,7 @@ import net.m3mobile.sdk.startup.requester.usb.SetUsbModeNoneRequester
 import net.m3mobile.sdk.startup.requester.usb.SetUsbModePtpRequester
 import net.m3mobile.sdk.startup.requester.usb.SetUsbModeRndisRequester
 
-class UsbApiImpl(private val context: Context): UsbApi {
+internal class UsbApiImpl(private val context: Context): UsbApi {
 
     override fun setUsbModeMtp() {
         SetUsbModeMtpRequester(context).request()

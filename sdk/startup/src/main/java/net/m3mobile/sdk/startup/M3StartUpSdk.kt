@@ -8,7 +8,7 @@ import net.m3mobile.sdk.startup.api.*
     message = "This interface is not intended for public use. Use M3StartUp.instance directly.",
     level = DeprecationLevel.HIDDEN
 )
-interface M3StartUpSdk :
+public interface M3StartUpSdk :
     WifiApi,
     AirplaneModeApi,
     AppApi,

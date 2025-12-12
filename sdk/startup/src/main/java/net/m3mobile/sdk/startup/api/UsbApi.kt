@@ -4,7 +4,7 @@ import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 
-interface UsbApi {
+public interface UsbApi {
 
     /**
      * Sets the USB connection mode to MTP.
@@ -13,7 +13,7 @@ interface UsbApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
-    fun setUsbModeMtp()
+    public fun setUsbModeMtp()
 
     /**
      * Sets the USB connection mode to RNDIS.
@@ -22,7 +22,7 @@ interface UsbApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
-    fun setUsbModeRndis()
+    public fun setUsbModeRndis()
 
     /**
      * Sets the USB connection mode to MIDI.
@@ -31,7 +31,7 @@ interface UsbApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
-    fun setUsbModeMidi()
+    public fun setUsbModeMidi()
 
     /**
      * Sets the USB connection mode to PTP.
@@ -40,7 +40,7 @@ interface UsbApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
-    fun setUsbModePtp()
+    public fun setUsbModePtp()
 
     /**
      * Disables all USB data connections, setting the mode to charging only.
@@ -49,7 +49,7 @@ interface UsbApi {
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
-    fun setUsbModeNone()
+    public fun setUsbModeNone()
 
     /**
      * Retrieves the current USB connection mode.
@@ -58,5 +58,5 @@ interface UsbApi {
      *
      * @return A list of strings representing the active USB modes. Empty if no active USB modes
      */
-    fun getCurrentUsbModes(): List<String>
+    public fun getCurrentUsbModes(): List<String>
 }

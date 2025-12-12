@@ -7,7 +7,7 @@ import androidx.startup.Initializer
     message = "This is an internal class for automatic initialization and is not intended for public use.",
     level = DeprecationLevel.HIDDEN
 )
-class M3KeyToolSdkInitializer : Initializer<Unit> {
+public class M3KeyToolSdkInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
         M3KeyTool.init(context.applicationContext)

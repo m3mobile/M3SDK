@@ -1,14 +1,14 @@
 package net.m3mobile.sdk.scanemul.api
 
-interface ScannerApi {
+public interface ScannerApi {
 
     /**
      * Starts scan.
      */
-    fun startScan()
+    public fun startScan()
 
     /**
      * Cancels scan.
      */
-    fun cancelScan()
+    public fun cancelScan()
 }

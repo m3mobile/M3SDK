@@ -6,7 +6,7 @@ package net.m3mobile.sdk.startup.params
  * Instances of this class cannot be created directly via the constructor.
  * Instead, use [Apn.builder] to construct an instance.
  */
-data class Apn private constructor(
+public data class Apn private constructor(
     val name: String,
     val url: String,
     val mcc: String,
@@ -27,24 +27,24 @@ data class Apn private constructor(
     val mvnoValue: String?
 ) {
 
-    interface NameBuilder {
-        fun setName(name: String): UrlBuilder
+    public interface NameBuilder {
+        public fun setName(name: String): UrlBuilder
     }
 
-    interface UrlBuilder {
-        fun setUrl(url: String): MccBuilder
+    public interface UrlBuilder {
+        public fun setUrl(url: String): MccBuilder
     }
 
-    interface MccBuilder {
-        fun setMcc(mcc: String): MncBuilder
+    public interface MccBuilder {
+        public fun setMcc(mcc: String): MncBuilder
     }
 
-    interface MncBuilder {
-        fun setMnc(mnc: String): TypeBuilder
+    public interface MncBuilder {
+        public fun setMnc(mnc: String): TypeBuilder
     }
 
-    interface TypeBuilder {
-        fun setType(type: String): Builder
+    public interface TypeBuilder {
+        public fun setType(type: String): Builder
     }
 
     /**
@@ -59,7 +59,7 @@ data class Apn private constructor(
      *      .build()
      * ```
      */
-    class Builder internal constructor() : NameBuilder, UrlBuilder, MccBuilder, MncBuilder, TypeBuilder {
+    public class Builder internal constructor() : NameBuilder, UrlBuilder, MccBuilder, MncBuilder, TypeBuilder {
         private lateinit var name: String
         private lateinit var url: String
         private lateinit var mcc: String
@@ -79,26 +79,26 @@ data class Apn private constructor(
         private var mvno: Int? = null
         private var mvnoValue: String? = null
 
-        override fun setName(name: String) = apply { this.name = name } as UrlBuilder
-        override fun setUrl(url: String) = apply { this.url = url } as MccBuilder
-        override fun setMcc(mcc: String) = apply { this.mcc = mcc } as MncBuilder
-        override fun setMnc(mnc: String) = apply { this.mnc = mnc } as TypeBuilder
-        override fun setType(type: String) = apply { this.type = type }
-        fun setProxy(proxy: String) = apply { this.proxy = proxy }
-        fun setPort(port: String) = apply { this.port = port }
-        fun setUser(user: String) = apply { this.user = user }
-        fun setPassword(password: String) = apply { this.password = password }
-        fun setServer(server: String) = apply { this.server = server }
-        fun setMmsc(mmsc: String) = apply { this.mmsc = mmsc }
-        fun setMmsProxy(mmsProxy: String) = apply { this.mmsProxy = mmsProxy }
-        fun setMmsPort(mmsPort: String) = apply { this.mmsPort = mmsPort }
-        fun setAuthType(authType: Int) = apply { this.authType = authType }
-        fun setProtocol(protocol: Int) = apply { this.protocol = protocol }
-        fun setRoaming(roaming: Int) = apply { this.roaming = roaming }
-        fun setMvno(mvno: Int) = apply { this.mvno = mvno }
-        fun setMvnoValue(mvnoValue: String) = apply { this.mvnoValue = mvnoValue }
+        public override fun setName(name: String): UrlBuilder = apply { this.name = name } as UrlBuilder
+        public override fun setUrl(url: String): MccBuilder = apply { this.url = url } as MccBuilder
+        public override fun setMcc(mcc: String): MncBuilder = apply { this.mcc = mcc } as MncBuilder
+        public override fun setMnc(mnc: String): TypeBuilder = apply { this.mnc = mnc } as TypeBuilder
+        public override fun setType(type: String): Builder = apply { this.type = type }
+        public fun setProxy(proxy: String): Builder = apply { this.proxy = proxy }
+        public fun setPort(port: String): Builder = apply { this.port = port }
+        public fun setUser(user: String): Builder = apply { this.user = user }
+        public fun setPassword(password: String): Builder = apply { this.password = password }
+        public fun setServer(server: String): Builder = apply { this.server = server }
+        public fun setMmsc(mmsc: String): Builder = apply { this.mmsc = mmsc }
+        public fun setMmsProxy(mmsProxy: String): Builder = apply { this.mmsProxy = mmsProxy }
+        public fun setMmsPort(mmsPort: String): Builder = apply { this.mmsPort = mmsPort }
+        public fun setAuthType(authType: Int): Builder = apply { this.authType = authType }
+        public fun setProtocol(protocol: Int): Builder = apply { this.protocol = protocol }
+        public fun setRoaming(roaming: Int): Builder = apply { this.roaming = roaming }
+        public fun setMvno(mvno: Int): Builder = apply { this.mvno = mvno }
+        public fun setMvnoValue(mvnoValue: String): Builder = apply { this.mvnoValue = mvnoValue }
 
-        fun build() = Apn(
+        public fun build(): Apn = Apn(
             name = name,
             url = url,
             mcc = mcc,
@@ -120,8 +120,9 @@ data class Apn private constructor(
         )
     }
 
-    companion object {
+    public companion object {
+
         @JvmStatic
-        fun builder(): NameBuilder = Builder()
+        public fun builder(): NameBuilder = Builder()
     }
 }

@@ -9,4 +9,4 @@ import androidx.annotation.Keep
  * @see net.m3mobile.processor.DeviceSupportMapSourceProcessor
  */
 @Keep
-interface DeviceSupportMapSource: MethodMapSource
+public interface DeviceSupportMapSource: MethodMapSource
