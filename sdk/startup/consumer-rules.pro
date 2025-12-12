@@ -1,0 +1,1 @@
+-keep class net.m3mobile.sdk.startup.api.** { *; }

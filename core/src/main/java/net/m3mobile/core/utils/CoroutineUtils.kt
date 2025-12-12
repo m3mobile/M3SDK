@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import net.m3mobile.core.InternalM3Api
 
@@ -16,5 +15,5 @@ fun launchOnMain(task: suspend () -> Unit): Job {
     scope.launch {
         task()
     }
-    return scope.coroutineContext.job
+    return scope.coroutineContext[Job]!!
 }

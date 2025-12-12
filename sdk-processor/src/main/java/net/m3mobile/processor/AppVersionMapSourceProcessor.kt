@@ -1,5 +1,6 @@
 package net.m3mobile.processor
 
+import androidx.annotation.Keep
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
@@ -54,7 +55,7 @@ class AppVersionMapSourceProcessor(
                     it.annotationType.resolve().declaration.qualifiedName?.asString() == annotationName
                 } ?: return@forEach
 
-                val version = annotation.arguments.firstOrNull { it.name?.asString() == "version" }?.value as? String
+                val version = annotation.arguments.firstOrNull { it.name?.asString() == VERSION_ANNOTATION_PROPERTY_NAME }?.value as? String
                 
                 if (version != null) {
                     versionMap[key] = version
@@ -65,15 +66,17 @@ class AppVersionMapSourceProcessor(
 
             val providerClassName = file.fileName
                 .substringBeforeLast(".")
-                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "AppVersionMapSource"
-            val providerPackageName = "net.m3mobile.sdk.generated"
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + APP_VERSION_MAP_SOURCE_CLASS_NAME
+            val providerPackageName = "$BASE_GENERATED_FILE_PACKAGE.version"
 
             generatedProviders.add("$providerPackageName.$providerClassName")
             allSourceFiles.add(file)
 
-            val suppressAnnotation = AnnotationSpec.builder(Suppress::class)
-                .addMember("%S", "UNCHECKED_CAST")
-                .build()
+            val annotations = buildList {
+                add(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST"))
+                add(AnnotationSpec.builder(Keep::class))
+            }.map { it.build() }
+
             val typeV = TypeVariableName("V", ANY)
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
                 .addType(
@@ -82,6 +85,7 @@ class AppVersionMapSourceProcessor(
                             ClassName
                                 .bestGuess(providerInterfaceName)
                         )
+                        .addAnnotations(annotations)
                         .addFunction(
                             FunSpec.builder("get")
                                 .addModifiers(KModifier.OVERRIDE)
@@ -90,7 +94,6 @@ class AppVersionMapSourceProcessor(
                                     Map::class.asClassName()
                                         .parameterizedBy(String::class.asClassName(), typeV)
                                 )
-                                .addAnnotation(suppressAnnotation)
                                 .addCode(buildCodeBlock {
                                     add("return mapOf(\n")
                                     indent()
@@ -117,7 +120,7 @@ class AppVersionMapSourceProcessor(
              try {
                 val serviceFile = codeGenerator.createNewFile(
                     dependencies = Dependencies(true, *allSourceFiles.toTypedArray()),
-                    packageName = "META-INF.services",
+                    packageName = META_INF_FILE_PACKAGE,
                     fileName = providerInterfaceName,
                     extensionName = ""
                 )

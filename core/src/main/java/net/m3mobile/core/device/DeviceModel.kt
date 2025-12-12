@@ -2,6 +2,7 @@
 package net.m3mobile.core.device
 
 import android.os.Build
+import androidx.annotation.Keep
 import net.m3mobile.core.InternalM3Api
 
 internal val currentDeviceModel by lazy {
@@ -9,6 +10,7 @@ internal val currentDeviceModel by lazy {
 }
 
 @InternalM3Api
+@Keep
 enum class DeviceModel {
     UNKNOWN,
     SM10,
@@ -38,7 +40,7 @@ enum class DeviceModel {
     PC10;
 
     companion object {
-        val setOfEntriesName = entries.map { it.name }.toSet()
+        val setOfEntriesName = values().map { it.name }.toSet()
     }
 }
 

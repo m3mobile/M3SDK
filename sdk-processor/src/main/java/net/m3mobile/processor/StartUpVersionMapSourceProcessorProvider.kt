@@ -9,8 +9,8 @@ class StartUpVersionMapSourceProcessorProvider : SymbolProcessorProvider {
         return AppVersionMapSourceProcessor(
             codeGenerator = environment.codeGenerator,
             logger = environment.logger,
-            annotationName = "net.m3mobile.core.RequiresStartUp",
-            providerInterfaceName = "net.m3mobile.core.source.StartUpVersionMapSource"
+            annotationName = REQUIRE_STARTUP_ANNOTATION_NAME,
+            providerInterfaceName = STARTUP_VERSION_MAP_SOURCE_INTERFACE_NAME
         )
     }
 }

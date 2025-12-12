@@ -17,6 +17,7 @@ interface WifiApi {
      *
      * @return The Wi-Fi MAC address as a String.
      */
+    @JvmSynthetic
     @RequiresStartUp("6.4.11")
     suspend fun getWifiMac(): String
 

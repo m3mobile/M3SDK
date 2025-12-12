@@ -1,5 +1,6 @@
 package net.m3mobile.processor
 
+import androidx.annotation.Keep
 import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -33,9 +34,9 @@ class DeviceSupportMapSourceProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val supportedModelsClassName = "net.m3mobile.core.SupportedModels"
-        val unsupportedModelsClassName = "net.m3mobile.core.UnsupportedModels"
-        val providerInterfaceName = "net.m3mobile.core.source.DeviceSupportMapSource"
+        val supportedModelsClassName = SUPPORTED_MODELS_ANNOTATION_NAME
+        val unsupportedModelsClassName = UNSUPPORTED_MODELS_ANNOTATION_NAME
+        val providerInterfaceName = DEVICE_SUPPORT_MAP_SOURCE_INTERFACE_NAME
 
         val annotatedFunctions = (
                 resolver.getSymbolsWithAnnotation(supportedModelsClassName) +
@@ -83,20 +84,23 @@ class DeviceSupportMapSourceProcessor(
 
             val providerClassName = file.fileName
                 .substringBeforeLast(".")
-                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + "DeviceSupportMapSource"
-            val providerPackageName = "net.m3mobile.sdk.generated"
+                .replaceFirstChar { it.titlecase(Locale.getDefault()) } + DEVICE_SUPPORT_MAP_SOURCE_CLASS_NAME
+            val providerPackageName = "$BASE_GENERATED_FILE_PACKAGE.device"
             
             generatedProviders.add("$providerPackageName.$providerClassName")
             allSourceFiles.add(file)
 
-            val suppressAnnotation = AnnotationSpec.builder(Suppress::class)
-                .addMember("%S", "UNCHECKED_CAST")
-                .build()
+            val annotations = buildList {
+                add(AnnotationSpec.builder(Suppress::class).addMember("%S", "UNCHECKED_CAST"))
+                add(AnnotationSpec.builder(Keep::class))
+            }.map { it.build() }
+
             val typeV = TypeVariableName("V", ANY)
             val fileSpec = FileSpec.builder(providerPackageName, providerClassName)
                 .addType(
                     TypeSpec.classBuilder(providerClassName)
                         .addSuperinterface(ClassName.bestGuess(providerInterfaceName))
+                        .addAnnotations(annotations)
                         .addFunction(
                             FunSpec.builder("get")
                                 .addModifiers(KModifier.OVERRIDE)
@@ -105,7 +109,6 @@ class DeviceSupportMapSourceProcessor(
                                     Map::class.asClassName()
                                         .parameterizedBy(String::class.asClassName(), typeV)
                                 )
-                                .addAnnotation(suppressAnnotation)
                                 .addCode(buildCodeBlock {
                                     add("return mapOf(\n")
                                     indent()
@@ -132,7 +135,7 @@ class DeviceSupportMapSourceProcessor(
             try {
                 val serviceFile = codeGenerator.createNewFile(
                     dependencies = Dependencies(true, *allSourceFiles.toTypedArray()),
-                    packageName = "META-INF.services",
+                    packageName = META_INF_FILE_PACKAGE,
                     fileName = providerInterfaceName,
                     extensionName = ""
                 )
@@ -161,7 +164,7 @@ class DeviceSupportMapSourceProcessor(
 
     private fun Resolver.getAllDeviceModelNames(): Set<String> {
         val deviceModelClass =
-            getClassDeclarationByName("net.m3mobile.core.device.DeviceModel") ?: return emptySet()
+            getClassDeclarationByName(DEVICE_MODEL_CLASS_NAME) ?: return emptySet()
         return deviceModelClass.declarations
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.classKind == ClassKind.ENUM_ENTRY }

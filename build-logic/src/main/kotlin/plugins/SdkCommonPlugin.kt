@@ -1,95 +1,30 @@
 package plugins
 
-import com.android.build.api.dsl.LibraryExtension
-import extensions.api
-import extensions.catalog
-import extensions.configureKotlinAndroid
-import extensions.implementation
-import extensions.ksp
+import configurations.configureArtifactPublication
+import configurations.configureCompiler
+import configurations.configureLibrary
+import configurations.loadDependencies
+import configurations.loadPlugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.project
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class SdkCommonPlugin: Plugin<Project> {
 
+    /**
+     * Library 배포에서 제외할 모듈
+     */
+    private val excludePublishModules = setOf("keytool", "scanemul")
+
     override fun apply(target: Project) {
         target.run {
-            pluginManager.run {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
-                apply("maven-publish")
-                if (project.name != "core")
-                    apply("com.google.devtools.ksp")
-            }
+            loadPlugins()
 
-            tasks.withType<KotlinCompile>().configureEach {
-                compilerOptions {
-                    freeCompilerArgs.add("-opt-in=net.m3mobile.core.InternalM3Api")
-                }
-            }
+            configureCompiler()
+            configureLibrary()
+            if (project.name !in excludePublishModules)
+                configureArtifactPublication()
 
-            if (project.name == "startup" || project.name == "core") {
-                afterEvaluate {
-                    extensions.configure<PublishingExtension> {
-                        publications {
-                            create<MavenPublication>("release") {
-                                from(components["release"])
-
-                                groupId = catalog.findVersion("groupId").get().toString()
-                                artifactId = project.name
-                            }
-                        }
-                    }
-                }
-            }
-
-            extensions.configure<LibraryExtension> {
-                configureKotlinAndroid(this)
-
-                defaultConfig {
-                    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-                    consumerProguardFiles("consumer-rules.pro")
-                }
-
-                sourceSets.configureEach {
-                    val kspResources = file("build/generated/ksp/$name/resources")
-                    resources.srcDir(kspResources)
-                }
-
-                buildTypes {
-                    release {
-                        proguardFiles(
-                            getDefaultProguardFile("proguard-android-optimize.txt"),
-                            "proguard-rules.pro"
-                        )
-                    }
-                }
-
-                publishing {
-                    singleVariant("release") {
-                        withSourcesJar()
-                        withJavadocJar()
-                    }
-                }
-            }
-
-            dependencies {
-                if (project.name != "core") {
-                    api(project(":core"))
-                    ksp(project(":sdk-processor"))
-                }
-
-                implementation(catalog.findLibrary("startup-runtime").get())
-                implementation(catalog.findLibrary("androidx-core-ktx").get())
-            }
+            loadDependencies()
         }
     }
 }

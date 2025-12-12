@@ -42,7 +42,7 @@ abstract class AwaitableBroadcastRequester<T: Any>: BroadcastRequester() {
                 }
 
                 val filter = IntentFilter(responseAction)
-                ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+                context.registerReceiver(receiver, filter)
 
                 runBroadcast()
 
