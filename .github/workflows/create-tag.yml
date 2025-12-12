@@ -1,0 +1,28 @@
+name: Create Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: '태그 입력 (ex: 1.2.1)'
+        required: true
+        type: string
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+      
+      - name: Create and Push Tag
+        env:
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
