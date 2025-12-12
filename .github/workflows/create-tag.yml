@@ -7,7 +7,10 @@ on:
         description: '태그 입력 (ex: 1.2.1)'
         required: true
         type: string
-
+        
+permissions:
+  contents: write
+  
 jobs:
   create-tag:
     runs-on: ubuntu-latest
