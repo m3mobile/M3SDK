@@ -1,0 +1,36 @@
+public abstract interface annotation class net/m3mobile/core/InternalM3Api : java/lang/annotation/Annotation {
+}
+
+public final class net/m3mobile/core/M3SdkCoreInitializer : androidx/startup/Initializer {
+	public fun <init> ()V
+	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
+	public fun create (Landroid/content/Context;)V
+	public fun dependencies ()Ljava/util/List;
+}
+
+public abstract interface class net/m3mobile/core/RequestCallback {
+	public abstract fun onComplete (Ljava/lang/Object;Ljava/lang/Exception;)V
+}
+
+public final class net/m3mobile/core/UnsatisfiedVersionException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class net/m3mobile/core/UnsupportedDeviceModelException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class net/m3mobile/core/device/DeviceModel$Companion {
+	public final fun getSetOfEntriesName ()Ljava/util/Set;
+}
+
+public abstract interface class net/m3mobile/core/source/DeviceSupportMapSource : net/m3mobile/core/source/MethodMapSource {
+}
+
+public abstract interface class net/m3mobile/core/source/MethodMapSource {
+	public abstract fun get ()Ljava/util/Map;
+}
+
+public abstract interface class net/m3mobile/core/source/StartUpVersionMapSource : net/m3mobile/core/source/MethodMapSource {
+}
+
