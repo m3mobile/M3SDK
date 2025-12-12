@@ -8,5 +8,6 @@ plugins {
 }
 
 apiValidation {
+    ignoredProjects.addAll(listOf("app", "sdk-processor"))
     nonPublicMarkers.add("net.m3mobile.core.InternalM3Api")
 }
