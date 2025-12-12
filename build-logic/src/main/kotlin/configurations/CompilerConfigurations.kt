@@ -16,6 +16,7 @@ internal fun Project.configureCompiler() {
         configureJavaCompatibility()
         configureFreeCompilerOptions()
         configureCompileOptions()
+        explicitApi()
     }
 }
 
