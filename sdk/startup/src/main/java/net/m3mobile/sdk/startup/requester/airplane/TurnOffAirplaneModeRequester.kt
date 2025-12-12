@@ -7,7 +7,7 @@ import net.m3mobile.sdk.startup.constants.RequestAction
 import net.m3mobile.sdk.startup.constants.TypeKey
 import net.m3mobile.sdk.startup.constants.TypeValue
 
-class TurnOffAirplaneModeRequester(override val context: Context): BroadcastRequester() {
+internal class TurnOffAirplaneModeRequester(override val context: Context): BroadcastRequester() {
 
     override val requestAction = RequestAction.SYSTEM
     override val typeKey = TypeKey.SETTING

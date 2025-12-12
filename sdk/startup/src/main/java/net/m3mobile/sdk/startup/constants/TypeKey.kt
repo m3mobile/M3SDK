@@ -1,6 +1,6 @@
 package net.m3mobile.sdk.startup.constants
 
-object TypeKey {
+internal object TypeKey {
 
     const val SETTING = "setting"
 }

@@ -8,8 +8,8 @@ import net.m3mobile.core.device.currentDeviceModel
  * This exception indicates that the feature is specific to certain
  * M3 Mobile device models and is not available on the current device.
  */
-class UnsupportedDeviceModelException(message: String) : RuntimeException(message) {
-    constructor(methodName: String, supportedModels: Array<out String>) : this(
+public class UnsupportedDeviceModelException(message: String) : RuntimeException(message) {
+    internal constructor(methodName: String, supportedModels: Array<out String>) : this(
         "\"$methodName\" is not available on the current device (${currentDeviceModel.name}). " +
         "Supported models are: ${supportedModels.joinToString(", ")}."
     )
@@ -21,12 +21,12 @@ class UnsupportedDeviceModelException(message: String) : RuntimeException(messag
  * This exception indicates that the current environment does not satisfy the
  * minimum version requirements needed to execute the requested method or feature.
  */
-class UnsatisfiedVersionException(message: String) : RuntimeException(message) {
-    constructor(methodName: String, appName: String, appVersion: String, requiredVersion: String) : this(
+public class UnsatisfiedVersionException(message: String) : RuntimeException(message) {
+    internal constructor(methodName: String, appName: String, appVersion: String, requiredVersion: String) : this(
         "\"$methodName\" is not available on the current $appName version '${appVersion}'. " +
                 "Required $appName version is '$requiredVersion'."
     )
-    constructor(methodName: String, appName: String, requiredVersion: String) : this(
+    internal constructor(methodName: String, appName: String, requiredVersion: String) : this(
         "\"$methodName\" is not available because $appName is not installed. " +
                 "Required $appName version is '$requiredVersion'."
     )

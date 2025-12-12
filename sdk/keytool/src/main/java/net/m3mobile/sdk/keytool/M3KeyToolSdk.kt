@@ -11,7 +11,7 @@ import net.m3mobile.sdk.keytool.api.WakeUpApiImpl
     message = "This interface is not intended for public use. Use M3KeyTool.instance directly.",
     level = DeprecationLevel.HIDDEN
 )
-interface M3KeyToolSdk :
+public interface M3KeyToolSdk :
     WakeUpApi,
     KeyApi
 

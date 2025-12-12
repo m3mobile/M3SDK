@@ -13,10 +13,10 @@ import net.m3mobile.core.source.MethodMapSource
  * 조건이 충족되지 않을 경우 호출부로 [UnsatisfiedVersionException]를 던집니다.
  */
 @InternalM3Api
-abstract class InspectAppVersionSatisfied<T: MethodMapSource> : MethodInspector<T, String>() {
+public abstract class InspectAppVersionSatisfied<T: MethodMapSource> : MethodInspector<T, String>() {
 
-    abstract val appName: String
-    abstract val appPackage: String
+    protected abstract val appName: String
+    protected abstract val appPackage: String
 
     override fun assert(methodKey: String, methodName: String) {
         val minStartUpVersion = methodMap[methodKey] ?: return

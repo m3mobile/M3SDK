@@ -14,7 +14,7 @@ package net.m3mobile.sdk.startup.params
  * @property screenSaverMode Configures when the screen saver should be activated
  * @property screenSaverComponent The component name (package/class) of the specific screen saver application to use
  */
-data class DisplaySetting(
+public data class DisplaySetting(
     val enableAutoBrightness: Boolean,
     val brightness: Int,
     val enableAutoRotate: Boolean,
@@ -27,7 +27,7 @@ data class DisplaySetting(
     val screenSaverComponent: String
 )
 
-enum class SleepMode(internal val value: Int) {
+public enum class SleepMode(internal val value: Int) {
     SECONDS_15(15000),
     SECONDS_30(30000),
     MINUTES_1(60000),
@@ -38,7 +38,7 @@ enum class SleepMode(internal val value: Int) {
     NEVER(Int.MAX_VALUE)
 }
 
-enum class RotateForce(internal val value: Int) {
+public enum class RotateForce(internal val value: Int) {
     DEFAULT(0),
     AUTOMATIC(1),
     LANDSCAPE(2),
@@ -49,14 +49,14 @@ enum class RotateForce(internal val value: Int) {
     PORTRAIT_SENSOR(7)
 }
 
-enum class PolicyControl(internal val value: Int) {
+public enum class PolicyControl(internal val value: Int) {
     HIDE_STATUS_BAR(1),
     HIDE_NAVIGATION_BAR(2),
     HIDE_SYSTEM_BAR(3),
     DEFAULT(4)
 }
 
-enum class ScreenSaverMode(internal val value: Int) {
+public enum class ScreenSaverMode(internal val value: Int) {
     WHILE_CHARGING(0),
     WHILE_DOCKED(1),
     WHILE_CHARGING_OR_DOCKED(2),

@@ -17,12 +17,12 @@ import kotlin.coroutines.resumeWithException
  * [참고](https://github.com/m3mobile/M3SDK/blob/main/docs/How_to_add_new_api.md)
  */
 @InternalM3Api
-abstract class AwaitableBroadcastRequester<T: Any>: BroadcastRequester() {
+public abstract class AwaitableBroadcastRequester<T: Any>: BroadcastRequester() {
 
     protected abstract val responseAction: String
-    protected open val timeoutMillis = 3000L
+    protected open val timeoutMillis: Long = 3000L
 
-    suspend fun fetch(): T {
+    public suspend fun fetch(): T {
         return withTimeout(timeoutMillis) {
             suspendCancellableCoroutine { continuation ->
                 val receiver = object : BroadcastReceiver() {

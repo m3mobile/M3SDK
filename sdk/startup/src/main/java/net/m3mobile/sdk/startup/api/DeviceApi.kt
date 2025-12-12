@@ -7,7 +7,7 @@ import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.sdk.startup.params.DisplaySetting
 
-interface DeviceApi {
+public interface DeviceApi {
 
     /**
      * Sets the media volume level.
@@ -20,7 +20,7 @@ interface DeviceApi {
      * @param value The desired volume level for media.
      */
     @RequiresStartUp("6.2.14")
-    fun setMediaVolume(value: Int)
+    public fun setMediaVolume(value: Int)
 
     /**
      * Sets the ringtone volume level.
@@ -35,7 +35,7 @@ interface DeviceApi {
      * @param value The desired volume level for the ringtone.
      */
     @RequiresStartUp("6.2.14")
-    fun setRingtoneVolume(value: Int)
+    public fun setRingtoneVolume(value: Int)
 
     /**
      * Sets the notification volume level.
@@ -51,7 +51,7 @@ interface DeviceApi {
      */
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     @RequiresStartUp("6.2.14")
-    fun setNotificationVolume(value: Int)
+    public fun setNotificationVolume(value: Int)
 
     /**
      * Sets the alarm volume level.
@@ -66,7 +66,7 @@ interface DeviceApi {
      * @param value The desired volume level for alarms.
      */
     @RequiresStartUp("6.2.14")
-    fun setAlarmVolume(value: Int)
+    public fun setAlarmVolume(value: Int)
 
     /**
      * Enables the vibration mode.
@@ -77,7 +77,7 @@ interface DeviceApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun enableVibrationMode()
+    public fun enableVibrationMode()
 
     /**
      * Disables the vibration mode.
@@ -85,7 +85,7 @@ interface DeviceApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun disableVibrationMode()
+    public fun disableVibrationMode()
 
     /**
      * Sets the device's display settings based on the provided configuration.
@@ -95,7 +95,7 @@ interface DeviceApi {
      * @param displaySetting The [DisplaySetting] object containing the desired display configurations.
      */
     @RequiresStartUp("6.2.14")
-    fun setDisplaySetting(displaySetting: DisplaySetting)
+    public fun setDisplaySetting(displaySetting: DisplaySetting)
 
     /**
      * Gets the serial number of the device.
@@ -107,7 +107,7 @@ interface DeviceApi {
      * @return The serial number of the device as a [String].
      */
     @RequiresStartUp("6.2.14")
-    suspend fun getSerialNumber(): String
+    public suspend fun getSerialNumber(): String
 
     /**
      * Asynchronously retrieves the device's serial number.
@@ -121,5 +121,5 @@ interface DeviceApi {
      * @return A [Job] representing the coroutine that is executing the request. This can be used to cancel the operation.
      */
     @RequiresStartUp("6.2.14")
-    fun getSerialNumber(callback: RequestCallback<String>): Job
+    public fun getSerialNumber(callback: RequestCallback<String>): Job
 }

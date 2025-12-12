@@ -7,7 +7,7 @@ import androidx.startup.Initializer
     message = "This is an internal class for automatic initialization and is not intended for public use.",
     level = DeprecationLevel.HIDDEN
 )
-class M3StartUpSdkInitializer : Initializer<Unit> {
+public class M3StartUpSdkInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
         M3StartUp.init(context.applicationContext)

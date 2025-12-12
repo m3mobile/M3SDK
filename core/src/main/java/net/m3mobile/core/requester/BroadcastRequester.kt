@@ -12,7 +12,7 @@ import net.m3mobile.core.InternalM3Api
  * [참고](https://github.com/m3mobile/M3SDK/blob/main/docs/How_to_add_new_api.md)
  */
 @InternalM3Api
-abstract class BroadcastRequester {
+public abstract class BroadcastRequester {
 
     protected abstract val requestAction: String
     protected open val typeKey: String = ""
@@ -32,7 +32,7 @@ abstract class BroadcastRequester {
         context.sendBroadcast(intent)
     }
 
-    open fun request() {
+    public open fun request() {
         runBroadcast()
     }
 }

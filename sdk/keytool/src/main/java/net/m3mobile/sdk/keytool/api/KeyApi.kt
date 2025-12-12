@@ -3,7 +3,7 @@ package net.m3mobile.sdk.keytool.api
 import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 
-interface KeyApi {
+public interface KeyApi {
 
     /**
      * Enables the Function (fn) key mode.
@@ -12,7 +12,7 @@ interface KeyApi {
      * @see lockFN
      */
     @SupportedModels(DeviceModel.SL20K)
-    fun enableFN()
+    public fun enableFN()
 
     /**
      * Disables the Function (fn) key mode.
@@ -21,7 +21,7 @@ interface KeyApi {
      * @see lockFN
      */
     @SupportedModels(DeviceModel.SL20K)
-    fun disableFN()
+    public fun disableFN()
 
     /**
      * Locks the Function (fn) key mode.
@@ -30,7 +30,7 @@ interface KeyApi {
      * @see disableFN
      */
     @SupportedModels(DeviceModel.SL20K)
-    fun lockFN()
+    public fun lockFN()
 
     /**
      * Sets the specific function for a key.
@@ -42,5 +42,5 @@ interface KeyApi {
      * @throws IllegalArgumentException If the key or function is incorrect
      */
     @SupportedModels(DeviceModel.SL20, DeviceModel.SL20K, DeviceModel.SL20P)
-    fun setKeyFunction(key: String, function: String)
+    public fun setKeyFunction(key: String, function: String)
 }

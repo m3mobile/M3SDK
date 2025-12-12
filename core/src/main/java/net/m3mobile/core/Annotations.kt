@@ -14,7 +14,7 @@ import net.m3mobile.core.device.DeviceModel
     level = RequiresOptIn.Level.ERROR,
     message = "This API is for internal use within the M3SDK. Do not call it directly."
 )
-annotation class InternalM3Api
+public annotation class InternalM3Api
 
 /**
  * Specifies the M3 Mobile device models that a particular function supports.
@@ -36,7 +36,7 @@ annotation class InternalM3Api
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-annotation class SupportedModels(vararg val models: DeviceModel)
+public annotation class SupportedModels(vararg val models: DeviceModel)
 
 /**
  * Specifies the M3 Mobile device models that a particular function does NOT support.
@@ -61,7 +61,7 @@ annotation class SupportedModels(vararg val models: DeviceModel)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-annotation class UnsupportedModels(vararg val models: DeviceModel)
+public annotation class UnsupportedModels(vararg val models: DeviceModel)
 
 /**
  * This indicates that the API will only function if the version of the StartUp app
@@ -83,4 +83,4 @@ annotation class UnsupportedModels(vararg val models: DeviceModel)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-annotation class RequiresStartUp(val version: String)
+public annotation class RequiresStartUp(val version: String)

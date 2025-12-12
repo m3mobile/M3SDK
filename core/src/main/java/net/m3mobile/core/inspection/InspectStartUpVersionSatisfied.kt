@@ -8,8 +8,9 @@ private const val STARTUP_APP_NAME = "StartUp"
 private const val STARTUP_APP_PACKAGE = "com.m3.startup"
 
 @InternalM3Api
-class InspectStartUpVersionSatisfied : InspectAppVersionSatisfied<StartUpVersionMapSource>() {
-    override val serviceLoader = ServiceLoader.load(StartUpVersionMapSource::class.java)
-    override val appName = STARTUP_APP_NAME
-    override val appPackage = STARTUP_APP_PACKAGE
+public class InspectStartUpVersionSatisfied : InspectAppVersionSatisfied<StartUpVersionMapSource>() {
+    override val serviceLoader: ServiceLoader<StartUpVersionMapSource> =
+        ServiceLoader.load(StartUpVersionMapSource::class.java)
+    override val appName: String = STARTUP_APP_NAME
+    override val appPackage: String = STARTUP_APP_PACKAGE
 }

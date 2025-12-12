@@ -9,7 +9,7 @@ import net.m3mobile.sdk.scanemul.api.ScannerApiImpl
     message = "This interface is not intended for public use. Use M3ScanEmul.instance directly.",
     level = DeprecationLevel.HIDDEN
 )
-interface M3ScanEmulSdk :
+public interface M3ScanEmulSdk :
     ScannerApi
 
 @Suppress("DEPRECATION_ERROR")

@@ -10,10 +10,10 @@ import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Proxy
 
 @InternalM3Api
-object ApiProxyFactory {
+public object ApiProxyFactory {
 
-    val inspections by lazy {
-        buildList<Inspector> {
+    public val inspections: List<Inspector> by lazy {
+        buildList {
             if (IS_STRICT_MODE) {
                 add(InspectDeviceSupport())
                 add(InspectStartUpVersionSatisfied())
@@ -31,7 +31,7 @@ object ApiProxyFactory {
      * @return `T` 타입의 프록시 객체
      */
     @JvmSynthetic
-    inline fun <reified T: Any> create(implementation: T): T {
+    public inline fun <reified T: Any> create(implementation: T): T {
         val interfaceClass = T::class.java
         val handler = InvocationHandler { _, method, args ->
             inspections.forEach { inspect -> inspect(method) }

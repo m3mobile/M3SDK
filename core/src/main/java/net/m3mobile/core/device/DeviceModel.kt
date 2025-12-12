@@ -11,7 +11,7 @@ internal val currentDeviceModel by lazy {
 
 @InternalM3Api
 @Keep
-enum class DeviceModel {
+public enum class DeviceModel {
     UNKNOWN,
     SM10,
     SM10LTE,
@@ -39,8 +39,8 @@ enum class DeviceModel {
     SL25,
     PC10;
 
-    companion object {
-        val setOfEntriesName = values().map { it.name }.toSet()
+    public companion object {
+        public val setOfEntriesName: Set<String> = values().map { it.name }.toSet()
     }
 }
 

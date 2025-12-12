@@ -2,7 +2,7 @@ package net.m3mobile.sdk.startup.api
 
 import net.m3mobile.core.RequiresStartUp
 
-interface PermissionApi {
+public interface PermissionApi {
 
     /**
      * Grants a specific runtime permission to a target application package.
@@ -13,7 +13,7 @@ interface PermissionApi {
      * @param permission The fully qualified name of the permission to be granted
      */
     @RequiresStartUp("6.4.17")
-    fun grantPermission(packageName: String, permission: String)
+    public fun grantPermission(packageName: String, permission: String)
 
     /**
      * Revokes a specific runtime permission to a target application package.
@@ -24,5 +24,5 @@ interface PermissionApi {
      * @param permission The fully qualified name of the permission to be revoked
      */
     @RequiresStartUp("6.4.17")
-    fun revokePermission(packageName: String, permission: String)
+    public fun revokePermission(packageName: String, permission: String)
 }

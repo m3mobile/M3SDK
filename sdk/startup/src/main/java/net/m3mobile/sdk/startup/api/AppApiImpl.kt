@@ -6,7 +6,7 @@ import net.m3mobile.sdk.startup.requester.app.EnableAppRequester
 import net.m3mobile.sdk.startup.requester.app.InstallLocalApkRequester
 import net.m3mobile.sdk.startup.requester.app.InstallRemoteApkRequester
 
-class AppApiImpl(private val context: Context): AppApi {
+internal class AppApiImpl(private val context: Context): AppApi {
 
     override fun installLocalApk(filePath: String) {
         InstallLocalApkRequester(context, filePath).request()

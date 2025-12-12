@@ -5,7 +5,7 @@ import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 import java.time.LocalDateTime
 
-interface TimeApi {
+public interface TimeApi {
 
     /**
      * Sets the date and time of the device.
@@ -13,7 +13,7 @@ interface TimeApi {
      * StartUp version `6.2.14` or later is required.
      */
     @RequiresStartUp("6.2.14")
-    fun setDateTime(dateTime: LocalDateTime)
+    public fun setDateTime(dateTime: LocalDateTime)
 
     /**
      * Sets the NTP server for automatic time synchronization.
@@ -25,7 +25,7 @@ interface TimeApi {
      * @param host The hostname or IP address of the NTP server.
      */
     @RequiresStartUp("6.4.9")
-    fun setNtpServer(host: String)
+    public fun setNtpServer(host: String)
 
     /**
      * Sets the system's default timezone.
@@ -35,7 +35,7 @@ interface TimeApi {
      * @param timezone The timezone identifier, e.g., "America/New_York".
      */
     @RequiresStartUp("6.5.9")
-    fun setTimeZone(timezone: String)
+    public fun setTimeZone(timezone: String)
 
 
     /**
@@ -44,7 +44,7 @@ interface TimeApi {
      * @return The NTP server address
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    fun getNtpServer(): String
+    public fun getNtpServer(): String
 
     /**
      * Retrieves the currently configured NTP synchronization interval in milliseconds.
@@ -52,12 +52,12 @@ interface TimeApi {
      * @return The NTP synchronization interval in milliseconds
      */
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
-    fun getNtpInterval(): Int
+    public fun getNtpInterval(): Int
 
     /**
      * Retrieves the system's current default timezone.
      *
      * @return The timezone identifier
      */
-    fun getTimeZone(): String
+    public fun getTimeZone(): String
 }

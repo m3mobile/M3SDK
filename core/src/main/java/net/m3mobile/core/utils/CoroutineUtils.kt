@@ -9,7 +9,7 @@ import net.m3mobile.core.InternalM3Api
 
 @JvmSynthetic
 @InternalM3Api
-fun launchOnMain(task: suspend () -> Unit): Job {
+public fun launchOnMain(task: suspend () -> Unit): Job {
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     scope.launch {

@@ -1,0 +1,39 @@
+public final class net/m3mobile/sdk/generated/device/KeyApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/sdk/generated/device/WakeUpApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/sdk/keytool/M3KeyTool {
+	public static final field INSTANCE Lnet/m3mobile/sdk/keytool/M3KeyTool;
+	public static final fun getInstance ()Lnet/m3mobile/sdk/keytool/M3KeyToolSdk;
+}
+
+public abstract interface class net/m3mobile/sdk/keytool/M3KeyToolSdk : net/m3mobile/sdk/keytool/api/KeyApi, net/m3mobile/sdk/keytool/api/WakeUpApi {
+}
+
+public final class net/m3mobile/sdk/keytool/M3KeyToolSdkInitializer : androidx/startup/Initializer {
+	public fun <init> ()V
+	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
+	public fun create (Landroid/content/Context;)V
+	public fun dependencies ()Ljava/util/List;
+}
+
+public abstract interface class net/m3mobile/sdk/keytool/api/KeyApi {
+	public abstract fun disableFN ()V
+	public abstract fun enableFN ()V
+	public abstract fun lockFN ()V
+	public abstract fun setKeyFunction (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public abstract interface class net/m3mobile/sdk/keytool/api/WakeUpApi {
+	public abstract fun disableLeftScanWakeUp ()V
+	public abstract fun disableRightScanWakeUp ()V
+	public abstract fun enableLeftScanWakeUp ()V
+	public abstract fun enableRightScanWakeUp ()V
+}
+
