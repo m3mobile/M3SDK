@@ -48,7 +48,7 @@ public data class AccessPoint private constructor(
         private var macRandom: Boolean? = null
         private var hiddenSsid: Boolean? = null
 
-        public override fun setSsid(ssid: String): SecurityBuilder = apply { this.ssid = ssid } as SecurityBuilder
+        public override fun setSsid(ssid: String): SecurityBuilder = apply { this.ssid = ssid }
         public override fun setSecurity(security: String): Builder = apply { this.security = security }
         public fun setPassword(password: String): Builder = apply { this.password = password }
         public fun setEnableStatic(enable: Boolean): Builder = apply { this.enableStatic = enable }

@@ -79,10 +79,10 @@ public data class Apn private constructor(
         private var mvno: Int? = null
         private var mvnoValue: String? = null
 
-        public override fun setName(name: String): UrlBuilder = apply { this.name = name } as UrlBuilder
-        public override fun setUrl(url: String): MccBuilder = apply { this.url = url } as MccBuilder
-        public override fun setMcc(mcc: String): MncBuilder = apply { this.mcc = mcc } as MncBuilder
-        public override fun setMnc(mnc: String): TypeBuilder = apply { this.mnc = mnc } as TypeBuilder
+        public override fun setName(name: String): UrlBuilder = apply { this.name = name }
+        public override fun setUrl(url: String): MccBuilder = apply { this.url = url }
+        public override fun setMcc(mcc: String): MncBuilder = apply { this.mcc = mcc }
+        public override fun setMnc(mnc: String): TypeBuilder = apply { this.mnc = mnc }
         public override fun setType(type: String): Builder = apply { this.type = type }
         public fun setProxy(proxy: String): Builder = apply { this.proxy = proxy }
         public fun setPort(port: String): Builder = apply { this.port = port }
