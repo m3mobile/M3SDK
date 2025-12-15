@@ -182,7 +182,7 @@ Turns on airplane mode.
 *   **Requires StartUp Version**: `6.3.7` or later
 
 ```kotlin
-fun turnOnAirplaneMode()
+M3StartUp.instance.turnOnAirplaneMode()
 ```
 
 #### Turn off Airplane Mode
@@ -192,7 +192,7 @@ Turns off airplane mode.
 *   **Requires StartUp Version**: `6.3.7` or later
 
 ```kotlin
-fun turnOffAirplaneMode()
+M3StartUp.instance.turnOffAirplaneMode()
 ```
 
 ---
@@ -210,7 +210,7 @@ Installs an APK from a local file path.
     *   `filePath` (String): The absolute path to the .apk file to install
 
 ```kotlin
-fun installLocalApk(filePath: String)
+M3StartUp.instance.installLocalApk(filePath: String)
 ```
 
 #### Install Remote APK
@@ -222,7 +222,7 @@ Installs an APK from a remote URL.
     *   `url` (String): The URL of the APK file
 
 ```kotlin
-fun installRemoteApk(url: String)
+M3StartUp.instance.installRemoteApk(url: String)
 ```
 
 #### Enable Application
@@ -234,7 +234,7 @@ Enables a specified application package.
     *   `packageName` (String): The package name of the application to enable
 
 ```kotlin
-fun enableApp(packageName: String)
+M3StartUp.instance.enableApp(packageName: String)
 ```
 
 #### Disable Application
@@ -246,7 +246,7 @@ Disables a specified application package.
     *   `packageName` (String): The package name of the application to disable
 
 ```kotlin
-fun disableApp(packageName: String)
+M3StartUp.instance.disableApp(packageName: String)
 ```
 
 ---
@@ -265,7 +265,7 @@ Sets the media volume level.
     *   `value` (Int): The desired volume level.
 
 ```kotlin
-fun setMediaVolume(value: Int)
+M3StartUp.instance.setMediaVolume(value: Int)
 ```
 
 #### Set Ringtone Volume
@@ -280,7 +280,7 @@ Sets the ringtone volume level.
     *   `value` (Int): The desired volume level.
 
 ```kotlin
-fun setRingtoneVolume(value: Int)
+M3StartUp.instance.setRingtoneVolume(value: Int)
 ```
 
 #### Set Notification Volume
@@ -294,7 +294,7 @@ Sets the notification volume level.
     *   `value` (Int): The desired volume level.
 
 ```kotlin
-fun setNotificationVolume(value: Int)
+M3StartUp.instance.setNotificationVolume(value: Int)
 ```
 
 #### Set Alarm Volume
@@ -309,7 +309,7 @@ Sets the alarm volume level.
     *   `value` (Int): The desired volume level.
 
 ```kotlin
-fun setAlarmVolume(value: Int)
+M3StartUp.instance.setAlarmVolume(value: Int)
 ```
 
 #### Enable Vibration Mode
@@ -319,7 +319,7 @@ Enables vibration mode. This sets ringtone and notification volumes to 0.
 *   **Requires StartUp Version**: `6.2.14` or later
 
 ```kotlin
-fun enableVibrationMode()
+M3StartUp.instance.enableVibrationMode()
 ```
 
 #### Disable Vibration Mode
@@ -329,7 +329,7 @@ Disables vibration mode.
 *   **Requires StartUp Version**: `6.2.14` or later
 
 ```kotlin
-fun disableVibrationMode()
+M3StartUp.instance.disableVibrationMode()
 ```
 
 #### Set Display Settings
@@ -341,7 +341,7 @@ Configures display settings.
     *   `displaySetting` (DisplaySetting): Object containing display configuration.
 
 ```kotlin
-fun setDisplaySetting(displaySetting: DisplaySetting)
+M3StartUp.instance.setDisplaySetting(displaySetting: DisplaySetting)
 ```
 
 #### Get Serial Number
@@ -353,10 +353,10 @@ Retrieves the device's serial number.
 
 ```kotlin
 // Coroutine (for kotlin)
-suspend fun getSerialNumber(): String
+M3StartUp.instance.getSerialNumber(): String
 
 // Callback (for java)
-fun getSerialNumber(callback: RequestCallback<String>): Job
+M3StartUp.instance.getSerialNumber(callback: RequestCallback<String>): Job
 ```
 
 ---
@@ -374,7 +374,7 @@ Sets the Access Point Name (APN) configuration.
     *   `apn` (Apn): The `Apn` object containing configuration details. Use `Apn.Builder` to create an instance.
 
 ```kotlin
-fun setApn(apn: Apn)
+M3StartUp.instance.setApn(apn: Apn)
 ```
 
 ---
@@ -393,7 +393,7 @@ Grants a specific runtime permission to a target application package.
     *   `permission` (String): The fully qualified name of the permission (e.g., `android.permission.CAMERA`).
 
 ```kotlin
-fun grantPermission(packageName: String, permission: String)
+M3StartUp.instance.grantPermission(packageName: String, permission: String)
 ```
 
 #### Revoke Permission
@@ -406,7 +406,7 @@ Revokes a specific runtime permission from a target application package.
     *   `permission` (String): The fully qualified name of the permission to revoke.
 
 ```kotlin
-fun revokePermission(packageName: String, permission: String)
+M3StartUp.instance.revokePermission(packageName: String, permission: String)
 ```
 
 ---
@@ -424,7 +424,7 @@ Sets the Quick Tiles to be displayed.
     *   `quickTile` (vararg QuickTile): One or more `QuickTile` objects to add.
 
 ```kotlin
-fun setQuickTiles(vararg quickTile: QuickTile)
+M3StartUp.instance.setQuickTiles(vararg quickTile: QuickTile)
 ```
 
 #### Reset Quick Tiles
@@ -434,7 +434,7 @@ Resets the Quick Tiles configuration to the default state.
 *   **Requires StartUp Version**: `6.4.1` or later
 
 ```kotlin
-fun resetQuickTile()
+M3StartUp.instance.resetQuickTile()
 ```
 
 ---
@@ -450,7 +450,7 @@ Resets the StartUp settings to their default values.
 *   **Requires StartUp Version**: `6.2.14` or later
 
 ```kotlin
-fun resetStartUpSetting()
+M3StartUp.instance.resetStartUpSetting()
 ```
 
 ---
@@ -468,7 +468,7 @@ Sets the date and time of the device.
     *   `dateTime` (java.time.LocalDateTime): The date and time to set.
 
 ```kotlin
-fun setDateTime(dateTime: LocalDateTime)
+M3StartUp.instance.setDateTime(dateTime: LocalDateTime)
 ```
 
 #### Set NTP Server
@@ -480,7 +480,7 @@ Sets the NTP server for automatic time synchronization. This setting takes effec
     *   `host` (String): The hostname or IP address of the NTP server.
 
 ```kotlin
-fun setNtpServer(host: String)
+M3StartUp.instance.setNtpServer(host: String)
 ```
 
 #### Set Timezone
@@ -492,7 +492,7 @@ Sets the system's default timezone.
     *   `timezone` (String): The timezone identifier (e.g., "America/New_York").
 
 ```kotlin
-fun setTimeZone(timezone: String)
+M3StartUp.instance.setTimeZone(timezone: String)
 ```
 
 #### Get NTP Server
@@ -503,7 +503,7 @@ Retrieves the currently configured NTP server address.
 *   **Returns**: The NTP server address as a String.
 
 ```kotlin
-fun getNtpServer(): String
+M3StartUp.instance.getNtpServer(): String
 ```
 
 #### Get NTP Interval
@@ -514,7 +514,7 @@ Retrieves the currently configured NTP synchronization interval.
 *   **Returns**: The NTP synchronization interval in milliseconds (Int).
 
 ```kotlin
-fun getNtpInterval(): Int
+M3StartUp.instance.getNtpInterval(): Int
 ```
 
 #### Get Timezone
@@ -524,7 +524,7 @@ Retrieves the system's current default timezone.
 *   **Returns**: The timezone identifier as a String.
 
 ```kotlin
-fun getTimeZone(): String
+M3StartUp.instance.getTimeZone(): String
 ```
 
 ---
@@ -541,7 +541,7 @@ Sets the USB connection mode to MTP (Media Transfer Protocol).
 *   **Requires StartUp Version**: `6.5.10` or later
 
 ```kotlin
-fun setUsbModeMtp()
+M3StartUp.instance.setUsbModeMtp()
 ```
 
 #### Set USB Mode to RNDIS
@@ -552,7 +552,7 @@ Sets the USB connection mode to RNDIS (USB Tethering).
 *   **Requires StartUp Version**: `6.5.10` or later
 
 ```kotlin
-fun setUsbModeRndis()
+M3StartUp.instance.setUsbModeRndis()
 ```
 
 #### Set USB Mode to MIDI
@@ -563,7 +563,7 @@ Sets the USB connection mode to MIDI.
 *   **Requires StartUp Version**: `6.5.10` or later
 
 ```kotlin
-fun setUsbModeMidi()
+M3StartUp.instance.setUsbModeMidi()
 ```
 
 #### Set USB Mode to PTP
@@ -574,7 +574,7 @@ Sets the USB connection mode to PTP (Picture Transfer Protocol).
 *   **Requires StartUp Version**: `6.5.10` or later
 
 ```kotlin
-fun setUsbModePtp()
+M3StartUp.instance.setUsbModePtp()
 ```
 
 #### Disable USB Data (Charging Only)
@@ -585,7 +585,7 @@ Disables all USB data connections, setting the mode to charging only.
 *   **Requires StartUp Version**: `6.5.10` or later
 
 ```kotlin
-fun setUsbModeNone()
+M3StartUp.instance.setUsbModeNone()
 ```
 
 #### Get Current USB Modes
@@ -595,7 +595,7 @@ Retrieves the current USB connection mode.
 *   **Returns**: A list of strings representing the currently active USB modes. Returns an empty list if no active modes are found.
 
 ```kotlin
-fun getCurrentUsbModes(): List<String>
+M3StartUp.instance.getCurrentUsbModes(): List<String>
 ```
 
 ---
@@ -612,10 +612,10 @@ Retrieves the Wi-Fi MAC address of the device.
 
 ```kotlin
 // Coroutine (for kotlin)
-suspend fun getWifiMac(): String
+M3StartUp.instance.getWifiMac(): String
 
 // Callback (for java)
-fun getWifiMac(callback: RequestCallback<String>): Job
+M3StartUp.instance.getWifiMac(callback: RequestCallback<String>): Job
 ```
 
 #### Captive Portal Detection
@@ -626,8 +626,8 @@ Controls whether the device detects captive portals (login pages for public Wi-F
 *   **Unsupported Models**: `SL20`
 
 ```kotlin
-fun enableCaptivePortalDetection()
-fun disableCaptivePortalDetection()
+M3StartUp.instance.enableCaptivePortalDetection()
+M3StartUp.instance.disableCaptivePortalDetection()
 ```
 
 #### Frequency Band Control
@@ -638,9 +638,9 @@ Restricts the Wi-Fi frequency band usage.
 *   **Unsupported Models**: `SM15`, `SL10`, `SL10K`
 
 ```kotlin
-fun allowAllWifiFrequencyBand()
-fun allowOnly2_4GHzWifiFrequencyBand()
-fun allowOnly5GHzWifiFrequencyBand()
+M3StartUp.instance.allowAllWifiFrequencyBand()
+M3StartUp.instance.allowOnly2_4GHzWifiFrequencyBand()
+M3StartUp.instance.allowOnly5GHzWifiFrequencyBand()
 ```
 
 #### Set Wi-Fi Country
@@ -653,7 +653,7 @@ Sets the Wi-Fi country code.
     *   `countryCode` (String): ISO 3166-1 alpha-2 country code (e.g., "US", "KR").
 
 ```kotlin
-fun setWifiCountry(countryCode: String)
+M3StartUp.instance.setWifiCountry(countryCode: String)
 ```
 
 #### Open Network Notification
@@ -663,8 +663,8 @@ Controls notifications for available open Wi-Fi networks.
 *   **Requires StartUp Version**: `6.2.14` or later
 
 ```kotlin
-fun enableOpenNetworkNotification()
-fun disableOpenNetworkNotification()
+M3StartUp.instance.enableOpenNetworkNotification()
+M3StartUp.instance.disableOpenNetworkNotification()
 ```
 
 #### Roaming Configuration
@@ -686,7 +686,7 @@ Sets the signal strength (RSSI) threshold to start scanning for roaming.
     *   `4`: -60dBm
 
 ```kotlin
-fun setRoamingTrigger(index: Int)
+M3StartUp.instance.setRoamingTrigger(index: Int)
 ```
 
 ##### Set Roaming Delta
@@ -703,7 +703,7 @@ Sets the minimum signal difference required to roam to a new AP.
     *   `6`: 0dB
 
 ```kotlin
-fun setRoamingDelta(index: Int)
+M3StartUp.instance.setRoamingDelta(index: Int)
 ```
 
 #### Wi-Fi Sleep Policy
@@ -713,9 +713,9 @@ Controls when Wi-Fi should go to sleep.
 *   **Requires StartUp Version**: `6.2.14` or later
 
 ```kotlin
-fun setWifiSleepPolicyNever()         // Keep Wi-Fi on always
-fun setWifiSleepPolicyPluggedOnly()   // Keep on when plugged in
-fun setWifiSleepPolicyAlways()        // Allow sleep when screen is off
+M3StartUp.instance.setWifiSleepPolicyNever()         // Keep Wi-Fi on always
+M3StartUp.instance.setWifiSleepPolicyPluggedOnly()   // Keep on when plugged in
+M3StartUp.instance.setWifiSleepPolicyAlways()        // Allow sleep when screen is off
 ```
 
 #### Wi-Fi Stability
@@ -726,8 +726,8 @@ Optimizes Wi-Fi performance.
 *   **Note**: Not supported on Android 13 or later.
 
 ```kotlin
-fun setWifiStabilityNormal() // Balanced
-fun setWifiStabilityHigh()   // Performance focused (High battery usage)
+M3StartUp.instance.setWifiStabilityNormal() // Balanced
+M3StartUp.instance.setWifiStabilityHigh()   // Performance focused (High battery usage)
 ```
 
 #### Set Wi-Fi Channels
@@ -740,7 +740,7 @@ Sets the allowed Wi-Fi channels.
     *   `channels` (vararg Int): List of channels to enable (e.g., 1, 6, 11, 36).
 
 ```kotlin
-fun setWifiChannel(vararg channels: Int)
+M3StartUp.instance.setWifiChannel(vararg channels: Int)
 ```
 
 #### Network Management
@@ -752,7 +752,7 @@ Configures a Wi-Fi Access Point.
 *   **Requires StartUp Version**: `6.2.14` or later
 
 ```kotlin
-fun setAccessPoint(accessPoint: AccessPoint)
+M3StartUp.instance.setAccessPoint(accessPoint: AccessPoint)
 ```
 
 ##### Clear Saved Wi-Fi Networks
@@ -762,7 +762,7 @@ Removes all saved Wi-Fi networks.
 *   **Requires StartUp Version**: `6.4.11` or later
 
 ```kotlin
-fun clearSavedWifiNetworks()
+M3StartUp.instance.clearSavedWifiNetworks()
 ```
 
 ##### Remove Wi-Fi Network
@@ -772,7 +772,7 @@ Removes a specific Wi-Fi network.
 *   **Requires StartUp Version**: `6.4.11` or later
 
 ```kotlin
-fun removeWifiNetwork(ssid: String)
+M3StartUp.instance.removeWifiNetwork(ssid: String)
 ```
 
 #### Device Specific Wi-Fi Settings
@@ -787,7 +787,7 @@ Retrieves the current Wi-Fi roaming threshold value.
 *   **Returns**: The roaming threshold as a negative `Int`.
 
 ```kotlin
-fun getRoamingThreshold(): Int
+M3StartUp.instance.getRoamingThreshold(): Int
 ```
 
 ##### Get Roaming Delta
@@ -798,7 +798,7 @@ Retrieves the current Wi-Fi roaming delta value.
 *   **Returns**: The roaming delta as an `Int`.
 
 ```kotlin
-fun getRoamingDelta(): Int
+M3StartUp.instance.getRoamingDelta(): Int
 ```
 
 ##### Get Wi-Fi Frequency Band
@@ -812,7 +812,7 @@ Retrieves the current preferred Wi-Fi frequency band value.
     *   `2`: 2.4 GHz Only
 
 ```kotlin
-fun getWifiFrequencyBand(): Int
+M3StartUp.instance.getWifiFrequencyBand(): Int
 ```
 
 ##### Get Wi-Fi Country Code
@@ -823,5 +823,5 @@ Retrieves the current Wi-Fi country code.
 *   **Returns**: The country code as a `String`.
 
 ```kotlin
-fun getWifiCountryCode(): String
+M3StartUp.instance.getWifiCountryCode(): String
 ```
