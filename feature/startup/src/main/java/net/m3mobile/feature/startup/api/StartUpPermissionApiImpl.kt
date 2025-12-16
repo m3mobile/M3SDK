@@ -4,7 +4,7 @@ import android.content.Context
 import net.m3mobile.feature.startup.requester.permission.GrantPermissionRequester
 import net.m3mobile.feature.startup.requester.permission.RevokePermissionRequester
 
-internal class PermissionApiImpl(private val context: Context): PermissionApi {
+internal class StartUpPermissionApiImpl(private val context: Context): StartUpPermissionApi {
 
     override fun grantPermission(packageName: String, permission: String) {
         GrantPermissionRequester(context, packageName, permission).request()

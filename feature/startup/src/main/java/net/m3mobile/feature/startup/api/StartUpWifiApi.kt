@@ -10,7 +10,7 @@ import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.startup.params.AccessPoint
 
 @InternalM3Api
-public interface WifiApi {
+public interface StartUpWifiApi {
 
     /**
      * Retrieves the Wi-Fi MAC address of the device.

@@ -3,26 +3,26 @@ package net.m3mobile.feature.startup
 import android.content.Context
 import net.m3mobile.core.InternalM3Api
 import net.m3mobile.core.proxy.ApiProxyFactory
-import net.m3mobile.feature.startup.api.AirplaneModeApi
-import net.m3mobile.feature.startup.api.AirplaneModeApiImpl
-import net.m3mobile.feature.startup.api.AppApi
-import net.m3mobile.feature.startup.api.AppApiImpl
-import net.m3mobile.feature.startup.api.DeviceApi
-import net.m3mobile.feature.startup.api.DeviceApiImpl
-import net.m3mobile.feature.startup.api.NetworkApi
-import net.m3mobile.feature.startup.api.NetworkApiImpl
-import net.m3mobile.feature.startup.api.PermissionApi
-import net.m3mobile.feature.startup.api.PermissionApiImpl
-import net.m3mobile.feature.startup.api.QuickTileApi
-import net.m3mobile.feature.startup.api.QuickTileApiImpl
+import net.m3mobile.feature.startup.api.StartUpAirplaneModeApi
+import net.m3mobile.feature.startup.api.StartUpAirplaneModeApiImpl
+import net.m3mobile.feature.startup.api.StartUpAppApi
+import net.m3mobile.feature.startup.api.StartUpAppApiImpl
+import net.m3mobile.feature.startup.api.StartUpDeviceApi
+import net.m3mobile.feature.startup.api.StartUpDeviceApiImpl
+import net.m3mobile.feature.startup.api.StartUpNetworkApi
+import net.m3mobile.feature.startup.api.StartUpNetworkApiImpl
+import net.m3mobile.feature.startup.api.StartUpPermissionApi
+import net.m3mobile.feature.startup.api.StartUpPermissionApiImpl
+import net.m3mobile.feature.startup.api.StartUpQuickTileApi
+import net.m3mobile.feature.startup.api.StartUpQuickTileApiImpl
 import net.m3mobile.feature.startup.api.StartUpSettingApi
 import net.m3mobile.feature.startup.api.StartUpSettingApiImpl
-import net.m3mobile.feature.startup.api.TimeApi
-import net.m3mobile.feature.startup.api.TimeApiImpl
-import net.m3mobile.feature.startup.api.UsbApi
-import net.m3mobile.feature.startup.api.UsbApiImpl
-import net.m3mobile.feature.startup.api.WifiApi
-import net.m3mobile.feature.startup.api.WifiApiImpl
+import net.m3mobile.feature.startup.api.StartUpTimeApi
+import net.m3mobile.feature.startup.api.StartUpTimeApiImpl
+import net.m3mobile.feature.startup.api.StartUpUsbApi
+import net.m3mobile.feature.startup.api.StartUpUsbApiImpl
+import net.m3mobile.feature.startup.api.StartUpWifiApi
+import net.m3mobile.feature.startup.api.StartUpWifiApiImpl
 
 @Deprecated(
     message = "This interface is not intended for public use.",
@@ -30,27 +30,27 @@ import net.m3mobile.feature.startup.api.WifiApiImpl
 )
 @InternalM3Api
 public interface M3StartUpSdk :
-    WifiApi,
-    AirplaneModeApi,
-    AppApi,
-    PermissionApi,
-    TimeApi,
-    UsbApi,
-    DeviceApi,
-    NetworkApi,
-    QuickTileApi,
+    StartUpWifiApi,
+    StartUpAirplaneModeApi,
+    StartUpAppApi,
+    StartUpPermissionApi,
+    StartUpTimeApi,
+    StartUpUsbApi,
+    StartUpDeviceApi,
+    StartUpNetworkApi,
+    StartUpQuickTileApi,
     StartUpSettingApi
 
 @InternalM3Api
 @Suppress("DEPRECATION_ERROR")
 public class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
-        WifiApi by ApiProxyFactory.create<WifiApi>(WifiApiImpl(context)),
-        AirplaneModeApi by ApiProxyFactory.create<AirplaneModeApi>(AirplaneModeApiImpl(context)),
-        AppApi by ApiProxyFactory.create<AppApi>(AppApiImpl(context)),
-        PermissionApi by ApiProxyFactory.create<PermissionApi>(PermissionApiImpl(context)),
-        TimeApi by ApiProxyFactory.create<TimeApi>(TimeApiImpl(context)),
-        UsbApi by ApiProxyFactory.create<UsbApi>(UsbApiImpl(context)),
-        DeviceApi by ApiProxyFactory.create<DeviceApi>(DeviceApiImpl(context)),
-        NetworkApi by ApiProxyFactory.create<NetworkApi>(NetworkApiImpl(context)),
-        QuickTileApi by ApiProxyFactory.create<QuickTileApi>(QuickTileApiImpl(context)),
+        StartUpWifiApi by ApiProxyFactory.create<StartUpWifiApi>(StartUpWifiApiImpl(context)),
+        StartUpAirplaneModeApi by ApiProxyFactory.create<StartUpAirplaneModeApi>(StartUpAirplaneModeApiImpl(context)),
+        StartUpAppApi by ApiProxyFactory.create<StartUpAppApi>(StartUpAppApiImpl(context)),
+        StartUpPermissionApi by ApiProxyFactory.create<StartUpPermissionApi>(StartUpPermissionApiImpl(context)),
+        StartUpTimeApi by ApiProxyFactory.create<StartUpTimeApi>(StartUpTimeApiImpl(context)),
+        StartUpUsbApi by ApiProxyFactory.create<StartUpUsbApi>(StartUpUsbApiImpl(context)),
+        StartUpDeviceApi by ApiProxyFactory.create<StartUpDeviceApi>(StartUpDeviceApiImpl(context)),
+        StartUpNetworkApi by ApiProxyFactory.create<StartUpNetworkApi>(StartUpNetworkApiImpl(context)),
+        StartUpQuickTileApi by ApiProxyFactory.create<StartUpQuickTileApi>(StartUpQuickTileApiImpl(context)),
         StartUpSettingApi by ApiProxyFactory.create<StartUpSettingApi>(StartUpSettingApiImpl(context))

@@ -6,7 +6,7 @@ import net.m3mobile.feature.keytool.requester.wakeup.DisableRightScanWakeUpReque
 import net.m3mobile.feature.keytool.requester.wakeup.EnableLeftScanWakeUpRequester
 import net.m3mobile.feature.keytool.requester.wakeup.EnableRightScanWakeUpRequester
 
-internal class WakeUpApiImpl(private val context: Context): WakeUpApi {
+internal class KeyToolWakeUpApiImpl(private val context: Context): KeyToolWakeUpApi {
 
     override fun enableLeftScanWakeUp() {
         EnableLeftScanWakeUpRequester(context).request()

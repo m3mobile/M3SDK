@@ -3,7 +3,7 @@ package net.m3mobile.feature.keytool.api
 import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 
-public interface KeyApi {
+public interface KeyToolKeyApi {
 
     /**
      * Enables the Function (fn) key mode.

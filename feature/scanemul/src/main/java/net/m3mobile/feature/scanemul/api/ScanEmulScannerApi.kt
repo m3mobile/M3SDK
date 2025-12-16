@@ -1,6 +1,6 @@
 package net.m3mobile.feature.scanemul.api
 
-public interface ScannerApi {
+public interface ScanEmulScannerApi {
 
     /**
      * Starts scan.

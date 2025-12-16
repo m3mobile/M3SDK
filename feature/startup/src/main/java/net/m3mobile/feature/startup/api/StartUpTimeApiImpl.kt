@@ -10,7 +10,7 @@ import net.m3mobile.feature.startup.requester.time.SetTimezoneRequester
 import java.time.LocalDateTime
 import java.util.TimeZone
 
-internal class TimeApiImpl(private val context: Context): TimeApi {
+internal class StartUpTimeApiImpl(private val context: Context): StartUpTimeApi {
 
     override fun setDateTime(dateTime: LocalDateTime) {
         SetDateTimeRequester(context, dateTime).request()

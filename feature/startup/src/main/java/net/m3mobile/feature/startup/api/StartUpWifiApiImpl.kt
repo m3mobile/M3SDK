@@ -28,7 +28,7 @@ import net.m3mobile.feature.startup.requester.wifi.SetWifiSleepPolicyPluggedOnly
 import net.m3mobile.feature.startup.requester.wifi.SetWifiStabilityHighRequester
 import net.m3mobile.feature.startup.requester.wifi.SetWifiStabilityNormalRequester
 
-internal class WifiApiImpl(private val context: Context): WifiApi {
+internal class StartUpWifiApiImpl(private val context: Context): StartUpWifiApi {
 
     override suspend fun getWifiMac(): String {
         return GetWifiMacRequester(context).fetch()

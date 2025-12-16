@@ -5,7 +5,7 @@ import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 import java.time.LocalDateTime
 
-public interface TimeApi {
+public interface StartUpTimeApi {
 
     /**
      * Sets the date and time of the device.

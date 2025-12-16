@@ -2,7 +2,7 @@ package net.m3mobile.feature.startup.api
 
 import net.m3mobile.core.RequiresStartUp
 
-public interface PermissionApi {
+public interface StartUpPermissionApi {
 
     /**
      * Grants a specific runtime permission to a target application package.

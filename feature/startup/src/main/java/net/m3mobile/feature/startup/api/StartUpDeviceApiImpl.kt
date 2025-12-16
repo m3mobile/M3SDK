@@ -14,7 +14,7 @@ import net.m3mobile.feature.startup.requester.device.SetNotificationVolumeReques
 import net.m3mobile.feature.startup.requester.device.SetRingtoneVolumeRequester
 import net.m3mobile.feature.startup.requester.serial.GetSerialNumberRequester
 
-internal class DeviceApiImpl(private val context: Context): DeviceApi {
+internal class StartUpDeviceApiImpl(private val context: Context): StartUpDeviceApi {
 
     override fun setMediaVolume(value: Int) {
         SetMediaVolumeRequester(context, value).request()

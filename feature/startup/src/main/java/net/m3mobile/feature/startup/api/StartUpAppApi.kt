@@ -2,7 +2,7 @@ package net.m3mobile.feature.startup.api
 
 import net.m3mobile.core.RequiresStartUp
 
-public interface AppApi {
+public interface StartUpAppApi {
 
     /**
      * Installs an APK from a local file path.

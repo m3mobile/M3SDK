@@ -3,7 +3,7 @@ package net.m3mobile.feature.startup.api
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.feature.startup.params.Apn
 
-public interface NetworkApi {
+public interface StartUpNetworkApi {
 
     /**
      * Sets the Access Point Name (APN) configuration for the network.

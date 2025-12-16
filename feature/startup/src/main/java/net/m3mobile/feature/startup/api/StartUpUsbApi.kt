@@ -4,7 +4,7 @@ import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 
-public interface UsbApi {
+public interface StartUpUsbApi {
 
     /**
      * Sets the USB connection mode to MTP.

@@ -4,7 +4,7 @@ import android.content.Context
 import net.m3mobile.feature.startup.params.Apn
 import net.m3mobile.feature.startup.requester.network.SetApnRequester
 
-internal class NetworkApiImpl(private val context: Context): NetworkApi {
+internal class StartUpNetworkApiImpl(private val context: Context): StartUpNetworkApi {
 
     override fun setApn(apn: Apn) {
         SetApnRequester(context, apn).request()

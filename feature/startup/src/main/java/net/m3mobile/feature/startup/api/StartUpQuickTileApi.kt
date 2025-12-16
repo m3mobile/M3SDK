@@ -3,7 +3,7 @@ package net.m3mobile.feature.startup.api
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.feature.startup.params.QuickTile
 
-public interface QuickTileApi {
+public interface StartUpQuickTileApi {
 
     /**
      * Sets quick tiles to the system UI.

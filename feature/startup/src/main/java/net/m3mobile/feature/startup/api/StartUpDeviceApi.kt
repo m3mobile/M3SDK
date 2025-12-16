@@ -7,7 +7,7 @@ import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.feature.startup.params.DisplaySetting
 
-public interface DeviceApi {
+public interface StartUpDeviceApi {
 
     /**
      * Sets the media volume level.

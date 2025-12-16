@@ -6,7 +6,7 @@ import net.m3mobile.feature.keytool.requester.key.EnableFnRequester
 import net.m3mobile.feature.keytool.requester.key.LockFnRequester
 import net.m3mobile.feature.keytool.requester.key.SetKeyFunctionRequester
 
-internal class KeyApiImpl(private val context: Context): KeyApi {
+internal class KeyToolKeyApiImpl(private val context: Context): KeyToolKeyApi {
 
     override fun enableFN() {
         EnableFnRequester(context).request()
