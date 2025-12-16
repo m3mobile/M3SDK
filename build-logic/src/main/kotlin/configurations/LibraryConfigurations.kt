@@ -16,7 +16,7 @@ internal fun Project.configureLibrary() {
 }
 
 private fun LibraryExtension.configureNamespace(moduleName: String) {
-    val namespaceBase = "net.m3mobile." + if (moduleName != "core") "sdk." else ""
+    val namespaceBase = "net.m3mobile." + if (moduleName != "core") "feature." else ""
     namespace = namespaceBase + moduleName
 }
 

@@ -129,7 +129,7 @@ The SDK is automatically initialized when the application starts. You do not nee
 All functions can be accessed through a singleton instance.
 
 ```kotlin
-import net.m3mobile.sdk.startup.M3StartUp
+import net.m3mobile.feature.startup.M3StartUp
 
 // Example: Turn on Airplane Mode
 M3StartUp.instance.turnOnAirplaneMode()

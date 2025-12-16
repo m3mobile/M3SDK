@@ -131,7 +131,7 @@ SDK는 애플리케이션 시작 시 자동으로 초기화됩니다. 수동으�
 모든 기능은 싱글톤 인스턴스를 통해 접근할 수 있습니다.
 
 ```kotlin
-import net.m3mobile.sdk.startup.M3StartUp
+import net.m3mobile.feature.startup.M3StartUp
 
 // 예시: 비행기 모드 켜기
 M3StartUp.instance.turnOnAirplaneMode()

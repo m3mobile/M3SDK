@@ -1,6 +1,6 @@
 package net.m3mobile.processor
 
-internal const val BASE_GENERATED_FILE_PACKAGE = "net.m3mobile.sdk.generated"
+internal const val BASE_GENERATED_FILE_PACKAGE = "net.m3mobile.feature.generated"
 internal const val META_INF_FILE_PACKAGE = "META-INF.services"
 internal const val VERSION_ANNOTATION_PROPERTY_NAME = "version"
 internal const val APP_VERSION_MAP_SOURCE_CLASS_NAME = "AppVersionMapSource"
