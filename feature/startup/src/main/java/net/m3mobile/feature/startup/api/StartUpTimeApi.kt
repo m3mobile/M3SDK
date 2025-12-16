@@ -37,7 +37,6 @@ public interface StartUpTimeApi {
     @RequiresStartUp("6.5.9")
     public fun setTimeZone(timezone: String)
 
-
     /**
      * Retrieves the currently configured NTP server address.
      *

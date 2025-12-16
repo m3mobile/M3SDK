@@ -13,12 +13,12 @@ import net.m3mobile.feature.keytool.api.KeyToolWakeUpApiImpl
     level = DeprecationLevel.HIDDEN
 )
 @InternalM3Api
-public interface M3KeyToolKeyToolSdk :
+public interface M3KeyToolSdk :
     KeyToolWakeUpApi,
     KeyToolKeyApi
 
 @InternalM3Api
 @Suppress("DEPRECATION_ERROR")
-public class M3KeyToolKeyToolSdkImpl(context: Context): M3KeyToolKeyToolSdk,
+public class M3KeyToolSdkImpl(context: Context): M3KeyToolSdk,
         KeyToolWakeUpApi by ApiProxyFactory.create<KeyToolWakeUpApi>(KeyToolWakeUpApiImpl(context)),
         KeyToolKeyApi by ApiProxyFactory.create<KeyToolKeyApi>(KeyToolKeyApiImpl(context))

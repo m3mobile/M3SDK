@@ -3,8 +3,8 @@ package net.m3mobile.sdk
 
 import android.content.Context
 import net.m3mobile.core.InternalM3Api
-import net.m3mobile.feature.keytool.M3KeyToolKeyToolSdk
-import net.m3mobile.feature.keytool.M3KeyToolKeyToolSdkImpl
+import net.m3mobile.feature.keytool.M3KeyToolSdk
+import net.m3mobile.feature.keytool.M3KeyToolSdkImpl
 import net.m3mobile.feature.scanemul.M3ScanEmulSdk
 import net.m3mobile.feature.scanemul.M3ScanEmulSdkImpl
 import net.m3mobile.feature.startup.M3StartUpSdk
@@ -15,9 +15,12 @@ import net.m3mobile.feature.startup.M3StartUpSdkImpl
     level = DeprecationLevel.HIDDEN
 )
 @InternalM3Api
-public interface M3Sdk : M3StartUpSdk
+public interface M3Sdk :
+    M3StartUpSdk,
+    M3ScanEmulSdk,
+    M3KeyToolSdk
 
 internal class M3SdkImpl(context: Context) : M3Sdk,
     M3StartUpSdk by M3StartUpSdkImpl(context),
-    M3KeyToolKeyToolSdk by M3KeyToolKeyToolSdkImpl(context),
+    M3KeyToolSdk by M3KeyToolSdkImpl(context),
     M3ScanEmulSdk by M3ScanEmulSdkImpl(context)
