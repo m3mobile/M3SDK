@@ -9,6 +9,10 @@ import android.content.Context
  * Use [M3StartUp.instance] to get a concrete implementation of the [M3StartUpSdk] interface.
  */
 @Suppress("DEPRECATION_ERROR")
+@Deprecated(
+    message = "Use \"M3Mobile.instance\" instead.",
+    level = DeprecationLevel.WARNING
+)
 public object M3StartUp {
 
     /**
