@@ -27,7 +27,6 @@ private fun KotlinAndroidProjectExtension.configureJavaCompatibility() {
 private fun KotlinAndroidProjectExtension.configureFreeCompilerOptions() {
     compilerOptions {
         freeCompilerArgs.add("-opt-in=net.m3mobile.core.InternalM3Api")
-
     }
 }
 
