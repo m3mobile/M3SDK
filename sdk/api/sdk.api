@@ -1,0 +1,14 @@
+public final class net/m3mobile/sdk/M3Mobile {
+	public static final field INSTANCE Lnet/m3mobile/sdk/M3Mobile;
+	public static field instance Lnet/m3mobile/sdk/M3Sdk;
+	public final fun getInstance ()Lnet/m3mobile/sdk/M3Sdk;
+	public final fun setInstance (Lnet/m3mobile/sdk/M3Sdk;)V
+}
+
+public final class net/m3mobile/sdk/M3SdkInitializer : androidx/startup/Initializer {
+	public fun <init> ()V
+	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
+	public fun create (Landroid/content/Context;)V
+	public fun dependencies ()Ljava/util/List;
+}
+
