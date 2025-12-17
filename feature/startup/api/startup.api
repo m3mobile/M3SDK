@@ -63,18 +63,6 @@ public final class net/m3mobile/feature/generated/version/StartUpWifiApiAppVersi
 	public fun get ()Ljava/util/Map;
 }
 
-public final class net/m3mobile/feature/startup/M3StartUp {
-	public static final field INSTANCE Lnet/m3mobile/feature/startup/M3StartUp;
-	public static final fun getInstance ()Lnet/m3mobile/feature/startup/M3StartUpSdk;
-}
-
-public final class net/m3mobile/feature/startup/M3StartUpSdkInitializer : androidx/startup/Initializer {
-	public fun <init> ()V
-	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
-	public fun create (Landroid/content/Context;)V
-	public fun dependencies ()Ljava/util/List;
-}
-
 public abstract interface class net/m3mobile/feature/startup/api/StartUpAirplaneModeApi {
 	public abstract fun turnOffAirplaneMode ()V
 	public abstract fun turnOnAirplaneMode ()V
