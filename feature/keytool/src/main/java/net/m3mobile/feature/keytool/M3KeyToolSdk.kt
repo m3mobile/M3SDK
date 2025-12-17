@@ -18,6 +18,10 @@ public interface M3KeyToolSdk :
     KeyToolKeyApi
 
 @InternalM3Api
+@Deprecated(
+    message = "This interface is not intended for public use.",
+    level = DeprecationLevel.HIDDEN
+)
 @Suppress("DEPRECATION_ERROR")
 public class M3KeyToolSdkImpl(context: Context): M3KeyToolSdk,
         KeyToolWakeUpApi by ApiProxyFactory.create<KeyToolWakeUpApi>(KeyToolWakeUpApiImpl(context)),

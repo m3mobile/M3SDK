@@ -42,6 +42,10 @@ public interface M3StartUpSdk :
     StartUpSettingApi
 
 @InternalM3Api
+@Deprecated(
+    message = "This interface is not intended for public use.",
+    level = DeprecationLevel.HIDDEN
+)
 @Suppress("DEPRECATION_ERROR")
 public class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
         StartUpWifiApi by ApiProxyFactory.create<StartUpWifiApi>(StartUpWifiApiImpl(context)),

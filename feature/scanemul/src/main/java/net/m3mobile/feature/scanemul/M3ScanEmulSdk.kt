@@ -15,6 +15,10 @@ public interface M3ScanEmulSdk :
     ScanEmulScannerApi
 
 @InternalM3Api
+@Deprecated(
+    message = "This interface is not intended for public use.",
+    level = DeprecationLevel.HIDDEN
+)
 @Suppress("DEPRECATION_ERROR")
 public class M3ScanEmulSdkImpl(context: Context) : M3ScanEmulSdk,
         ScanEmulScannerApi by ApiProxyFactory.create<ScanEmulScannerApi>(ScanEmulScannerApiImpl(context))
