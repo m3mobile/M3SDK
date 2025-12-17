@@ -12,7 +12,7 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
 - [기본 사용법 (Basic Usage)](#기본-사용법-basic-usage)
   - [API 접근](#api-접근)
   - [Strict Mode 및 예외 처리](#strict-mode-및-예외-처리)
-- [StartUp](#startup-api)
+- [API](#api)
   - [Airplane Mode API](#airplane-mode-api)
     - [비행기 모드 켜기](#비행기-모드-켜기)
     - [비행기 모드 끄기](#비행기-모드-끄기)
@@ -108,14 +108,14 @@ dependencyResolutionManagement {
 // Kotlin
 dependencies {
     // <TAG>를 사용하려는 특정 버전으로 변경하세요 (예: 1.0.0)
-    implementation("com.github.m3mobile.M3SDK:startup:<TAG>")
+    implementation("com.github.m3mobile:M3SDK:<TAG>")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile.M3SDK:startup:<TAG>"
+    implementation "com.github.m3mobile:M3SDK:<TAG>"
 }
 ```
 
@@ -131,10 +131,10 @@ SDK는 애플리케이션 시작 시 자동으로 초기화됩니다. 수동으�
 모든 기능은 싱글톤 인스턴스를 통해 접근할 수 있습니다.
 
 ```kotlin
-import net.m3mobile.feature.startup.M3StartUp
+import net.m3mobile.feature.startup.M3Mobile
 
 // 예시: 비행기 모드 켜기
-M3StartUp.instance.turnOnAirplaneMode()
+M3Mobile.instance.turnOnAirplaneMode()
 ```
 
 ### Strict Mode 및 예외 처리
@@ -172,7 +172,7 @@ Strict Mode를 활성화하려면 애플리케이션의 `AndroidManifest.xml` �
 
 ---
 
-## StartUp API
+## API
 
 ### Airplane Mode API
 
@@ -185,7 +185,7 @@ Strict Mode를 활성화하려면 애플리케이션의 `AndroidManifest.xml` �
 *   **필요 StartUp 버전**: `6.3.7` 이상
 
 ```kotlin
-M3StartUp.instance.turnOnAirplaneMode()
+M3Mobile.instance.turnOnAirplaneMode()
 ```
 
 #### 비행기 모드 끄기
@@ -195,7 +195,7 @@ M3StartUp.instance.turnOnAirplaneMode()
 *   **필요 StartUp 버전**: `6.3.7` 이상
 
 ```kotlin
-M3StartUp.instance.turnOffAirplaneMode()
+M3Mobile.instance.turnOffAirplaneMode()
 ```
 
 ---
@@ -213,7 +213,7 @@ M3StartUp.instance.turnOffAirplaneMode()
     *   `filePath` (String): 설치할 .apk 파일의 절대 경로입니다.
 
 ```kotlin
-M3StartUp.instance.installLocalApk(filePath: String)
+M3Mobile.instance.installLocalApk(filePath: String)
 ```
 
 #### 원격 APK 설치
@@ -225,7 +225,7 @@ M3StartUp.instance.installLocalApk(filePath: String)
     *   `url` (String): APK 파일의 URL입니다.
 
 ```kotlin
-M3StartUp.instance.installRemoteApk(url: String)
+M3Mobile.instance.installRemoteApk(url: String)
 ```
 
 #### 애플리케이션 활성화
@@ -237,7 +237,7 @@ M3StartUp.instance.installRemoteApk(url: String)
     *   `packageName` (String): 활성화할 애플리케이션의 패키지 이름입니다.
 
 ```kotlin
-M3StartUp.instance.enableApp(packageName: String)
+M3Mobile.instance.enableApp(packageName: String)
 ```
 
 #### 애플리케이션 비활성화
@@ -249,7 +249,7 @@ M3StartUp.instance.enableApp(packageName: String)
     *   `packageName` (String): 비활성화할 애플리케이션의 패키지 이름입니다.
 
 ```kotlin
-M3StartUp.instance.disableApp(packageName: String)
+M3Mobile.instance.disableApp(packageName: String)
 ```
 
 ---
@@ -268,7 +268,7 @@ M3StartUp.instance.disableApp(packageName: String)
     *   `value` (Int): 설정할 볼륨 레벨입니다.
 
 ```kotlin
-M3StartUp.instance.setMediaVolume(value: Int)
+M3Mobile.instance.setMediaVolume(value: Int)
 ```
 
 #### 벨소리 볼륨 설정
@@ -283,7 +283,7 @@ M3StartUp.instance.setMediaVolume(value: Int)
     *   `value` (Int): 설정할 볼륨 레벨입니다.
 
 ```kotlin
-M3StartUp.instance.setRingtoneVolume(value: Int)
+M3Mobile.instance.setRingtoneVolume(value: Int)
 ```
 
 #### 알림 볼륨 설정
@@ -297,7 +297,7 @@ M3StartUp.instance.setRingtoneVolume(value: Int)
     *   `value` (Int): 설정할 볼륨 레벨입니다.
 
 ```kotlin
-M3StartUp.instance.setNotificationVolume(value: Int)
+M3Mobile.instance.setNotificationVolume(value: Int)
 ```
 
 #### 알람 볼륨 설정
@@ -312,7 +312,7 @@ M3StartUp.instance.setNotificationVolume(value: Int)
     *   `value` (Int): 설정할 볼륨 레벨입니다.
 
 ```kotlin
-M3StartUp.instance.setAlarmVolume(value: Int)
+M3Mobile.instance.setAlarmVolume(value: Int)
 ```
 
 #### 진동 모드 활성화
@@ -322,7 +322,7 @@ M3StartUp.instance.setAlarmVolume(value: Int)
 *   **필요 StartUp 버전**: `6.2.14` 이상
 
 ```kotlin
-M3StartUp.instance.enableVibrationMode()
+M3Mobile.instance.enableVibrationMode()
 ```
 
 #### 진동 모드 비활성화
@@ -332,7 +332,7 @@ M3StartUp.instance.enableVibrationMode()
 *   **필요 StartUp 버전**: `6.2.14` 이상
 
 ```kotlin
-M3StartUp.instance.disableVibrationMode()
+M3Mobile.instance.disableVibrationMode()
 ```
 
 #### 디스플레이 설정
@@ -344,7 +344,7 @@ M3StartUp.instance.disableVibrationMode()
     *   `displaySetting` (DisplaySetting): 디스플레이 설정 정보를 담은 객체입니다.
 
 ```kotlin
-M3StartUp.instance.setDisplaySetting(displaySetting: DisplaySetting)
+M3Mobile.instance.setDisplaySetting(displaySetting: DisplaySetting)
 ```
 
 #### 시리얼 번호 조회
@@ -356,10 +356,10 @@ M3StartUp.instance.setDisplaySetting(displaySetting: DisplaySetting)
 
 ```kotlin
 // 코루틴 (for kotlin)
-M3StartUp.instance.getSerialNumber(): String
+M3Mobile.instance.getSerialNumber(): String
 
 // 콜백 (for java)
-M3StartUp.instance.getSerialNumber(callback: RequestCallback<String>): Job
+M3Mobile.instance.getSerialNumber(callback: RequestCallback<String>): Job
 ```
 
 ---
@@ -374,10 +374,10 @@ APN(Access Point Name) 구성을 설정합니다.
 
 *   **필요 StartUp 버전**: `6.2.14` 이상
 *   **매개변수**:
-    *   `apn` (Apn): 네트워크 설정 정보를 담고 있는 `Apn` 객체입니다. `Apn.Builder`를 사용하여 생성하세요.
+    *   `apn` (Apn): 네트워크 설정 정보를 담고 있는 `Apn` 객체입니다. `Apn.builder()`를 사용하여 생성하세요.
 
 ```kotlin
-M3StartUp.instance.setApn(apn: Apn)
+M3Mobile.instance.setApn(apn: Apn)
 ```
 
 ---
@@ -396,7 +396,7 @@ M3StartUp.instance.setApn(apn: Apn)
     *   `permission` (String): 부여할 권한의 전체 이름입니다 (예: `android.permission.CAMERA`).
 
 ```kotlin
-M3StartUp.instance.grantPermission(packageName: String, permission: String)
+M3Mobile.instance.grantPermission(packageName: String, permission: String)
 ```
 
 #### 권한 취소
@@ -409,7 +409,7 @@ M3StartUp.instance.grantPermission(packageName: String, permission: String)
     *   `permission` (String): 취소할 권한의 전체 이름입니다.
 
 ```kotlin
-M3StartUp.instance.revokePermission(packageName: String, permission: String)
+M3Mobile.instance.revokePermission(packageName: String, permission: String)
 ```
 
 ---
@@ -427,7 +427,7 @@ M3StartUp.instance.revokePermission(packageName: String, permission: String)
     *   `quickTile` (vararg QuickTile): 추가할 하나 이상의 `QuickTile` 객체입니다.
 
 ```kotlin
-M3StartUp.instance.setQuickTiles(vararg quickTile: QuickTile)
+M3Mobile.instance.setQuickTiles(vararg quickTile: QuickTile)
 ```
 
 #### 빠른 설정 타일 초기화
@@ -437,7 +437,7 @@ M3StartUp.instance.setQuickTiles(vararg quickTile: QuickTile)
 *   **필요 StartUp 버전**: `6.4.1` 이상
 
 ```kotlin
-M3StartUp.instance.resetQuickTile()
+M3Mobile.instance.resetQuickTile()
 ```
 
 ---
@@ -453,7 +453,7 @@ StartUp 설정을 기본값으로 초기화합니다.
 *   **필요 StartUp 버전**: `6.2.14` 이상
 
 ```kotlin
-M3StartUp.instance.resetStartUpSetting()
+M3Mobile.instance.resetStartUpSetting()
 ```
 
 ---
@@ -471,7 +471,7 @@ M3StartUp.instance.resetStartUpSetting()
     *   `dateTime` (java.time.LocalDateTime): 설정할 날짜와 시간 객체입니다.
 
 ```kotlin
-M3StartUp.instance.setDateTime(dateTime: LocalDateTime)
+M3Mobile.instance.setDateTime(dateTime: LocalDateTime)
 ```
 
 #### NTP 서버 설정
@@ -483,7 +483,7 @@ M3StartUp.instance.setDateTime(dateTime: LocalDateTime)
     *   `host` (String): NTP 서버의 호스트 이름 또는 IP 주소입니다.
 
 ```kotlin
-M3StartUp.instance.setNtpServer(host: String)
+M3Mobile.instance.setNtpServer(host: String)
 ```
 
 #### 시간대 설정
@@ -495,7 +495,7 @@ M3StartUp.instance.setNtpServer(host: String)
     *   `timezone` (String): 시간대 식별자입니다 (예: "Asia/Seoul", "America/New_York").
 
 ```kotlin
-M3StartUp.instance.setTimeZone(timezone: String)
+M3Mobile.instance.setTimeZone(timezone: String)
 ```
 
 #### NTP 서버 조회
@@ -506,7 +506,7 @@ M3StartUp.instance.setTimeZone(timezone: String)
 *   **반환값**: NTP 서버 주소 문자열입니다.
 
 ```kotlin
-M3StartUp.instance.getNtpServer(): String
+M3Mobile.instance.getNtpServer(): String
 ```
 
 #### NTP 동기화 간격 조회
@@ -517,7 +517,7 @@ M3StartUp.instance.getNtpServer(): String
 *   **반환값**: 밀리초(ms) 단위의 NTP 동기화 간격(Int)입니다.
 
 ```kotlin
-M3StartUp.instance.getNtpInterval(): Int
+M3Mobile.instance.getNtpInterval(): Int
 ```
 
 #### 시간대 조회
@@ -527,7 +527,7 @@ M3StartUp.instance.getNtpInterval(): Int
 *   **반환값**: 시간대 식별자 문자열입니다.
 
 ```kotlin
-M3StartUp.instance.getTimeZone(): String
+M3Mobile.instance.getTimeZone(): String
 ```
 
 ---
@@ -544,7 +544,7 @@ USB 연결 모드를 MTP(Media Transfer Protocol)로 설정합니다.
 *   **필요 StartUp 버전**: `6.5.10` 이상
 
 ```kotlin
-M3StartUp.instance.setUsbModeMtp()
+M3Mobile.instance.setUsbModeMtp()
 ```
 
 #### USB 모드를 RNDIS로 설정
@@ -555,7 +555,7 @@ USB 연결 모드를 RNDIS(USB 테더링)로 설정합니다.
 *   **필요 StartUp 버전**: `6.5.10` 이상
 
 ```kotlin
-M3StartUp.instance.setUsbModeRndis()
+M3Mobile.instance.setUsbModeRndis()
 ```
 
 #### USB 모드를 MIDI로 설정
@@ -566,7 +566,7 @@ USB 연결 모드를 MIDI로 설정합니다.
 *   **필요 StartUp 버전**: `6.5.10` 이상
 
 ```kotlin
-M3StartUp.instance.setUsbModeMidi()
+M3Mobile.instance.setUsbModeMidi()
 ```
 
 #### USB 모드를 PTP로 설정
@@ -577,7 +577,7 @@ USB 연결 모드를 PTP(Picture Transfer Protocol)로 설정합니다.
 *   **필요 StartUp 버전**: `6.5.10` 이상
 
 ```kotlin
-M3StartUp.instance.setUsbModePtp()
+M3Mobile.instance.setUsbModePtp()
 ```
 
 #### USB 데이터 비활성화 (충전 전용)
@@ -588,7 +588,7 @@ USB 데이터 연결을 비활성화합니다 (충전 전용).
 *   **필요 StartUp 버전**: `6.5.10` 이상
 
 ```kotlin
-M3StartUp.instance.setUsbModeNone()
+M3Mobile.instance.setUsbModeNone()
 ```
 
 #### 현재 USB 모드 조회
@@ -598,7 +598,7 @@ M3StartUp.instance.setUsbModeNone()
 *   **반환값**: 현재 활성화된 USB 모드를 나타내는 문자열 목록입니다. 활성화된 모드가 없으면 빈 목록을 반환합니다.
 
 ```kotlin
-M3StartUp.instance.getCurrentUsbModes(): List<String>
+M3Mobile.instance.getCurrentUsbModes(): List<String>
 ```
 
 ---
@@ -612,13 +612,14 @@ Wi-Fi 설정 및 구성을 제어합니다.
 장치의 Wi-Fi MAC 주소를 조회합니다.
 
 *   **필요 StartUp 버전**: `6.4.11` 이상
+*   **반환값**: Wi-Fi MAC 주소 문자열입니다.
 
 ```kotlin
 // 코루틴 (for kotlin)
-M3StartUp.instance.getWifiMac(): String
+M3Mobile.instance.getWifiMac(): String
 
 // 콜백 (for java)
-M3StartUp.instance.getWifiMac(callback: RequestCallback<String>): Job
+M3Mobile.instance.getWifiMac(callback: RequestCallback<String>): Job
 ```
 
 #### 캡티브 포털 감지 (Captive Portal Detection)
@@ -629,8 +630,8 @@ M3StartUp.instance.getWifiMac(callback: RequestCallback<String>): Job
 *   **미지원 모델**: `SL20`
 
 ```kotlin
-M3StartUp.instance.enableCaptivePortalDetection()
-M3StartUp.instance.disableCaptivePortalDetection()
+M3Mobile.instance.enableCaptivePortalDetection()
+M3Mobile.instance.disableCaptivePortalDetection()
 ```
 
 #### 주파수 대역 제어 (Frequency Band Control)
@@ -641,9 +642,9 @@ Wi-Fi 주파수 대역 사용을 제한합니다.
 *   **미지원 모델**: `SM15`, `SL10`, `SL10K`
 
 ```kotlin
-M3StartUp.instance.allowAllWifiFrequencyBand()          // 모든 대역 허용
-M3StartUp.instance.allowOnly2_4GHzWifiFrequencyBand()   // 2.4GHz 대역만 허용
-M3StartUp.instance.allowOnly5GHzWifiFrequencyBand()     // 5GHz 대역만 허용
+M3Mobile.instance.allowAllWifiFrequencyBand()          // 모든 대역 허용
+M3Mobile.instance.allowOnly2_4GHzWifiFrequencyBand()   // 2.4GHz 대역만 허용
+M3Mobile.instance.allowOnly5GHzWifiFrequencyBand()     // 5GHz 대역만 허용
 ```
 
 #### Wi-Fi 국가 코드 설정
@@ -656,7 +657,7 @@ Wi-Fi 국가 코드를 설정합니다.
     *   `countryCode` (String): ISO 3166-1 alpha-2 국가 코드 (예: "US", "KR").
 
 ```kotlin
-M3StartUp.instance.setWifiCountry(countryCode: String)
+M3Mobile.instance.setWifiCountry(countryCode: String)
 ```
 
 #### 개방형 네트워크 알림 (Open Network Notification)
@@ -666,8 +667,8 @@ M3StartUp.instance.setWifiCountry(countryCode: String)
 *   **필요 StartUp 버전**: `6.2.14` 이상
 
 ```kotlin
-M3StartUp.instance.enableOpenNetworkNotification()
-M3StartUp.instance.disableOpenNetworkNotification()
+M3Mobile.instance.enableOpenNetworkNotification()
+M3Mobile.instance.disableOpenNetworkNotification()
 ```
 
 #### 로밍 구성 (Roaming Configuration)
@@ -689,7 +690,7 @@ Wi-Fi 로밍 파라미터를 설정합니다.
     *   `4`: -60dBm
 
 ```kotlin
-M3StartUp.instance.setRoamingTrigger(index: Int)
+M3Mobile.instance.setRoamingTrigger(index: Int)
 ```
 
 ##### 로밍 델타 설정
@@ -706,7 +707,7 @@ M3StartUp.instance.setRoamingTrigger(index: Int)
     *   `6`: 0dB
 
 ```kotlin
-M3StartUp.instance.setRoamingDelta(index: Int)
+M3Mobile.instance.setRoamingDelta(index: Int)
 ```
 
 #### Wi-Fi 절전 정책 (Wi-Fi Sleep Policy)
@@ -716,9 +717,9 @@ Wi-Fi가 언제 절전 모드로 들어갈지 제어합니다.
 *   **필요 StartUp 버전**: `6.2.14` 이상
 
 ```kotlin
-M3StartUp.instance.setWifiSleepPolicyNever()         // 항상 켜짐 (절전 안 함)
-M3StartUp.instance.setWifiSleepPolicyPluggedOnly()   // 충전 중일 때만 켜짐
-M3StartUp.instance.setWifiSleepPolicyAlways()        // 화면이 꺼지면 절전 모드 허용
+M3Mobile.instance.setWifiSleepPolicyNever()         // 항상 켜짐 (절전 안 함)
+M3Mobile.instance.setWifiSleepPolicyPluggedOnly()   // 충전 중일 때만 켜짐
+M3Mobile.instance.setWifiSleepPolicyAlways()        // 화면이 꺼지면 절전 모드 허용
 ```
 
 #### Wi-Fi 안정성 (Wi-Fi Stability)
@@ -729,8 +730,8 @@ Wi-Fi 성능을 최적화합니다.
 *   **참고**: Android 13 이상에서는 지원되지 않습니다.
 
 ```kotlin
-M3StartUp.instance.setWifiStabilityNormal() // 균형 모드
-M3StartUp.instance.setWifiStabilityHigh()   // 성능 중심 (배터리 소모 증가)
+M3Mobile.instance.setWifiStabilityNormal() // 균형 모드
+M3Mobile.instance.setWifiStabilityHigh()   // 성능 중심 (배터리 소모 증가)
 ```
 
 #### Wi-Fi 채널 설정
@@ -743,7 +744,7 @@ M3StartUp.instance.setWifiStabilityHigh()   // 성능 중심 (배터리 소모 �
     *   `channels` (vararg Int): 활성화할 채널 목록 (예: 1, 6, 11, 36).
 
 ```kotlin
-M3StartUp.instance.setWifiChannel(vararg channels: Int)
+M3Mobile.instance.setWifiChannel(vararg channels: Int)
 ```
 
 #### 네트워크 관리 (Network Management)
@@ -753,9 +754,11 @@ M3StartUp.instance.setWifiChannel(vararg channels: Int)
 Wi-Fi 액세스 포인트(AP)를 구성합니다.
 
 *   **필요 StartUp 버전**: `6.2.14` 이상
+*   **매개변수**:
+    *   `accessPoint` (AccessPoint): 설정할 Wi-Fi 액세스 포인트 객체입니다. `AccessPoint.builder()`를 사용하여 생성하세요.
 
 ```kotlin
-M3StartUp.instance.setAccessPoint(accessPoint: AccessPoint)
+M3Mobile.instance.setAccessPoint(accessPoint: AccessPoint)
 ```
 
 ##### 저장된 Wi-Fi 네트워크 초기화
@@ -765,7 +768,7 @@ M3StartUp.instance.setAccessPoint(accessPoint: AccessPoint)
 *   **필요 StartUp 버전**: `6.4.11` 이상
 
 ```kotlin
-M3StartUp.instance.clearSavedWifiNetworks()
+M3Mobile.instance.clearSavedWifiNetworks()
 ```
 
 ##### Wi-Fi 네트워크 제거
@@ -773,9 +776,11 @@ M3StartUp.instance.clearSavedWifiNetworks()
 특정 Wi-Fi 네트워크를 제거합니다.
 
 *   **필요 StartUp 버전**: `6.4.11` 이상
+*   **매개변수**:
+    *   `ssid` (String): 제거할 네트워크의 SSID입니다.
 
 ```kotlin
-M3StartUp.instance.removeWifiNetwork(ssid: String)
+M3Mobile.instance.removeWifiNetwork(ssid: String)
 ```
 
 #### 기기별 Wi-Fi 설정 (Device Specific Wi-Fi Settings)
@@ -790,7 +795,7 @@ M3StartUp.instance.removeWifiNetwork(ssid: String)
 *   **반환값**: 음수 `Int` 값의 로밍 임계값입니다.
 
 ```kotlin
-M3StartUp.instance.getRoamingThreshold(): Int
+M3Mobile.instance.getRoamingThreshold(): Int
 ```
 
 ##### 로밍 델타값 조회
@@ -801,7 +806,7 @@ M3StartUp.instance.getRoamingThreshold(): Int
 *   **반환값**: `Int` 형태의 로밍 델타값입니다.
 
 ```kotlin
-M3StartUp.instance.getRoamingDelta(): Int
+M3Mobile.instance.getRoamingDelta(): Int
 ```
 
 ##### Wi-Fi 주파수 대역 조회
@@ -815,7 +820,7 @@ M3StartUp.instance.getRoamingDelta(): Int
     *   `2`: 2.4 GHz 전용
 
 ```kotlin
-M3StartUp.instance.getWifiFrequencyBand(): Int
+M3Mobile.instance.getWifiFrequencyBand(): Int
 ```
 
 ##### Wi-Fi 국가 코드 조회
@@ -826,5 +831,5 @@ M3StartUp.instance.getWifiFrequencyBand(): Int
 *   **반환값**: `String` 형태의 국가 코드입니다.
 
 ```kotlin
-M3StartUp.instance.getWifiCountryCode(): String
+M3Mobile.instance.getWifiCountryCode(): String
 ```
