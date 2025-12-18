@@ -106,19 +106,19 @@ Add the module dependency to your application's `build.gradle` file.
 // Kotlin
 dependencies {
     // Replace <TAG> with the specific version you want to use (e.g., 1.0.0)
-    implementation("com.github.m3mobile:M3SDK:<TAG>")
+    implementation("com.github.m3mobile:M3SDK:2.0.0")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:<TAG>"
+    implementation "com.github.m3mobile:M3SDK:2.0.0"
 }
 ```
 
-The latest version is as follows:
-- StartUp SDK : 1.0.0
+Please refer to the release notes for the latest version.
+- https://github.com/m3mobile/M3SDK/releases
 
 ## Basic Usage
 

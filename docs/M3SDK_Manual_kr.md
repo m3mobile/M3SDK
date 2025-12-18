@@ -107,20 +107,19 @@ dependencyResolutionManagement {
 ```kotlin
 // Kotlin
 dependencies {
-    // <TAG>를 사용하려는 특정 버전으로 변경하세요 (예: 1.0.0)
-    implementation("com.github.m3mobile:M3SDK:<TAG>")
+    implementation("com.github.m3mobile:M3SDK:2.0.0")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:<TAG>"
+    implementation "com.github.m3mobile:M3SDK:2.0.0"
 }
 ```
 
-최신 버전은 다음과 같습니다:
-- StartUp SDK : 1.0.0
+최신 버전은 릴리즈 문서를 참고해주세요.
+- https://github.com/m3mobile/M3SDK/releases
 
 ## 기본 사용법 (Basic Usage)
 
