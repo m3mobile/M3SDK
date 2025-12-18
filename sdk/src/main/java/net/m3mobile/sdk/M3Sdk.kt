@@ -2,7 +2,6 @@
 package net.m3mobile.sdk
 
 import android.content.Context
-import net.m3mobile.core.InternalM3Api
 import net.m3mobile.feature.keytool.M3KeyToolSdk
 import net.m3mobile.feature.keytool.M3KeyToolSdkImpl
 import net.m3mobile.feature.scanemul.M3ScanEmulSdk
@@ -20,7 +19,6 @@ import net.m3mobile.sdk.api.WifiApiImpl
     message = "This interface is not intended for public use. Use M3Mobile.instance directly.",
     level = DeprecationLevel.HIDDEN
 )
-@InternalM3Api
 public interface M3Sdk :
     M3StartUpSdk,
     M3ScanEmulSdk,
