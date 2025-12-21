@@ -1,0 +1,5 @@
+public abstract interface class net/m3mobile/feature/scanemul/api/ScanEmulScannerApi {
+	public abstract fun cancelScan ()V
+	public abstract fun startScan ()V
+}
+

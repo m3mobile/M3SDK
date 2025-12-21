@@ -1,0 +1,24 @@
+public final class net/m3mobile/feature/generated/device/KeyToolKeyApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/feature/generated/device/KeyToolWakeUpApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public abstract interface class net/m3mobile/feature/keytool/api/KeyToolKeyApi {
+	public abstract fun disableFN ()V
+	public abstract fun enableFN ()V
+	public abstract fun lockFN ()V
+	public abstract fun setKeyFunction (Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public abstract interface class net/m3mobile/feature/keytool/api/KeyToolWakeUpApi {
+	public abstract fun disableLeftScanWakeUp ()V
+	public abstract fun disableRightScanWakeUp ()V
+	public abstract fun enableLeftScanWakeUp ()V
+	public abstract fun enableRightScanWakeUp ()V
+}
+

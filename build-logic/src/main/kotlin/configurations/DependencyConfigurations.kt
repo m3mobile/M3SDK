@@ -15,6 +15,12 @@ internal fun Project.loadDependencies() {
             ksp(project(":sdk-processor"))
         }
 
+        if (project.name == "sdk") {
+            api(project(":feature:startup"))
+            api(project(":feature:keytool"))
+            api(project(":feature:scanemul"))
+        }
+
         implementation(catalog.findLibrary("startup-runtime").get())
         implementation(catalog.findLibrary("androidx-core-ktx").get())
         implementation(catalog.findLibrary("kotlinx-coroutines-android").get())

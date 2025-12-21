@@ -1,1 +1,0 @@
--keep class net.m3mobile.sdk.scanemul.api.** { *; }

@@ -43,8 +43,8 @@ android {
 
 dependencies {
 
-    implementation(projects.sdk.startup)
-    implementation(projects.sdk.keytool)
+    implementation(projects.feature.startup)
+    implementation(projects.feature.keytool)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

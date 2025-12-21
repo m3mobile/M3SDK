@@ -1,0 +1,67 @@
+public final class net/m3mobile/feature/generated/device/TimeApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/feature/generated/device/WifiApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/sdk/M3Mobile {
+	public static final field INSTANCE Lnet/m3mobile/sdk/M3Mobile;
+	public static field instance Lnet/m3mobile/sdk/M3Sdk;
+	public final fun getInstance ()Lnet/m3mobile/sdk/M3Sdk;
+	public final fun setInstance (Lnet/m3mobile/sdk/M3Sdk;)V
+}
+
+public abstract interface class net/m3mobile/sdk/M3Sdk : net/m3mobile/feature/startup/M3StartUpSdk, net/m3mobile/sdk/api/TimeApi, net/m3mobile/sdk/api/UsbApi, net/m3mobile/sdk/api/WifiApi {
+}
+
+public final class net/m3mobile/sdk/M3SdkInitializer : androidx/startup/Initializer {
+	public fun <init> ()V
+	public synthetic fun create (Landroid/content/Context;)Ljava/lang/Object;
+	public fun create (Landroid/content/Context;)V
+	public fun dependencies ()Ljava/util/List;
+}
+
+public abstract interface class net/m3mobile/sdk/api/TimeApi {
+	public abstract fun getNtpInterval ()I
+	public abstract fun getNtpServer ()Ljava/lang/String;
+	public abstract fun getTimeZone ()Ljava/lang/String;
+}
+
+public final class net/m3mobile/sdk/api/TimeApiImpl : net/m3mobile/sdk/api/TimeApi {
+	public static final field NAME_GET_NTP_INTERVAL Ljava/lang/String;
+	public static final field RESOURCE_PACKAGE Ljava/lang/String;
+	public static final field RESOURCE_TYPE_INTEGER Ljava/lang/String;
+	public fun <init> (Landroid/content/Context;)V
+	public fun getNtpInterval ()I
+	public fun getNtpServer ()Ljava/lang/String;
+	public fun getTimeZone ()Ljava/lang/String;
+}
+
+public abstract interface class net/m3mobile/sdk/api/UsbApi {
+	public abstract fun getCurrentUsbModes ()Ljava/util/List;
+}
+
+public final class net/m3mobile/sdk/api/UsbApiImpl : net/m3mobile/sdk/api/UsbApi {
+	public fun <init> (Landroid/content/Context;)V
+	public fun getCurrentUsbModes ()Ljava/util/List;
+}
+
+public abstract interface class net/m3mobile/sdk/api/WifiApi {
+	public abstract fun getRoamingDelta ()I
+	public abstract fun getRoamingThreshold ()I
+	public abstract fun getWifiCountryCode ()Ljava/lang/String;
+	public abstract fun getWifiFrequencyBand ()I
+}
+
+public final class net/m3mobile/sdk/api/WifiApiImpl : net/m3mobile/sdk/api/WifiApi {
+	public fun <init> (Landroid/content/Context;)V
+	public fun getRoamingDelta ()I
+	public fun getRoamingThreshold ()I
+	public fun getWifiCountryCode ()Ljava/lang/String;
+	public fun getWifiFrequencyBand ()I
+}
+
