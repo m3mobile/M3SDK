@@ -9,6 +9,8 @@ import net.m3mobile.feature.startup.api.StartUpAppApi
 import net.m3mobile.feature.startup.api.StartUpAppApiImpl
 import net.m3mobile.feature.startup.api.StartUpDeviceApi
 import net.m3mobile.feature.startup.api.StartUpDeviceApiImpl
+import net.m3mobile.feature.startup.api.StartUpLanguageApi
+import net.m3mobile.feature.startup.api.StartUpLanguageApiImpl
 import net.m3mobile.feature.startup.api.StartUpNetworkApi
 import net.m3mobile.feature.startup.api.StartUpNetworkApiImpl
 import net.m3mobile.feature.startup.api.StartUpPermissionApi
@@ -39,7 +41,8 @@ public interface M3StartUpSdk :
     StartUpDeviceApi,
     StartUpNetworkApi,
     StartUpQuickTileApi,
-    StartUpSettingApi
+    StartUpSettingApi,
+    StartUpLanguageApi
 
 @InternalM3Api
 @Deprecated(
@@ -57,4 +60,5 @@ public class M3StartUpSdkImpl(context: Context) : M3StartUpSdk,
         StartUpDeviceApi by ApiProxyFactory.create<StartUpDeviceApi>(StartUpDeviceApiImpl(context)),
         StartUpNetworkApi by ApiProxyFactory.create<StartUpNetworkApi>(StartUpNetworkApiImpl(context)),
         StartUpQuickTileApi by ApiProxyFactory.create<StartUpQuickTileApi>(StartUpQuickTileApiImpl(context)),
-        StartUpSettingApi by ApiProxyFactory.create<StartUpSettingApi>(StartUpSettingApiImpl(context))
+        StartUpSettingApi by ApiProxyFactory.create<StartUpSettingApi>(StartUpSettingApiImpl(context)),
+        StartUpLanguageApi by ApiProxyFactory.create<StartUpLanguageApi>(StartUpLanguageApiImpl(context))
