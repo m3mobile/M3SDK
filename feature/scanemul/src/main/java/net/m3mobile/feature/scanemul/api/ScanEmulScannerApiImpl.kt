@@ -1,7 +1,7 @@
 package net.m3mobile.feature.scanemul.api
 
 import android.content.Context
-import net.m3mobile.feature.scanemul.requester.CancelScanRequester
+import net.m3mobile.feature.scanemul.requester.StopScanRequester
 import net.m3mobile.feature.scanemul.requester.StartScanRequester
 
 internal class ScanEmulScannerApiImpl(private val context: Context) : ScanEmulScannerApi {
@@ -10,7 +10,7 @@ internal class ScanEmulScannerApiImpl(private val context: Context) : ScanEmulSc
         StartScanRequester(context).request()
     }
 
-    override fun cancelScan() {
-        CancelScanRequester(context).request()
+    override fun stopScan() {
+        StopScanRequester(context).request()
     }
 }
