@@ -8,10 +8,12 @@ import net.m3mobile.feature.startup.params.DisplaySetting
 import net.m3mobile.feature.startup.requester.device.SetDisplaySettingRequester
 import net.m3mobile.feature.startup.requester.device.DisableVibrationModeRequester
 import net.m3mobile.feature.startup.requester.device.EnableVibrationModeRequester
+import net.m3mobile.feature.startup.requester.device.LockStatusBarExpansionRequester
 import net.m3mobile.feature.startup.requester.device.SetAlarmVolumeRequester
 import net.m3mobile.feature.startup.requester.device.SetMediaVolumeRequester
 import net.m3mobile.feature.startup.requester.device.SetNotificationVolumeRequester
 import net.m3mobile.feature.startup.requester.device.SetRingtoneVolumeRequester
+import net.m3mobile.feature.startup.requester.device.UnlockStatusBarExpansionRequester
 import net.m3mobile.feature.startup.requester.serial.GetSerialNumberRequester
 
 internal class StartUpDeviceApiImpl(private val context: Context): StartUpDeviceApi {
@@ -57,5 +59,13 @@ internal class StartUpDeviceApiImpl(private val context: Context): StartUpDevice
                 callback.onComplete(null, e)
             }
         }
+    }
+
+    override fun lockStatusBarExpansion() {
+        LockStatusBarExpansionRequester(context).request()
+    }
+
+    override fun unlockStatusBarExpansion() {
+        UnlockStatusBarExpansionRequester(context).request()
     }
 }

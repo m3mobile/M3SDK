@@ -122,4 +122,22 @@ public interface StartUpDeviceApi {
      */
     @RequiresStartUp("6.2.14")
     public fun getSerialNumber(callback: RequestCallback<String>): Job
+
+    /**
+     * Locks the expansion of the status bar.
+     * When locked, the user cannot pull down the status bar to view notifications or quick settings.
+     *
+     * StartUp version `6.2.14` or later is required.
+     */
+    @RequiresStartUp("6.4.12")
+    public fun lockStatusBarExpansion()
+
+    /**
+     * Unlocks the expansion of the status bar.
+     * When locked, the user cannot pull down the status bar to view notifications or quick settings.
+     *
+     * StartUp version `6.2.14` or later is required.
+     */
+    @RequiresStartUp("6.4.12")
+    public fun unlockStatusBarExpansion()
 }

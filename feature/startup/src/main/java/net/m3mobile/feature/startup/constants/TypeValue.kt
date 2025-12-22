@@ -31,4 +31,5 @@ internal object TypeValue {
     const val OPTION = "option"
     const val LANGUAGE = "language"
     const val NFC = "nfc"
+    const val STATUS_BAR = "status_bar"
 }
