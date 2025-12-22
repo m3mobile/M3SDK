@@ -30,4 +30,5 @@ internal object TypeValue {
     const val QUICK_TILE = "quick_tile"
     const val OPTION = "option"
     const val LANGUAGE = "language"
+    const val NFC = "nfc"
 }

@@ -1,5 +1,7 @@
 package net.m3mobile.feature.startup.api
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.feature.startup.params.Apn
 
@@ -19,4 +21,22 @@ public interface StartUpNetworkApi {
      */
     @RequiresStartUp("6.2.14")
     public fun setApn(apn: Apn)
+
+    /**
+     * Enables the Near Field Communication (NFC) feature on the device.
+     *
+     * StartUp version `6.2.14` or later is required.
+     */
+    @RequiresApi(Build.VERSION_CODES.R)
+    @RequiresStartUp("6.2.14")
+    public fun enableNfc()
+
+    /**
+     * Disables the Near Field Communication (NFC) feature on the device.
+     *
+     * StartUp version `6.2.14` or later is required.
+     */
+    @RequiresApi(Build.VERSION_CODES.R)
+    @RequiresStartUp("6.2.14")
+    public fun disableNfc()
 }
