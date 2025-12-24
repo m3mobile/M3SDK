@@ -12,7 +12,7 @@ internal abstract class SetScanVibrationRequester: BroadcastRequester() {
 
     override val requestAction = RequestAction.SET_SCANNER_SETTING
     override val typeKey = TypeKey.SETTING
-    override val typeValue = TypeValue.SET_VIBRATION
+    override val typeValue = TypeValue.SET_SCAN_VIBRATION
     override val extras get() = bundleOf(ExtraKey.VIBRATION to if(enable) 1 else 0)
     protected abstract val enable: Boolean
 }

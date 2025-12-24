@@ -16,6 +16,6 @@ internal class SetScanSoundRequester(
 
     override val requestAction = RequestAction.SET_SCANNER_SETTING
     override val typeKey = TypeKey.SETTING
-    override val typeValue = TypeValue.SET_SOUND
+    override val typeValue = TypeValue.SET_SCAN_SOUND
     override val extras = bundleOf(ExtraKey.SOUND to scanSound.value)
 }
