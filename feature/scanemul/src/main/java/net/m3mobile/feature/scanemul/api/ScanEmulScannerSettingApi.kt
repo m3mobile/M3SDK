@@ -23,7 +23,14 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      */
+    @RequiresScanEmul("2.11.0")
     public fun enableScanVibration()
 
+    /**
+     * Disables vibration feedback for a scan.
+     *
+     * This only affects the scanner profile currently in operation.
+     */
+    @RequiresScanEmul("2.11.0")
     public fun disableScanVibration()
 }
