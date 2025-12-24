@@ -5,4 +5,5 @@ internal object ExtraKey {
     const val SOUND = "sound_mode"
     const val VIBRATION = "vibration_value"
     const val LED = "led_value"
+    const val LED_TIME = "led_time_value"
 }
