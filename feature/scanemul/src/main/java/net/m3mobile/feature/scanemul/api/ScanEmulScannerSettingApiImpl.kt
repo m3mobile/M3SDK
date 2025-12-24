@@ -1,6 +1,7 @@
 package net.m3mobile.feature.scanemul.api
 
 import android.content.Context
+import net.m3mobile.feature.scanemul.params.ReadMode
 import net.m3mobile.feature.scanemul.params.ScanSound
 import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanLedRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanVibrationRequester
@@ -8,6 +9,7 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanLedReque
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanVibrationRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanLedTimeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanSoundRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScannerReadModeRequester
 
 internal class ScanEmulScannerSettingApiImpl(private val context: Context): ScanEmulScannerSettingApi {
 
@@ -33,5 +35,9 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
 
     override fun setScanLedTime(timeMillis: Int) {
         SetScanLedTimeRequester(context, timeMillis).request()
+    }
+
+    override fun setScannerReadMode(mode: ReadMode) {
+        SetScannerReadModeRequester(context, mode).request()
     }
 }

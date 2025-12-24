@@ -2,6 +2,7 @@ package net.m3mobile.feature.scanemul.api
 
 import androidx.annotation.IntRange
 import net.m3mobile.core.RequiresScanEmul
+import net.m3mobile.feature.scanemul.params.ReadMode
 import net.m3mobile.feature.scanemul.params.ScanSound
 
 public interface ScanEmulScannerSettingApi {
@@ -60,4 +61,15 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun setScanLedTime(@IntRange(from = 1, to = 1000) timeMillis: Int)
+
+    /**
+     * Sets the read mode of the scanner.
+     *
+     * This only affects the scanner profile currently in operation.
+     *
+     * @param mode The [ReadMode] to set for the scanner.
+     * @see ReadMode
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun setScannerReadMode(mode: ReadMode)
 }
