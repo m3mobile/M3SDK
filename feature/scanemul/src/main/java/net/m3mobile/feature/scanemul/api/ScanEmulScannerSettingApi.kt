@@ -33,4 +33,20 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun disableScanVibration()
+
+    /**
+     * Enables LED feedback for a scan.
+     *
+     * This only affects the scanner profile currently in operation.
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun enableScanLed()
+
+    /**
+     * Disables LED feedback for a scan.
+     *
+     * This only affects the scanner profile currently in operation.
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun disableScanLed()
 }
