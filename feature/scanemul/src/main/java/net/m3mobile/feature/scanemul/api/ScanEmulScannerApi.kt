@@ -22,6 +22,7 @@ public interface ScanEmulScannerApi {
      * Retrieves device's scanner type.
      */
     @RequiresScanEmul("2.13.0")
+    @JvmSynthetic
     public suspend fun getScannerType(): String
 
     /**
@@ -40,6 +41,7 @@ public interface ScanEmulScannerApi {
      * - `8`: Succeed to close the scanner.
      */
     @RequiresScanEmul("2.13.0")
+    @JvmSynthetic
     public suspend fun getScannerStatus(): Int
 
     /**
