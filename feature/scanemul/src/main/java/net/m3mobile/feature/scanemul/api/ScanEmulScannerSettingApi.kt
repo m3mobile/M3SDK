@@ -86,7 +86,7 @@ public interface ScanEmulScannerSettingApi {
      * @see OutputMode
      */
     @RequiresScanEmul("2.11.0")
-    public fun setScannerOutputMode(mode: OutputMode)
+    public fun setScanResultOutputMode(mode: OutputMode)
 
     /**
      * Sets the end character to be appended to the scanned data.

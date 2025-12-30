@@ -20,7 +20,7 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultEndCh
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPostfixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPrefixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanSoundRequester
-import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScannerOutputModeRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultOutputModeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScannerReadModeRequester
 
 internal class ScanEmulScannerSettingApiImpl(private val context: Context): ScanEmulScannerSettingApi {
@@ -53,8 +53,8 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
         SetScannerReadModeRequester(context, mode).request()
     }
 
-    override fun setScannerOutputMode(mode: OutputMode) {
-        SetScannerOutputModeRequester(context, mode).request()
+    override fun setScanResultOutputMode(mode: OutputMode) {
+        SetScanResultOutputModeRequester(context, mode).request()
     }
 
     override fun setScanResultEndCharacter(endCharacter: EndCharacter) {
