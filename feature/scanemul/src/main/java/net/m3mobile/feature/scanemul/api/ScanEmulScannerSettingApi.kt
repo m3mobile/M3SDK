@@ -186,4 +186,21 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun getScanResultOutputMode(callback: RequestCallback<OutputMode>): Job
+
+    /**
+     * Checks if the current scanner profile is enabled.
+     *
+     * @return `true` if the profile is enabled, `false` otherwise
+     */
+    @JvmSynthetic
+    @RequiresScanEmul("2.11.0")
+    public suspend fun isScannerProfileEnabled(): Boolean
+
+    /**
+     * Checks if the current scanner profile is enabled.
+     *
+     * @param callback The callback to be invoked with the result
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun isScannerProfileEnabled(callback: RequestCallback<Boolean>): Job
 }
