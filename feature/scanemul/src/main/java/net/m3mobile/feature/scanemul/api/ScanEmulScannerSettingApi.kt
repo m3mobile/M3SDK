@@ -152,4 +152,21 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun getScanResultPostfix(callback: RequestCallback<String>): Job
+
+    /**
+     * Gets the end character that is appended to the scanned data in the current scanner profile.
+     *
+     * @return The [EndCharacter] appended to the scan result
+     */
+    @JvmSynthetic
+    @RequiresScanEmul("2.11.0")
+    public suspend fun getScanResultEndCharacter(): EndCharacter
+
+    /**
+     * Gets the end character that is appended to the scanned data in the current scanner profile.
+     *
+     * @param callback The callback to be invoked with the result
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun getScanResultEndCharacter(callback: RequestCallback<EndCharacter>): Job
 }
