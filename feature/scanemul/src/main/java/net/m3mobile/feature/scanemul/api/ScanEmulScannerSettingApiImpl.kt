@@ -13,6 +13,7 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanVibrati
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanLedRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanVibrationRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultEndCharacterRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultOutputModeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultPostfixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultPrefixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanLedTimeRequester
@@ -105,6 +106,20 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
         return launchOnMain {
             try {
                 callback.onComplete(getScanResultEndCharacter(), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun getScanResultOutputMode(): OutputMode {
+        return GetScanResultOutputModeRequester(context).fetch()
+    }
+
+    override fun getScanResultOutputMode(callback: RequestCallback<OutputMode>): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(getScanResultOutputMode(), null)
             } catch (e: Exception) {
                 callback.onComplete(null, e)
             }
