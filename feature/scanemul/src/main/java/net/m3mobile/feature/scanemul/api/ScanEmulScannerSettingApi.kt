@@ -16,7 +16,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param sound The [ScanSound] enum to set as the feedback sound.
+     * @param sound The [ScanSound] enum to set as the feedback sound
      * - [ScanSound.NONE]
      * - [ScanSound.BEEP]
      * - [ScanSound.DING_DONG]
@@ -61,7 +61,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param timeMillis The duration in milliseconds. The value must be between 1 and 1000.
+     * @param timeMillis The duration in milliseconds. The value must be between 1 and 1000
      */
     @RequiresScanEmul("2.11.0")
     public fun setScanLedTime(@IntRange(from = 1, to = 1000) timeMillis: Int)
@@ -71,7 +71,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param mode The [ReadMode] to set for the scanner.
+     * @param mode The [ReadMode] to set for the scanner
      * @see ReadMode
      */
     @RequiresScanEmul("2.11.0")
@@ -82,7 +82,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param mode The [OutputMode] to set for the scanner's output.
+     * @param mode The [OutputMode] to set for the scanner's output
      * @see OutputMode
      */
     @RequiresScanEmul("2.11.0")
@@ -93,7 +93,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param endCharacter The [EndCharacter] to append to the scan result.
+     * @param endCharacter The [EndCharacter] to append to the scan result
      * @see EndCharacter
      */
     @RequiresScanEmul("2.11.0")
@@ -104,7 +104,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param prefix The string to prepend to the scan result.
+     * @param prefix The string to prepend to the scan result
      */
     @RequiresScanEmul("2.11.0")
     public fun setScanResultPrefix(prefix: String)
@@ -114,7 +114,7 @@ public interface ScanEmulScannerSettingApi {
      *
      * This only affects the scanner profile currently in operation.
      *
-     * @param postfix The string to prepend to the scan result.
+     * @param postfix The string to prepend to the scan result
      */
     @RequiresScanEmul("2.11.0")
     public fun setScanResultPostfix(postfix: String)
@@ -122,7 +122,7 @@ public interface ScanEmulScannerSettingApi {
     /**
      * Gets the prefix for the scanned data in the current scanner profile.
      *
-     * @return The prefix for the scanned data.
+     * @return The prefix for the scanned data
      */
     @JvmSynthetic
     @RequiresScanEmul("2.11.0")
@@ -131,7 +131,7 @@ public interface ScanEmulScannerSettingApi {
     /**
      * Gets the prefix for the scanned data in the current scanner profile.
      *
-     * @param callback The callback to be invoked with the result.
+     * @param callback The callback to be invoked with the result
      */
     @RequiresScanEmul("2.11.0")
     public fun getScanResultPrefix(callback: RequestCallback<String>): Job
@@ -139,7 +139,7 @@ public interface ScanEmulScannerSettingApi {
     /**
      * Gets the postfix for the scanned data in the current scanner profile.
      *
-     * @return The postfix for the scanned data.
+     * @return The postfix for the scanned data
      */
     @JvmSynthetic
     @RequiresScanEmul("2.11.0")
