@@ -9,4 +9,6 @@ internal object TypeValue {
     const val SET_SCANNER_READ_MODE = "read_mode"
     const val SET_SCANNER_OUTPUT_MODE = "output_mode"
     const val SET_SCAN_RESULT_END_CHARACTER = "end_char"
+    const val SET_SCAN_RESULT_PREFIX = "prefix"
+    const val SET_SCAN_RESULT_POSTFIX = "postfix"
 }

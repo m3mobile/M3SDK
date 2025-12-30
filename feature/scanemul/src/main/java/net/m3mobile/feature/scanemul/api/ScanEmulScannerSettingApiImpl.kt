@@ -11,6 +11,8 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanLedReque
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanVibrationRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanLedTimeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultEndCharacterRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPostfixRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPrefixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanSoundRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScannerOutputModeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScannerReadModeRequester
@@ -51,5 +53,13 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
 
     override fun setScanResultEndCharacter(endCharacter: EndCharacter) {
         SetScanResultEndCharacterRequester(context, endCharacter).request()
+    }
+
+    override fun setScanResultPrefix(prefix: String) {
+        SetScanResultPrefixRequester(context, prefix).request()
+    }
+
+    override fun setScanResultPostfix(postfix: String) {
+        SetScanResultPostfixRequester(context, postfix).request()
     }
 }

@@ -96,4 +96,24 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun setScanResultEndCharacter(endCharacter: EndCharacter)
+
+    /**
+     * Sets a prefix to be added to the scanned data.
+     *
+     * This only affects the scanner profile currently in operation.
+     *
+     * @param prefix The string to prepend to the scan result.
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun setScanResultPrefix(prefix: String)
+
+    /**
+     * Sets a postfix to be added to the scanned data.
+     *
+     * This only affects the scanner profile currently in operation.
+     *
+     * @param postfix The string to prepend to the scan result.
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun setScanResultPostfix(postfix: String)
 }
