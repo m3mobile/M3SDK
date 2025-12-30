@@ -2,6 +2,7 @@ package net.m3mobile.feature.scanemul.api
 
 import androidx.annotation.IntRange
 import net.m3mobile.core.RequiresScanEmul
+import net.m3mobile.feature.scanemul.params.OutputMode
 import net.m3mobile.feature.scanemul.params.ReadMode
 import net.m3mobile.feature.scanemul.params.ScanSound
 
@@ -72,4 +73,15 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun setScannerReadMode(mode: ReadMode)
+
+    /**
+     * Sets the output mode for the scanned data.
+     *
+     * This only affects the scanner profile currently in operation.
+     *
+     * @param mode The [OutputMode] to set for the scanner's output.
+     * @see OutputMode
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun setScannerOutputMode(mode: OutputMode)
 }
