@@ -106,6 +106,7 @@ public interface StartUpDeviceApi {
      *
      * @return The serial number of the device as a [String].
      */
+    @JvmSynthetic
     @RequiresStartUp("6.2.14")
     public suspend fun getSerialNumber(): String
 
