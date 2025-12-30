@@ -1,6 +1,8 @@
 package net.m3mobile.feature.scanemul.api
 
 import androidx.annotation.IntRange
+import kotlinx.coroutines.Job
+import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresScanEmul
 import net.m3mobile.feature.scanemul.params.EndCharacter
 import net.m3mobile.feature.scanemul.params.OutputMode
@@ -116,4 +118,38 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun setScanResultPostfix(postfix: String)
+
+    /**
+     * Gets the prefix for the scanned data in the current scanner profile.
+     *
+     * @return The prefix for the scanned data.
+     */
+    @JvmSynthetic
+    @RequiresScanEmul("2.11.0")
+    public suspend fun getScanResultPrefix(): String
+
+    /**
+     * Gets the prefix for the scanned data in the current scanner profile.
+     *
+     * @param callback The callback to be invoked with the result.
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun getScanResultPrefix(callback: RequestCallback<String>): Job
+
+    /**
+     * Gets the postfix for the scanned data in the current scanner profile.
+     *
+     * @return The postfix for the scanned data.
+     */
+    @JvmSynthetic
+    @RequiresScanEmul("2.11.0")
+    public suspend fun getScanResultPostfix(): String
+
+    /**
+     * Gets the postfix for the scanned data in the current scanner profile.
+     *
+     * @param callback The callback to be invoked with the result
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun getScanResultPostfix(callback: RequestCallback<String>): Job
 }

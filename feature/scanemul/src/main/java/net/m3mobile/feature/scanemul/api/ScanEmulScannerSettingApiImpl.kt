@@ -1,6 +1,9 @@
 package net.m3mobile.feature.scanemul.api
 
 import android.content.Context
+import kotlinx.coroutines.Job
+import net.m3mobile.core.RequestCallback
+import net.m3mobile.core.utils.launchOnMain
 import net.m3mobile.feature.scanemul.params.EndCharacter
 import net.m3mobile.feature.scanemul.params.OutputMode
 import net.m3mobile.feature.scanemul.params.ReadMode
@@ -9,6 +12,8 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanLedRequ
 import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanVibrationRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanLedRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanVibrationRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultPostfixRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultPrefixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanLedTimeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultEndCharacterRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPostfixRequester
@@ -61,5 +66,33 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
 
     override fun setScanResultPostfix(postfix: String) {
         SetScanResultPostfixRequester(context, postfix).request()
+    }
+
+    override suspend fun getScanResultPrefix(): String {
+        return GetScanResultPrefixRequester(context).fetch()
+    }
+
+    override fun getScanResultPrefix(callback: RequestCallback<String>): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(getScanResultPrefix(), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun getScanResultPostfix(): String {
+        return GetScanResultPostfixRequester(context).fetch()
+    }
+
+    override fun getScanResultPostfix(callback: RequestCallback<String>): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(getScanResultPostfix(), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
     }
 }
