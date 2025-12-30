@@ -203,4 +203,21 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun isScannerProfileEnabled(callback: RequestCallback<Boolean>): Job
+
+    /**
+     * Gets the read mode of the scanner in the current scanner profile.
+     *
+     * @return The current [ReadMode] of the scanner
+     */
+    @JvmSynthetic
+    @RequiresScanEmul("2.11.0")
+    public suspend fun getScannerReadMode(): ReadMode
+
+    /**
+     * Gets the read mode of the scanner in the current scanner profile.
+     *
+     * @param callback The callback to be invoked with the result
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun getScannerReadMode(callback: RequestCallback<ReadMode>): Job
 }

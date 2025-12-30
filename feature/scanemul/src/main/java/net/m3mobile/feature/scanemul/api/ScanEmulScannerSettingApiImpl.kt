@@ -17,6 +17,7 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultEndCh
 import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultOutputModeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultPostfixRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScanResultPrefixRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.GetScannerReadModeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanLedTimeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultEndCharacterRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPostfixRequester
@@ -135,6 +136,20 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
         return launchOnMain {
             try {
                 callback.onComplete(isScannerProfileEnabled(), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun getScannerReadMode(): ReadMode {
+        return GetScannerReadModeRequester(context).fetch()
+    }
+
+    override fun getScannerReadMode(callback: RequestCallback<ReadMode>): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(getScannerReadMode(), null)
             } catch (e: Exception) {
                 callback.onComplete(null, e)
             }
