@@ -2,6 +2,7 @@ package net.m3mobile.feature.scanemul.api
 
 import androidx.annotation.IntRange
 import net.m3mobile.core.RequiresScanEmul
+import net.m3mobile.feature.scanemul.params.EndCharacter
 import net.m3mobile.feature.scanemul.params.OutputMode
 import net.m3mobile.feature.scanemul.params.ReadMode
 import net.m3mobile.feature.scanemul.params.ScanSound
@@ -84,4 +85,15 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun setScannerOutputMode(mode: OutputMode)
+
+    /**
+     * Sets the end character to be appended to the scanned data.
+     *
+     * This only affects the scanner profile currently in operation.
+     *
+     * @param endCharacter The [EndCharacter] to append to the scan result.
+     * @see EndCharacter
+     */
+    @RequiresScanEmul("2.11.0")
+    public fun setScanResultEndCharacter(endCharacter: EndCharacter)
 }
