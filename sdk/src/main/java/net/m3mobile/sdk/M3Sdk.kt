@@ -21,7 +21,7 @@ import net.m3mobile.sdk.api.WifiApiImpl
 )
 public interface M3Sdk :
     M3StartUpSdk,
-//    M3ScanEmulSdk,
+    M3ScanEmulSdk,
 //    M3KeyToolSdk,
     TimeApi,
     WifiApi,
@@ -30,7 +30,7 @@ public interface M3Sdk :
 internal class M3SdkImpl(context: Context) : M3Sdk,
         M3StartUpSdk by M3StartUpSdkImpl(context),
 //        M3KeyToolSdk by M3KeyToolSdkImpl(context),
-//        M3ScanEmulSdk by M3ScanEmulSdkImpl(context),
+        M3ScanEmulSdk by M3ScanEmulSdkImpl(context),
         TimeApi by TimeApiImpl(context),
         WifiApi by WifiApiImpl(context),
         UsbApi by UsbApiImpl(context)
