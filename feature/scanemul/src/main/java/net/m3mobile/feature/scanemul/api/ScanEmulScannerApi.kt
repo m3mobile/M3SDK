@@ -3,6 +3,9 @@ package net.m3mobile.feature.scanemul.api
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresScanEmul
+import net.m3mobile.feature.scanemul.listener.OnDigitalLinkParsedListener
+import net.m3mobile.feature.scanemul.listener.OnGS1ParsedListener
+import net.m3mobile.feature.scanemul.listener.OnScanResultListener
 
 public interface ScanEmulScannerApi {
 
@@ -55,4 +58,46 @@ public interface ScanEmulScannerApi {
      */
     @RequiresScanEmul("2.13.0")
     public fun getScannerStatus(callback: RequestCallback<Int>): Job
+
+    /**
+     * Register a listener to be notified when a barcode is successfully scanned.
+     *
+     * @param listener The listener that will receive the scan results
+     */
+    public fun registerOnScanResultListener(listener: OnScanResultListener)
+
+    /**
+     * Unregister a previously registered listener to stop receiving scan results.
+     *
+     * @param listener The listener to be removed
+     */
+    public fun unregisterOnScanResultListener(listener: OnScanResultListener)
+
+    /**
+     * Registers a listener to be notified when a barcode is successfully scanned and parsed into GS1 format.
+     *
+     * @param listener The listener that will receive the GS1 parsed scan results
+     */
+    public fun registerOnGS1ParsedListener(listener: OnGS1ParsedListener)
+
+    /**
+     * Unregister a previously registered GS1 parsed listener to stop receiving GS1 scan results.
+     *
+     * @param listener The listener to be removed
+     */
+    public fun unregisterOnGS1ParsedListener(listener: OnGS1ParsedListener)
+
+    /**
+     * Registers a listener to be notified when a Digital Link is successfully parsed from a scanned barcode.
+     *
+     * @param listener The listener that will receive the parsed Digital Link results
+     */
+    public fun registerOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
+
+    /**
+     * Unregisters a previously registered listener to stop receiving parsed Digital Link scan results.
+     *
+     * @param listener The listener to be removed
+     */
+    public fun unregisterOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
 }
