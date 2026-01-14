@@ -30,14 +30,29 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
     - [진동 모드 비활성화](#진동-모드-비활성화)
     - [디스플레이 설정](#디스플레이-설정)
     - [시리얼 번호 조회](#시리얼-번호-조회)
+    - [상태 표시줄 확장 잠금](#상태-표시줄-확장-잠금)
+    - [상태 표시줄 확장 잠금 해제](#상태-표시줄-확장-잠금-해제)
+  - [Language API](#language-api)
+    - [언어 설정](#언어-설정)
   - [Network API](#network-api)
     - [APN 설정](#apn-설정)
+    - [NFC 활성화](#nfc-활성화)
+    - [NFC 비활성화](#nfc-비활성화)
   - [Permission API](#permission-api)
     - [권한 부여](#권한-부여)
     - [권한 취소](#권한-취소)
   - [Quick Tile API](#quick-tile-api)
     - [빠른 설정 타일 지정](#빠른-설정-타일-지정)
     - [빠른 설정 타일 초기화](#빠른-설정-타일-초기화)
+  - [Scanner API](#scanner-api)
+    - [스캔 시작](#스캔-시작)
+    - [스캔 중지](#스캔-중지)
+    - [스캐너 상태 조회](#스캐너-상태-조회)
+    - [스캐너 타입 조회](#스캐너-타입-조회)
+    - [스캔 결과 리스너](#스캔-결과-리스너-scan-result-listener)
+    - [GS1 파싱 결과 리스너](#gs1-파싱-결과-리스너-gs1-parsed-listener)
+    - [디지털 링크 파싱 결과 리스너](#디지털-링크-파싱-결과-리스너-digital-link-parsed-listener)
+    - [스캐너 설정 (Scanner Settings)](#스캐너-설정-scanner-settings)
   - [StartUp Setting API](#startup-setting-api)
     - [StartUp 설정 초기화](#startup-설정-초기화)
   - [Time API](#time-api)
@@ -146,10 +161,11 @@ M3 SDK는 특정 API 호출이 (장치 지원 또는 앱 버전과 같은) 조�
     *   `@SupportedModels`: 해당 API를 이용 가능한 장치 모델들을 명시합니다.
     *   `@UnsupportedModels`: 해당 API 이용이 불가능한 장치 모델들을 명시합니다.
     *   `@RequiresStartUp`: 해당 API를 이용하기 위해서는 특정 버전 이상의 StartUp이 설치되어 있어야 함을 나타냅니다.
+    *   `@RequiresScanEmul`: 해당 API를 이용하기 위해서는 특정 버전 이상의 ScanEmul이 설치되어 있어야 함을 나타냅니다.
 
     발생할 수 있는 예외는 다음과 같습니다.
     *   `UnsupportedDeviceModelException`: 지원되지 않는 장치 모델에서 API가 호출될 경우 발생합니다.
-    *   `UnsatisfiedVersionException`: API가 설치된 장치의 애플리케이션 버전보다 더 높은 버전을 요구할 경우 발생합니다. 예를 들어, StartUp 앱 1.0.0이 설치된 장치에서 @RequiresStartUp("2.0.0")인 메서드를 호출할 경우 발생합니다.
+    *   `UnsatisfiedVersionException`: API가 설치된 장치의 StartUp 또는 ScanEmul 애플리케이션 버전보다 더 높은 버전을 요구할 경우 발생합니다. 예를 들어, StartUp 앱 1.0.0이 설치된 장치에서 @RequiresStartUp("2.0.0")인 메서드를 호출할 경우 발생합니다.
     
 *   **비활성화된 경우**: 이 모드에서는 필요한 조건을 충족하지 못하는 API 호출은 **자동으로 무시**됩니다. 예외가 발생하지 않으므로 애플리케이션은 중단 없이 계속 실행됩니다.
 
@@ -361,6 +377,45 @@ M3Mobile.instance.getSerialNumber(): String
 M3Mobile.instance.getSerialNumber(callback: RequestCallback<String>): Job
 ```
 
+#### 상태 표시줄 확장 잠금
+
+상태 표시줄 확장을 잠급니다. 잠긴 경우 사용자는 상태 표시줄을 아래로 내려 알림이나 빠른 설정을 볼 수 없습니다.
+
+*   **필요 StartUp 버전**: `6.4.12` 이상
+
+```kotlin
+M3Mobile.instance.lockStatusBarExpansion()
+```
+
+#### 상태 표시줄 확장 잠금 해제
+
+상태 표시줄 확장을 잠금 해제합니다.
+
+*   **필요 StartUp 버전**: `6.4.12` 이상
+
+```kotlin
+M3Mobile.instance.unlockStatusBarExpansion()
+```
+
+---
+
+### Language API
+
+시스템 언어 설정을 제어합니다.
+
+#### 언어 설정
+
+장치의 시스템 언어와 국가를 설정합니다.
+
+*   **필요 StartUp 버전**: `6.2.14` 이상
+*   **매개변수**:
+    *   `language` (String): 언어 코드 (예: "en", "ko").
+    *   `country` (String): 국가 코드 (예: "US", "KR").
+
+```kotlin
+M3Mobile.instance.setLanguage(language: String, country: String)
+```
+
 ---
 
 ### Network API
@@ -377,6 +432,28 @@ APN(Access Point Name) 구성을 설정합니다.
 
 ```kotlin
 M3Mobile.instance.setApn(apn: Apn)
+```
+
+#### NFC 활성화
+
+NFC(Near Field Communication)를 활성화합니다.
+
+*   **필요 StartUp 버전**: `6.2.14` 이상
+*   **필요 Android 버전**: Android 11 (R) 이상
+
+```kotlin
+M3Mobile.instance.enableNfc()
+```
+
+#### NFC 비활성화
+
+NFC(Near Field Communication)를 비활성화합니다.
+
+*   **필요 StartUp 버전**: `6.2.14` 이상
+*   **필요 Android 버전**: Android 11 (R) 이상
+
+```kotlin
+M3Mobile.instance.disableNfc()
 ```
 
 ---
@@ -437,6 +514,175 @@ M3Mobile.instance.setQuickTiles(vararg quickTile: QuickTile)
 
 ```kotlin
 M3Mobile.instance.resetQuickTile()
+```
+
+---
+
+### Scanner API
+
+바코드 스캐너를 제어하고 스캔 환경을 설정합니다.
+
+#### 스캔 시작
+
+스캔 프로세스를 시작합니다.
+
+*   **필요 ScanEmul 버전**: `2.13.0` 이상
+
+```kotlin
+M3Mobile.instance.startScan()
+```
+
+#### 스캔 중지
+
+스캔 프로세스를 중지합니다.
+
+*   **필요 ScanEmul 버전**: `2.13.0` 이상
+
+```kotlin
+M3Mobile.instance.stopScan()
+```
+
+#### 스캐너 상태 조회
+
+스캐너의 현재 상태를 조회합니다.
+
+*   **필요 ScanEmul 버전**: `2.13.0` 이상
+*   **반환값**: 상태를 나타내는 정수값입니다.
+    *   `1`: 열기 실패
+    *   `2`: 닫기 실패
+    *   `4`: 열기 성공
+    *   `8`: 닫기 성공
+
+```kotlin
+// 코루틴
+M3Mobile.instance.getScannerStatus(): Int
+
+// 콜백
+M3Mobile.instance.getScannerStatus(callback: RequestCallback<Int>): Job
+```
+
+#### 스캐너 타입 조회
+
+스캐너 하드웨어 타입을 조회합니다.
+
+*   **필요 ScanEmul 버전**: `2.13.0` 이상
+*   **반환값**: 스캐너 타입 문자열입니다.
+
+```kotlin
+// 코루틴
+M3Mobile.instance.getScannerType(): String
+
+// 콜백
+M3Mobile.instance.getScannerType(callback: RequestCallback<String>): Job
+```
+
+#### 스캔 결과 리스너 (Scan Result Listener)
+
+스캔 결과를 수신하기 위한 리스너를 등록하거나 해제합니다.
+
+*   **필요 ScanEmul 버전**: `4.11.0` 이상
+*   **매개변수**:
+    *   `listener` (OnScanResultListener): 스캔 결과를 수신할 리스너 객체입니다.
+
+```kotlin
+// 등록
+M3Mobile.instance.registerOnScanResultListener(listener: OnScanResultListener)
+
+// 해제
+M3Mobile.instance.unregisterOnScanResultListener(listener: OnScanResultListener)
+```
+
+#### GS1 파싱 결과 리스너 (GS1 Parsed Listener)
+
+스캔된 바코드를 GS1 형식으로 파싱한 결과를 수신하기 위한 리스너를 등록하거나 해제합니다.
+
+*   **필요 ScanEmul 버전**: `4.11.0` 이상
+*   **매개변수**:
+    *   `listener` (OnGS1ParsedListener): GS1 파싱 결과를 수신할 리스너 객체입니다.
+
+```kotlin
+// 등록
+M3Mobile.instance.registerOnGS1ParsedListener(listener: OnGS1ParsedListener)
+
+// 해제
+M3Mobile.instance.unregisterOnGS1ParsedListener(listener: OnGS1ParsedListener)
+```
+
+#### 디지털 링크 파싱 결과 리스너 (Digital Link Parsed Listener)
+
+스캔된 바코드에서 디지털 링크를 파싱한 결과를 수신하기 위한 리스너를 등록하거나 해제합니다.
+
+*   **필요 ScanEmul 버전**: `4.11.0` 이상
+*   **매개변수**:
+    *   `listener` (OnDigitalLinkParsedListener): 디지털 링크 파싱 결과를 수신할 리스너 객체입니다.
+
+```kotlin
+// 등록
+M3Mobile.instance.registerOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
+
+// 해제
+M3Mobile.instance.unregisterOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
+```
+
+#### 스캐너 설정 (Scanner Settings)
+
+다양한 스캐너 옵션을 구성합니다. 이 설정은 현재 활성화된 프로필에 적용됩니다.
+
+*   **필요 ScanEmul 버전**: `2.11.0` 이상
+
+##### 피드백 (Feedback)
+
+```kotlin
+// 사운드
+M3Mobile.instance.setScanSound(ScanSound.BEEP) 
+// Enum: NONE, BEEP, DING_DONG
+
+// 진동
+M3Mobile.instance.enableScanVibration()
+M3Mobile.instance.disableScanVibration()
+
+// LED
+M3Mobile.instance.enableScanLed()
+M3Mobile.instance.disableScanLed()
+M3Mobile.instance.setScanLedTime(timeMillis: Int) // 범위: 1 ~ 1000
+```
+
+##### 스캔 모드 (Scanning Mode)
+
+```kotlin
+M3Mobile.instance.setScannerReadMode(ReadMode.MULTIPLE)
+// Enum: AIMING_AND_RELEASE, ASYNC, CONTINUE, MULTIPLE, PRESENTATION, SYNC
+
+// 조회
+M3Mobile.instance.getScannerReadMode()
+```
+
+##### 출력 구성 (Output Configuration)
+
+```kotlin
+// 출력 모드
+M3Mobile.instance.setScanResultOutputMode(OutputMode.COPY_AND_PASTE)
+// Enum: COMMIT_TEXT, COPY_AND_PASTE, COPY_TO_CLIPBOARD, KEY_EMULATION
+
+// 포맷팅
+M3Mobile.instance.setScanResultPrefix("Prefix")
+M3Mobile.instance.setScanResultPostfix("Postfix")
+M3Mobile.instance.setScanResultEndCharacter(EndCharacter.ENTER)
+// Enum: ENTER, KEYBOARD_ENTER, KEYBOARD_SPACE, KEYBOARD_TAB, NONE, SPACE, TAB
+
+// 조회
+M3Mobile.instance.getScanResultOutputMode()
+M3Mobile.instance.getScanResultPrefix()
+M3Mobile.instance.getScanResultPostfix()
+M3Mobile.instance.getScanResultEndCharacter()
+```
+
+##### 프로필 상태 (Profile Status)
+
+현재 스캐너 프로필이 활성화되어 있는지 확인합니다.
+
+```kotlin
+M3Mobile.instance.isScannerProfileEnabled()
 ```
 
 ---

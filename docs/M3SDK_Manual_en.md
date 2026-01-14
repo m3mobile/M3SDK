@@ -29,14 +29,29 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Disable Vibration Mode](#disable-vibration-mode)
     - [Set Display Settings](#set-display-settings)
     - [Get Serial Number](#get-serial-number)
+    - [Lock Status Bar Expansion](#lock-status-bar-expansion)
+    - [Unlock Status Bar Expansion](#unlock-status-bar-expansion)
+  - [Language API](#language-api)
+    - [Set Language](#set-language)
   - [Network API](#network-api)
     - [Set APN](#set-apn)
+    - [Enable NFC](#enable-nfc)
+    - [Disable NFC](#disable-nfc)
   - [Permission API](#permission-api)
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
+  - [Scanner API](#scanner-api)
+    - [Start Scan](#start-scan)
+    - [Stop Scan](#stop-scan)
+    - [Get Scanner Status](#get-scanner-status)
+    - [Get Scanner Type](#get-scanner-type)
+    - [Scan Result Listener](#scan-result-listener)
+    - [GS1 Parsed Listener](#gs1-parsed-listener)
+    - [Digital Link Parsed Listener](#digital-link-parsed-listener)
+    - [Scanner Settings](#scanner-settings)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [Time API](#time-api)
@@ -145,10 +160,11 @@ The M3 SDK provides a "Strict Mode" that influences how certain API calls behave
     *   `@SupportedModels`: Specifies the device models for which this API is available.
     *   `@UnsupportedModels`: Specifies the device models for which this API is NOT available.
     *   `@RequiresStartUp`: This indicates that a specific version or higher of StartUp must be installed in order to use this API.
+    *   `@RequiresScanEmul`: This indicates that a specific version or higher of ScanEmul must be installed in order to use this API.
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on a device model not listed as supported.
-    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed.
+    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp or ScanEmul application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed.
 *   **Disabled**: In this mode, API calls that do not meet the required conditions (e.g., unsupported device, insufficient StartUp version) will **fail silently** and simply do nothing. No exceptions will be thrown, allowing your application to continue execution without interruption.
 
 **Enabling Strict Mode:**
@@ -359,6 +375,45 @@ M3Mobile.instance.getSerialNumber(): String
 M3Mobile.instance.getSerialNumber(callback: RequestCallback<String>): Job
 ```
 
+#### Lock Status Bar Expansion
+
+Locks the expansion of the status bar. When locked, the user cannot pull down the status bar.
+
+*   **Requires StartUp Version**: `6.4.12` or later
+
+```kotlin
+M3Mobile.instance.lockStatusBarExpansion()
+```
+
+#### Unlock Status Bar Expansion
+
+Unlocks the expansion of the status bar.
+
+*   **Requires StartUp Version**: `6.4.12` or later
+
+```kotlin
+M3Mobile.instance.unlockStatusBarExpansion()
+```
+
+---
+
+### Language API
+
+Controls the system language settings.
+
+#### Set Language
+
+Sets the device's system language and country.
+
+*   **Requires StartUp Version**: `6.2.14` or later
+*   **Parameters**:
+    *   `language` (String): The language code (e.g., "en").
+    *   `country` (String): The country code (e.g., "US").
+
+```kotlin
+M3Mobile.instance.setLanguage(language: String, country: String)
+```
+
 ---
 
 ### Network API
@@ -375,6 +430,28 @@ Sets the Access Point Name (APN) configuration.
 
 ```kotlin
 M3Mobile.instance.setApn(apn: Apn)
+```
+
+#### Enable NFC
+
+Enables Near Field Communication (NFC).
+
+*   **Requires StartUp Version**: `6.2.14` or later
+*   **Requires Android Version**: Android 11 (R) or later
+
+```kotlin
+M3Mobile.instance.enableNfc()
+```
+
+#### Disable NFC
+
+Disables Near Field Communication (NFC).
+
+*   **Requires StartUp Version**: `6.2.14` or later
+*   **Requires Android Version**: Android 11 (R) or later
+
+```kotlin
+M3Mobile.instance.disableNfc()
 ```
 
 ---
@@ -435,6 +512,175 @@ Resets the Quick Tiles configuration to the default state.
 
 ```kotlin
 M3Mobile.instance.resetQuickTile()
+```
+
+---
+
+### Scanner API
+
+Controls the barcode scanner and configures scanning preferences.
+
+#### Start Scan
+
+Starts the scanning process.
+
+*   **Requires ScanEmul Version**: `2.13.0` or later
+
+```kotlin
+M3Mobile.instance.startScan()
+```
+
+#### Stop Scan
+
+Stops the scanning process.
+
+*   **Requires ScanEmul Version**: `2.13.0` or later
+
+```kotlin
+M3Mobile.instance.stopScan()
+```
+
+#### Get Scanner Status
+
+Retrieves the current status of the scanner.
+
+*   **Requires ScanEmul Version**: `2.13.0` or later
+*   **Returns**: An integer representing the status.
+    *   `1`: Failed to open
+    *   `2`: Failed to close
+    *   `4`: Succeed to open
+    *   `8`: Succeed to close
+
+```kotlin
+// Coroutine
+M3Mobile.instance.getScannerStatus(): Int
+
+// Callback
+M3Mobile.instance.getScannerStatus(callback: RequestCallback<Int>): Job
+```
+
+#### Get Scanner Type
+
+Retrieves the type of the scanner hardware.
+
+*   **Requires ScanEmul Version**: `2.13.0` or later
+*   **Returns**: The scanner type string.
+
+```kotlin
+// Coroutine
+M3Mobile.instance.getScannerType(): String
+
+// Callback
+M3Mobile.instance.getScannerType(callback: RequestCallback<String>): Job
+```
+
+#### Scan Result Listener
+
+Registers or unregisters a listener to receive scan results.
+
+*   **Requires ScanEmul Version**: `4.11.0` or later
+*   **Parameters**:
+    *   `listener` (OnScanResultListener): The listener object to receive scan results.
+
+```kotlin
+// Register
+M3Mobile.instance.registerOnScanResultListener(listener: OnScanResultListener)
+
+// Unregister
+M3Mobile.instance.unregisterOnScanResultListener(listener: OnScanResultListener)
+```
+
+#### GS1 Parsed Listener
+
+Registers or unregisters a listener to receive GS1 parsed scan results.
+
+*   **Requires ScanEmul Version**: `4.11.0` or later
+*   **Parameters**:
+    *   `listener` (OnGS1ParsedListener): The listener object to receive GS1 parsed results.
+
+```kotlin
+// Register
+M3Mobile.instance.registerOnGS1ParsedListener(listener: OnGS1ParsedListener)
+
+// Unregister
+M3Mobile.instance.unregisterOnGS1ParsedListener(listener: OnGS1ParsedListener)
+```
+
+#### Digital Link Parsed Listener
+
+Registers or unregisters a listener to receive Digital Link parsed scan results.
+
+*   **Requires ScanEmul Version**: `4.11.0` or later
+*   **Parameters**:
+    *   `listener` (OnDigitalLinkParsedListener): The listener object to receive Digital Link parsed results.
+
+```kotlin
+// Register
+M3Mobile.instance.registerOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
+
+// Unregister
+M3Mobile.instance.unregisterOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
+```
+
+#### Scanner Settings
+
+Configures various scanner options. These settings apply to the currently active profile.
+
+*   **Requires ScanEmul Version**: `2.11.0` or later
+
+##### Feedback
+
+```kotlin
+// Sound
+M3Mobile.instance.setScanSound(ScanSound.BEEP) 
+// Enum: NONE, BEEP, DING_DONG
+
+// Vibration
+M3Mobile.instance.enableScanVibration()
+M3Mobile.instance.disableScanVibration()
+
+// LED
+M3Mobile.instance.enableScanLed()
+M3Mobile.instance.disableScanLed()
+M3Mobile.instance.setScanLedTime(timeMillis: Int) // Range: 1 to 1000
+```
+
+##### Scanning Mode
+
+```kotlin
+M3Mobile.instance.setScannerReadMode(ReadMode.MULTIPLE)
+// Enum: AIMING_AND_RELEASE, ASYNC, CONTINUE, MULTIPLE, PRESENTATION, SYNC
+
+// Getter
+M3Mobile.instance.getScannerReadMode()
+```
+
+##### Output Configuration
+
+```kotlin
+// Output Mode
+M3Mobile.instance.setScanResultOutputMode(OutputMode.COPY_AND_PASTE)
+// Enum: COMMIT_TEXT, COPY_AND_PASTE, COPY_TO_CLIPBOARD, KEY_EMULATION
+
+// Formatting
+M3Mobile.instance.setScanResultPrefix("Prefix")
+M3Mobile.instance.setScanResultPostfix("Postfix")
+M3Mobile.instance.setScanResultEndCharacter(EndCharacter.ENTER)
+// Enum: ENTER, KEYBOARD_ENTER, KEYBOARD_SPACE, KEYBOARD_TAB, NONE, SPACE, TAB
+
+// Getters
+M3Mobile.instance.getScanResultOutputMode()
+M3Mobile.instance.getScanResultPrefix()
+M3Mobile.instance.getScanResultPostfix()
+M3Mobile.instance.getScanResultEndCharacter()
+```
+
+##### Profile Status
+
+Checks if the current scanner profile is enabled.
+
+```kotlin
+M3Mobile.instance.isScannerProfileEnabled()
 ```
 
 ---
