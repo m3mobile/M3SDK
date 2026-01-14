@@ -64,6 +64,7 @@ public interface ScanEmulScannerApi {
      *
      * @param listener The listener that will receive the scan results
      */
+    @RequiresScanEmul("4.11.0")
     public fun registerOnScanResultListener(listener: OnScanResultListener)
 
     /**
@@ -71,6 +72,7 @@ public interface ScanEmulScannerApi {
      *
      * @param listener The listener to be removed
      */
+    @RequiresScanEmul("4.11.0")
     public fun unregisterOnScanResultListener(listener: OnScanResultListener)
 
     /**
@@ -78,6 +80,7 @@ public interface ScanEmulScannerApi {
      *
      * @param listener The listener that will receive the GS1 parsed scan results
      */
+    @RequiresScanEmul("4.11.0")
     public fun registerOnGS1ParsedListener(listener: OnGS1ParsedListener)
 
     /**
@@ -85,6 +88,7 @@ public interface ScanEmulScannerApi {
      *
      * @param listener The listener to be removed
      */
+    @RequiresScanEmul("4.11.0")
     public fun unregisterOnGS1ParsedListener(listener: OnGS1ParsedListener)
 
     /**
@@ -92,6 +96,7 @@ public interface ScanEmulScannerApi {
      *
      * @param listener The listener that will receive the parsed Digital Link results
      */
+    @RequiresScanEmul("4.11.0")
     public fun registerOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
 
     /**
@@ -99,5 +104,6 @@ public interface ScanEmulScannerApi {
      *
      * @param listener The listener to be removed
      */
+    @RequiresScanEmul("4.11.0")
     public fun unregisterOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
 }
