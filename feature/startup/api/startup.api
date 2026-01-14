@@ -78,7 +78,7 @@ public abstract interface class net/m3mobile/feature/startup/api/StartUpAppApi {
 public abstract interface class net/m3mobile/feature/startup/api/StartUpDeviceApi {
 	public abstract fun disableVibrationMode ()V
 	public abstract fun enableVibrationMode ()V
-	public abstract fun getSerialNumber (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun getSerialNumber (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getSerialNumber (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract fun lockStatusBarExpansion ()V
 	public abstract fun setAlarmVolume (I)V

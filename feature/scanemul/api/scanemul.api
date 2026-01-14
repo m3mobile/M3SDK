@@ -1,5 +1,148 @@
+public final class net/m3mobile/feature/generated/version/ScanEmulScannerApiAppVersionMapSource : net/m3mobile/core/source/ScanEmulVersionMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/feature/generated/version/ScanEmulScannerSettingApiAppVersionMapSource : net/m3mobile/core/source/ScanEmulVersionMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
 public abstract interface class net/m3mobile/feature/scanemul/api/ScanEmulScannerApi {
-	public abstract fun cancelScan ()V
+	public abstract synthetic fun getScannerStatus (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScannerStatus (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScannerType (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScannerType (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract fun registerOnDigitalLinkParsedListener (Lnet/m3mobile/feature/scanemul/listener/OnDigitalLinkParsedListener;)V
+	public abstract fun registerOnGS1ParsedListener (Lnet/m3mobile/feature/scanemul/listener/OnGS1ParsedListener;)V
+	public abstract fun registerOnScanResultListener (Lnet/m3mobile/feature/scanemul/listener/OnScanResultListener;)V
 	public abstract fun startScan ()V
+	public abstract fun stopScan ()V
+	public abstract fun unregisterOnDigitalLinkParsedListener (Lnet/m3mobile/feature/scanemul/listener/OnDigitalLinkParsedListener;)V
+	public abstract fun unregisterOnGS1ParsedListener (Lnet/m3mobile/feature/scanemul/listener/OnGS1ParsedListener;)V
+	public abstract fun unregisterOnScanResultListener (Lnet/m3mobile/feature/scanemul/listener/OnScanResultListener;)V
+}
+
+public abstract interface class net/m3mobile/feature/scanemul/api/ScanEmulScannerSettingApi {
+	public abstract fun disableScanLed ()V
+	public abstract fun disableScanVibration ()V
+	public abstract fun enableScanLed ()V
+	public abstract fun enableScanVibration ()V
+	public abstract synthetic fun getScanResultEndCharacter (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScanResultEndCharacter (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScanResultOutputMode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScanResultOutputMode (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScanResultPostfix (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScanResultPostfix (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScanResultPrefix (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScanResultPrefix (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScannerReadMode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScannerReadMode (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun isScannerProfileEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun isScannerProfileEnabled (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract fun setScanLedTime (I)V
+	public abstract fun setScanResultEndCharacter (Lnet/m3mobile/feature/scanemul/params/EndCharacter;)V
+	public abstract fun setScanResultOutputMode (Lnet/m3mobile/feature/scanemul/params/OutputMode;)V
+	public abstract fun setScanResultPostfix (Ljava/lang/String;)V
+	public abstract fun setScanResultPrefix (Ljava/lang/String;)V
+	public abstract fun setScanSound (Lnet/m3mobile/feature/scanemul/params/ScanSound;)V
+	public abstract fun setScannerReadMode (Lnet/m3mobile/feature/scanemul/params/ReadMode;)V
+}
+
+public abstract interface class net/m3mobile/feature/scanemul/listener/OnDigitalLinkParsedListener {
+	public abstract fun onDigitalLinkParsed (Ljava/util/List;)V
+}
+
+public abstract interface class net/m3mobile/feature/scanemul/listener/OnGS1ParsedListener {
+	public abstract fun onGS1Parsed (Ljava/util/List;)V
+}
+
+public abstract interface class net/m3mobile/feature/scanemul/listener/OnScanResultListener {
+	public abstract fun onScanResult (Lnet/m3mobile/feature/scanemul/params/ScanResult;)V
+}
+
+public final class net/m3mobile/feature/scanemul/params/DigitalLinkParsedData {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/DigitalLinkParsedData;
+	public static synthetic fun copy$default (Lnet/m3mobile/feature/scanemul/params/DigitalLinkParsedData;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/m3mobile/feature/scanemul/params/DigitalLinkParsedData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAi ()Ljava/lang/String;
+	public final fun getData ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/m3mobile/feature/scanemul/params/EndCharacter : java/lang/Enum {
+	public static final field ENTER Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static final field KEYBOARD_ENTER Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static final field KEYBOARD_SPACE Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static final field KEYBOARD_TAB Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static final field NONE Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static final field SPACE Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static final field TAB Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/EndCharacter;
+}
+
+public final class net/m3mobile/feature/scanemul/params/GS1ParsedData {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/GS1ParsedData;
+	public static synthetic fun copy$default (Lnet/m3mobile/feature/scanemul/params/GS1ParsedData;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/m3mobile/feature/scanemul/params/GS1ParsedData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAi ()Ljava/lang/String;
+	public final fun getData ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/m3mobile/feature/scanemul/params/OutputMode : java/lang/Enum {
+	public static final field COMMIT_TEXT Lnet/m3mobile/feature/scanemul/params/OutputMode;
+	public static final field COPY_AND_PASTE Lnet/m3mobile/feature/scanemul/params/OutputMode;
+	public static final field COPY_TO_CLIPBOARD Lnet/m3mobile/feature/scanemul/params/OutputMode;
+	public static final field KEY_EMULATION Lnet/m3mobile/feature/scanemul/params/OutputMode;
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/OutputMode;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/OutputMode;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ReadMode : java/lang/Enum {
+	public static final field AIMING_AND_RELEASE Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static final field ASYNC Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static final field CONTINUE Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static final field MULTIPLE Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static final field PRESENTATION Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static final field SYNC Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ReadMode;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/ReadMode;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScanResult {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;[B)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()[B
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;[B)Lnet/m3mobile/feature/scanemul/params/ScanResult;
+	public static synthetic fun copy$default (Lnet/m3mobile/feature/scanemul/params/ScanResult;Ljava/lang/String;Ljava/lang/String;[BILjava/lang/Object;)Lnet/m3mobile/feature/scanemul/params/ScanResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBarcode ()Ljava/lang/String;
+	public final fun getRawData ()[B
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScanSound : java/lang/Enum {
+	public static final field BEEP Lnet/m3mobile/feature/scanemul/params/ScanSound;
+	public static final field DING_DONG Lnet/m3mobile/feature/scanemul/params/ScanSound;
+	public static final field NONE Lnet/m3mobile/feature/scanemul/params/ScanSound;
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScanSound;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/ScanSound;
 }
 
