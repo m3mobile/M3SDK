@@ -23,6 +23,11 @@ public final class net/m3mobile/feature/generated/version/StartUpDeviceApiAppVer
 	public fun get ()Ljava/util/Map;
 }
 
+public final class net/m3mobile/feature/generated/version/StartUpLanguageApiAppVersionMapSource : net/m3mobile/core/source/StartUpVersionMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
 public final class net/m3mobile/feature/generated/version/StartUpNetworkApiAppVersionMapSource : net/m3mobile/core/source/StartUpVersionMapSource {
 	public fun <init> ()V
 	public fun get ()Ljava/util/Map;
@@ -73,16 +78,24 @@ public abstract interface class net/m3mobile/feature/startup/api/StartUpAppApi {
 public abstract interface class net/m3mobile/feature/startup/api/StartUpDeviceApi {
 	public abstract fun disableVibrationMode ()V
 	public abstract fun enableVibrationMode ()V
-	public abstract fun getSerialNumber (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract synthetic fun getSerialNumber (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getSerialNumber (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract fun lockStatusBarExpansion ()V
 	public abstract fun setAlarmVolume (I)V
 	public abstract fun setDisplaySetting (Lnet/m3mobile/feature/startup/params/DisplaySetting;)V
 	public abstract fun setMediaVolume (I)V
 	public abstract fun setNotificationVolume (I)V
 	public abstract fun setRingtoneVolume (I)V
+	public abstract fun unlockStatusBarExpansion ()V
+}
+
+public abstract interface class net/m3mobile/feature/startup/api/StartUpLanguageApi {
+	public abstract fun setLanguage (Ljava/lang/String;Ljava/lang/String;)V
 }
 
 public abstract interface class net/m3mobile/feature/startup/api/StartUpNetworkApi {
+	public abstract fun disableNfc ()V
+	public abstract fun enableNfc ()V
 	public abstract fun setApn (Lnet/m3mobile/feature/startup/params/Apn;)V
 }
 

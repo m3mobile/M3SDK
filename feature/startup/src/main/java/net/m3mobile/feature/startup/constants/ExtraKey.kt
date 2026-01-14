@@ -71,4 +71,7 @@ internal object ExtraKey {
     const val SET_WIFI_COUNTRY = "value"
     const val SET_WIFI_SLEEP_POLICY = "value"
     const val SET_WIFI_STABILITY = "value"
+    const val LANGUAGE_TAG = "language_value"
+    const val ENABLE_NFC = "nfc_on"
+    const val LOCK_STATUS_BAR_EXPANSIONS = "prevent"
 }

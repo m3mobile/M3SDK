@@ -64,7 +64,7 @@ public annotation class SupportedModels(vararg val models: DeviceModel)
 public annotation class UnsupportedModels(vararg val models: DeviceModel)
 
 /**
- * This indicates that the API will only function if the version of the StartUp app
+ * This indicates that the API will only function if the version of the `StartUp` app
  * installed on the device is equal to or later than the specified value.
  *
  * When `STRICT_MODE` is enabled, an [UnsatisfiedVersionException] exception is thrown
@@ -84,3 +84,25 @@ public annotation class UnsupportedModels(vararg val models: DeviceModel)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
 public annotation class RequiresStartUp(val version: String)
+
+/**
+ * This indicates that the API will only function if the version of the `ScanEmul` app
+ * installed on the device is equal to or later than the specified value.
+ *
+ * When `STRICT_MODE` is enabled, an [UnsatisfiedVersionException] exception is thrown
+ * if the installed `ScanEmul` app version is earlier than the specified value.
+ *
+ * When `STRICT_MODE` is disabled, no exception is thrown.
+ *
+ * `STRICT_MODE` is disabled by default. To enable it, please refer to the SDK documentation.
+ *
+ * Example:
+ * ```
+ * @RequiresScanEmul("1.1.2")
+ * fun someAPI() // This API will only function if the ScanEmul version installed on the device is 1.1.2 or later.
+ * ```
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION)
+@InternalM3Api
+public annotation class RequiresScanEmul(val version: String)

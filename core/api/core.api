@@ -31,6 +31,9 @@ public abstract interface class net/m3mobile/core/source/MethodMapSource {
 	public abstract fun get ()Ljava/util/Map;
 }
 
+public abstract interface class net/m3mobile/core/source/ScanEmulVersionMapSource : net/m3mobile/core/source/MethodMapSource {
+}
+
 public abstract interface class net/m3mobile/core/source/StartUpVersionMapSource : net/m3mobile/core/source/MethodMapSource {
 }
 
