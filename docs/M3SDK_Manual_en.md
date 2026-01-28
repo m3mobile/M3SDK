@@ -120,15 +120,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    // Replace <TAG> with the specific version you want to use (e.g., 1.0.0)
-    implementation("com.github.m3mobile:M3SDK:2.0.0")
+    implementation("com.github.m3mobile:M3SDK:2.1.0")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.0.0"
+    implementation "com.github.m3mobile:M3SDK:2.1.0"
 }
 ```
 
