@@ -43,6 +43,7 @@ android {
 
 dependencies {
 
+    androidTestImplementation(projects.sdk)
     implementation(projects.feature.startup)
     implementation(projects.feature.keytool)
 

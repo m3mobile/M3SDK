@@ -1,3 +1,8 @@
+public final class net/m3mobile/feature/generated/device/StartUpDeviceApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
 public final class net/m3mobile/feature/generated/device/StartUpUsbApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
 	public fun <init> ()V
 	public fun get ()Ljava/util/Map;
@@ -78,6 +83,8 @@ public abstract interface class net/m3mobile/feature/startup/api/StartUpAppApi {
 public abstract interface class net/m3mobile/feature/startup/api/StartUpDeviceApi {
 	public abstract fun disableVibrationMode ()V
 	public abstract fun enableVibrationMode ()V
+	public abstract synthetic fun getBluetoothMac (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getBluetoothMac (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract synthetic fun getSerialNumber (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getSerialNumber (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract fun lockStatusBarExpansion ()V
