@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeout
 import net.m3mobile.core.InternalM3Api
@@ -41,7 +42,11 @@ public abstract class AwaitableBroadcastRequester<T: Any>: BroadcastRequester() 
                 }
 
                 val filter = IntentFilter(responseAction)
-                context.registerReceiver(receiver, filter)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED)
+                } else {
+                    context.registerReceiver(receiver, filter)
+                }
 
                 runBroadcast()
 

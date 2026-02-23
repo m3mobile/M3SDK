@@ -14,6 +14,7 @@ import net.m3mobile.feature.startup.requester.device.SetMediaVolumeRequester
 import net.m3mobile.feature.startup.requester.device.SetNotificationVolumeRequester
 import net.m3mobile.feature.startup.requester.device.SetRingtoneVolumeRequester
 import net.m3mobile.feature.startup.requester.device.UnlockStatusBarExpansionRequester
+import net.m3mobile.feature.startup.requester.bluetooth.GetBluetoothMacRequester
 import net.m3mobile.feature.startup.requester.serial.GetSerialNumberRequester
 
 internal class StartUpDeviceApiImpl(private val context: Context): StartUpDeviceApi {
@@ -55,6 +56,21 @@ internal class StartUpDeviceApiImpl(private val context: Context): StartUpDevice
             try {
                 val serial = getSerialNumber()
                 callback.onComplete(serial, null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun getBluetoothMac(): String {
+        return GetBluetoothMacRequester(context).fetch()
+    }
+
+    override fun getBluetoothMac(callback: RequestCallback<String>): Job {
+        return launchOnMain {
+            try {
+                val result = getBluetoothMac()
+                callback.onComplete(result, null)
             } catch (e: Exception) {
                 callback.onComplete(null, e)
             }
