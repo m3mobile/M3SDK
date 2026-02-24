@@ -1,5 +1,6 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en.pdf](https://github.com/user-attachments/files/24602974/M3SDK_Manual_en.pdf)
+Download PDF: [M3SDK_Manual_en.pdf](https://github.com/user-attachments/files/25506407/M3SDK_Manual_en.pdf)
+
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
 
