@@ -31,6 +31,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Get Serial Number](#get-serial-number)
     - [Lock Status Bar Expansion](#lock-status-bar-expansion)
     - [Unlock Status Bar Expansion](#unlock-status-bar-expansion)
+    - [Get Bluetooth MAC Address](#get-bluetooth-mac-address)
   - [Language API](#language-api)
     - [Set Language](#set-language)
   - [Network API](#network-api)
@@ -120,14 +121,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.1.0")
+    implementation("com.github.m3mobile:M3SDK:2.2.0")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.1.0"
+    implementation "com.github.m3mobile:M3SDK:2.2.0"
 }
 ```
 
@@ -392,6 +393,22 @@ Unlocks the expansion of the status bar.
 
 ```kotlin
 M3Mobile.instance.unlockStatusBarExpansion()
+```
+
+#### Get Bluetooth MAC Address
+
+Retrieves the Bluetooth MAC address of the device.
+
+*   **Supported Models**: `UL30`
+*   **Requires StartUp Version**: `6.5.31` or later
+*   **Returns**: The Bluetooth MAC address string (format: XX:XX:XX:XX:XX:XX).
+
+```kotlin
+// Coroutine (for kotlin)
+M3Mobile.instance.getBluetoothMac(): String
+
+// Callback (for java)
+M3Mobile.instance.getBluetoothMac(callback: RequestCallback<String>): Job
 ```
 
 ---

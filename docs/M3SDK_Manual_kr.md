@@ -32,6 +32,7 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
     - [시리얼 번호 조회](#시리얼-번호-조회)
     - [상태 표시줄 확장 잠금](#상태-표시줄-확장-잠금)
     - [상태 표시줄 확장 잠금 해제](#상태-표시줄-확장-잠금-해제)
+    - [Bluetooth MAC 주소 조회](#bluetooth-mac-주소-조회)
   - [Language API](#language-api)
     - [언어 설정](#언어-설정)
   - [Network API](#network-api)
@@ -122,14 +123,14 @@ dependencyResolutionManagement {
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.1.0")
+    implementation("com.github.m3mobile:M3SDK:2.2.0")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.1.0"
+    implementation "com.github.m3mobile:M3SDK:2.2.0"
 }
 ```
 
@@ -395,6 +396,22 @@ M3Mobile.instance.lockStatusBarExpansion()
 
 ```kotlin
 M3Mobile.instance.unlockStatusBarExpansion()
+```
+
+#### Bluetooth MAC 주소 조회
+
+장치의 Bluetooth MAC 주소를 조회합니다.
+
+*   **지원 모델**: `UL30`
+*   **필요 StartUp 버전**: `6.5.31` 이상
+*   **반환값**: Bluetooth MAC 주소 문자열입니다 (형식: XX:XX:XX:XX:XX:XX).
+
+```kotlin
+// 코루틴 (for kotlin)
+M3Mobile.instance.getBluetoothMac(): String
+
+// 콜백 (for java)
+M3Mobile.instance.getBluetoothMac(callback: RequestCallback<String>): Job
 ```
 
 ---
