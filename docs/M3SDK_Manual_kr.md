@@ -403,8 +403,8 @@ M3Mobile.instance.unlockStatusBarExpansion()
 
 장치의 Bluetooth MAC 주소를 조회합니다.
 
-*   **지원 모델**: `UL30`
-*   **필요 StartUp 버전**: `6.5.31` 이상
+*   **지원 모델**: 전체 모델
+*   **필요 StartUp 버전**: `6.5.31` 이상 (UL30), `6.5.35` 이상 (기타 모델)
 *   **반환값**: Bluetooth MAC 주소 문자열입니다 (형식: XX:XX:XX:XX:XX:XX).
 
 ```kotlin

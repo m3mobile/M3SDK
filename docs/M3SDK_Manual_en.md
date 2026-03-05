@@ -400,8 +400,8 @@ M3Mobile.instance.unlockStatusBarExpansion()
 
 Retrieves the Bluetooth MAC address of the device.
 
-*   **Supported Models**: `UL30`
-*   **Requires StartUp Version**: `6.5.31` or later
+*   **Supported Models**: All models
+*   **Requires StartUp Version**: `6.5.31` or later (UL30), `6.5.35` or later (other models)
 *   **Returns**: The Bluetooth MAC address string (format: XX:XX:XX:XX:XX:XX).
 
 ```kotlin
