@@ -1,6 +1,7 @@
 package net.m3mobile.core.inspection
 
 import net.m3mobile.core.InternalM3Api
+import net.m3mobile.core.source.StartUpModelVersionMapSource
 import net.m3mobile.core.source.StartUpVersionMapSource
 import java.util.ServiceLoader
 
@@ -8,9 +9,12 @@ private const val STARTUP_APP_NAME = "StartUp"
 private const val STARTUP_APP_PACKAGE = "com.m3.startup"
 
 @InternalM3Api
-public class InspectStartUpVersionSatisfied : InspectAppVersionSatisfied<StartUpVersionMapSource>() {
+public class InspectStartUpVersionSatisfied
+    : InspectAppVersionSatisfied<StartUpVersionMapSource, StartUpModelVersionMapSource>() {
     override val serviceLoader: ServiceLoader<StartUpVersionMapSource> =
         ServiceLoader.load(StartUpVersionMapSource::class.java)
+    override val modelVersionServiceLoader: ServiceLoader<StartUpModelVersionMapSource> =
+        ServiceLoader.load(StartUpModelVersionMapSource::class.java)
     override val appName: String = STARTUP_APP_NAME
     override val appPackage: String = STARTUP_APP_PACKAGE
 }
