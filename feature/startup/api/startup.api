@@ -23,6 +23,11 @@ public final class net/m3mobile/feature/generated/version/StartUpDeviceApiAppVer
 	public fun get ()Ljava/util/Map;
 }
 
+public final class net/m3mobile/feature/generated/version/StartUpDeviceApiModelVersionMapSource : net/m3mobile/core/source/StartUpModelVersionMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
 public final class net/m3mobile/feature/generated/version/StartUpLanguageApiAppVersionMapSource : net/m3mobile/core/source/StartUpVersionMapSource {
 	public fun <init> ()V
 	public fun get ()Ljava/util/Map;
