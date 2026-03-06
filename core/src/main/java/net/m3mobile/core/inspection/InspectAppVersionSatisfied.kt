@@ -49,7 +49,7 @@ public abstract class InspectAppVersionSatisfied<T: MethodMapSource, U: MethodMa
             throw UnsatisfiedVersionException(
                 methodName,
                 appName,
-                effectiveVersion,
+                currentAppVersion,
                 effectiveVersion
             )
     }
