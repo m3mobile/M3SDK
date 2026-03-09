@@ -124,14 +124,14 @@ dependencyResolutionManagement {
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.2.0")
+    implementation("com.github.m3mobile:M3SDK:2.3.0")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.2.0"
+    implementation "com.github.m3mobile:M3SDK:2.3.0"
 }
 ```
 
