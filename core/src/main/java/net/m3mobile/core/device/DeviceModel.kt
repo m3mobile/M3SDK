@@ -37,7 +37,8 @@ public enum class DeviceModel {
     SL20P,
     SL20K,
     SL25,
-    PC10;
+    PC10,
+    WD10;
 
     public companion object {
         public val setOfEntriesName: Set<String> = values().map { it.name }.toSet()
@@ -83,5 +84,7 @@ private fun initCurrentDeviceModel(): DeviceModel {
         DeviceModel.SM30
     } else if (Build.MODEL.contains("SL25")) {
         DeviceModel.SL25
+    } else if (Build.MODEL.contains("WD10")) {
+        DeviceModel.WD10
     } else DeviceModel.UNKNOWN
 }

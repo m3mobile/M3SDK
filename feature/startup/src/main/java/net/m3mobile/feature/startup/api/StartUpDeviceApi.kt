@@ -3,9 +3,9 @@ package net.m3mobile.feature.startup.api
 import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Job
+import net.m3mobile.core.ModelVersion
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
-import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.startup.params.DisplaySetting
 
@@ -131,13 +131,13 @@ public interface StartUpDeviceApi {
      *
      * This is a suspending function and must be called from a coroutine scope.
      *
-     * StartUp version `6.5.31` or later is required.
+     * StartUp version `6.5.35` or later is required.
+     * For `UL30`, StartUp version `6.5.31` or later is required.
      *
      * @return The Bluetooth MAC address of the device as a [String].
      */
     @JvmSynthetic
-    @SupportedModels(DeviceModel.UL30)
-    @RequiresStartUp("6.5.31")
+    @RequiresStartUp("6.5.35", ModelVersion(DeviceModel.UL30, "6.5.31"))
     public suspend fun getBluetoothMac(): String
 
     /**
@@ -146,13 +146,13 @@ public interface StartUpDeviceApi {
      * This function initiates a request to get the Bluetooth MAC address and returns the result
      * via a callback on the main thread.
      *
-     * StartUp version `6.5.31` or later is required.
+     * StartUp version `6.5.35` or later is required.
+     * For `UL30`, StartUp version `6.5.31` or later is required.
      *
      * @param callback A callback to receive the result.
      * @return A [Job] representing the coroutine that is executing the request. This can be used to cancel the operation.
      */
-    @SupportedModels(DeviceModel.UL30)
-    @RequiresStartUp("6.5.31")
+    @RequiresStartUp("6.5.35", ModelVersion(DeviceModel.UL30, "6.5.31"))
     public fun getBluetoothMac(callback: RequestCallback<String>): Job
 
     /**

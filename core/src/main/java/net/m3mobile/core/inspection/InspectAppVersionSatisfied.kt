@@ -5,33 +5,52 @@ import android.os.Build
 import net.m3mobile.core.InternalM3Api
 import net.m3mobile.core.UnsatisfiedVersionException
 import net.m3mobile.core.appContext
+import net.m3mobile.core.device.currentDeviceModel
 import net.m3mobile.core.source.MethodMapSource
+import java.util.ServiceLoader
 
 /**
  * 현재 디바이스에 지정된 앱(패키지)가 설치되어 있는지, 그리고 설치된 버전이 요구 사항을 충족하는지 검사합니다.
  *
  * 조건이 충족되지 않을 경우 호출부로 [UnsatisfiedVersionException]를 던집니다.
+ *
+ * @param T 기본 버전 맵 소스 타입
+ * @param U 모델별 버전 override 맵 소스 타입
  */
 @InternalM3Api
-public abstract class InspectAppVersionSatisfied<T: MethodMapSource> : MethodInspector<T, String>() {
+public abstract class InspectAppVersionSatisfied<T: MethodMapSource, U: MethodMapSource>
+    : MethodInspector<T, String>() {
 
     protected abstract val appName: String
     protected abstract val appPackage: String
+    protected abstract val modelVersionServiceLoader: ServiceLoader<U>
+
+    @Suppress("UNCHECKED_CAST")
+    private val modelVersionMap: Map<String, Map<String, String>> by lazy {
+        modelVersionServiceLoader.fold(mutableMapOf<String, Map<String, String>>()) { acc, provider ->
+            acc.putAll(provider.get<Map<String, String>>() as Map<String, Map<String, String>>)
+            acc
+        }
+    }
 
     override fun assert(methodKey: String, methodName: String) {
-        val minStartUpVersion = methodMap[methodKey] ?: return
-        val currentStartUpVersion = getAppVersionName() ?: throw UnsatisfiedVersionException(
+        val defaultVersion = methodMap[methodKey] ?: return
+
+        val overrides = modelVersionMap[methodKey]
+        val effectiveVersion = overrides?.get(currentDeviceModel.name) ?: defaultVersion
+
+        val currentAppVersion = getAppVersionName() ?: throw UnsatisfiedVersionException(
             methodName,
             appName,
-            minStartUpVersion
+            effectiveVersion
         )
 
-        if (!currentStartUpVersion.isVersionAbove(minStartUpVersion))
+        if (!currentAppVersion.isVersionAbove(effectiveVersion))
             throw UnsatisfiedVersionException(
                 methodName,
                 appName,
-                minStartUpVersion,
-                minStartUpVersion
+                currentAppVersion,
+                effectiveVersion
             )
     }
 

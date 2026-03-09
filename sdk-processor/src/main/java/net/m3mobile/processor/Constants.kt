@@ -13,3 +13,7 @@ internal const val UNSUPPORTED_MODELS_ANNOTATION_NAME = "net.m3mobile.core.Unsup
 internal const val STARTUP_VERSION_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.StartUpVersionMapSource"
 internal const val SCANEMUL_VERSION_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.ScanEmulVersionMapSource"
 internal const val DEVICE_SUPPORT_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.DeviceSupportMapSource"
+internal const val MODEL_VERSION_ANNOTATION_PROPERTY_NAME = "overrides"
+internal const val MODEL_VERSION_MAP_SOURCE_CLASS_NAME = "ModelVersionMapSource"
+internal const val STARTUP_MODEL_VERSION_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.StartUpModelVersionMapSource"
+internal const val SCANEMUL_MODEL_VERSION_MAP_SOURCE_INTERFACE_NAME = "net.m3mobile.core.source.ScanEmulModelVersionMapSource"
