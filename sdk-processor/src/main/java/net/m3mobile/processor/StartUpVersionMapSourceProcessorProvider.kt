@@ -10,7 +10,8 @@ class StartUpVersionMapSourceProcessorProvider : SymbolProcessorProvider {
             codeGenerator = environment.codeGenerator,
             logger = environment.logger,
             annotationName = REQUIRE_STARTUP_ANNOTATION_NAME,
-            providerInterfaceName = STARTUP_VERSION_MAP_SOURCE_INTERFACE_NAME
+            providerInterfaceName = STARTUP_VERSION_MAP_SOURCE_INTERFACE_NAME,
+            modelVersionProviderInterfaceName = STARTUP_MODEL_VERSION_MAP_SOURCE_INTERFACE_NAME
         )
     }
 }

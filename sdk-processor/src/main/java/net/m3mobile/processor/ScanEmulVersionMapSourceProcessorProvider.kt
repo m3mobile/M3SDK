@@ -10,7 +10,8 @@ class ScanEmulVersionMapSourceProcessorProvider : SymbolProcessorProvider {
             codeGenerator = environment.codeGenerator,
             logger = environment.logger,
             annotationName = REQUIRE_SCANEMUL_ANNOTATION_NAME,
-            providerInterfaceName = SCANEMUL_VERSION_MAP_SOURCE_INTERFACE_NAME
+            providerInterfaceName = SCANEMUL_VERSION_MAP_SOURCE_INTERFACE_NAME,
+            modelVersionProviderInterfaceName = SCANEMUL_MODEL_VERSION_MAP_SOURCE_INTERFACE_NAME
         )
     }
 }

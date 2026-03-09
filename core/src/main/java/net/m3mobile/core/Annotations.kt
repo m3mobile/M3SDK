@@ -64,6 +64,20 @@ public annotation class SupportedModels(vararg val models: DeviceModel)
 public annotation class UnsupportedModels(vararg val models: DeviceModel)
 
 /**
+ * Specifies a per-model version override for use inside [RequiresStartUp] or [RequiresScanEmul].
+ *
+ * @property model The device model this override applies to.
+ * @property version The minimum app version required for the specified model.
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target()
+@InternalM3Api
+public annotation class ModelVersion(
+    val model: DeviceModel,
+    val version: String
+)
+
+/**
  * This indicates that the API will only function if the version of the `StartUp` app
  * installed on the device is equal to or later than the specified value.
  *
@@ -78,12 +92,21 @@ public annotation class UnsupportedModels(vararg val models: DeviceModel)
  * ```
  * @RequiresStartUp("1.1.2")
  * fun someAPI() // This API will only function if the StartUp version installed on the device is 1.1.2 or later.
+ *
+ * @RequiresStartUp("6.5.35", ModelVersion(DeviceModel.UL30, "6.5.31"))
+ * fun anotherAPI() // UL30 requires 6.5.31, all others require 6.5.35.
  * ```
+ *
+ * @property version The default minimum StartUp version required.
+ * @property overrides Per-model version overrides. If the current device matches an override, its version is used instead.
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-public annotation class RequiresStartUp(val version: String)
+public annotation class RequiresStartUp(
+    val version: String,
+    vararg val overrides: ModelVersion
+)
 
 /**
  * This indicates that the API will only function if the version of the `ScanEmul` app
@@ -101,8 +124,14 @@ public annotation class RequiresStartUp(val version: String)
  * @RequiresScanEmul("1.1.2")
  * fun someAPI() // This API will only function if the ScanEmul version installed on the device is 1.1.2 or later.
  * ```
+ *
+ * @property version The default minimum ScanEmul version required.
+ * @property overrides Per-model version overrides. If the current device matches an override, its version is used instead.
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)
 @InternalM3Api
-public annotation class RequiresScanEmul(val version: String)
+public annotation class RequiresScanEmul(
+    val version: String,
+    vararg val overrides: ModelVersion
+)
