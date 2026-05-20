@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F973AB42-1F3F-4A52-B952-0CFE1B8ED415}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>M3Sdk.Xamarin</RootNamespace>
+    <AssemblyName>M3Mobile.M3Sdk.Xamarin</AssemblyName>
+    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
+    <LangVersion>7.3</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>M3Mobile.M3Sdk.Xamarin</PackageId>
+    <Version>2.3.0-alpha01</Version>
+    <Authors>M3 Mobile</Authors>
+    <Description>Native C# Xamarin.Android SDK wrapper for M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.</Description>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\M3Mobile.M3Sdk.Xamarin.xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\M3Mobile.M3Sdk.Xamarin.xml</DocumentationFile>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IM3Sdk.cs" />
+    <Compile Include="M3Mobile.cs" />
+    <Compile Include="M3Sdk.cs" />
+    <Compile Include="M3SdkAbstractions.cs" />
+    <Compile Include="Internal\ActionBroadcastReceiver.cs" />
+    <Compile Include="Internal\AwaitableBroadcastRequester.cs" />
+    <Compile Include="Internal\BroadcastRequester.cs" />
+    <Compile Include="Internal\CallbackDispatcher.cs" />
+    <Compile Include="Internal\CallbackRunner.cs" />
+    <Compile Include="Internal\Constants.cs" />
+    <Compile Include="Internal\DeviceModelDetector.cs" />
+    <Compile Include="Internal\FinishRequiredBroadcastRequester.cs" />
+    <Compile Include="Internal\M3SdkGuard.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScanEmul\DecodeMessageConnection.cs" />
+    <Compile Include="ScanEmul\IScanEmulApi.cs" />
+    <Compile Include="ScanEmul\ScanEmulApi.cs" />
+    <Compile Include="ScanEmul\ScanResult.cs" />
+    <Compile Include="Shared\ITimeApi.cs" />
+    <Compile Include="Shared\IUsbApi.cs" />
+    <Compile Include="Shared\IWifiApi.cs" />
+    <Compile Include="Shared\SharedGuardSets.cs" />
+    <Compile Include="Shared\TimeApi.cs" />
+    <Compile Include="Shared\UsbApi.cs" />
+    <Compile Include="Shared\WifiApi.cs" />
+    <Compile Include="Startup\IStartUpApi.cs" />
+    <Compile Include="Startup\StartUpApi.cs" />
+    <Compile Include="Startup\StartupModels.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="M3Mobile.M3Sdk.Xamarin.nuspec" />
+    <None Include="build\M3Mobile.M3Sdk.Xamarin.targets" />
+    <None Include="buildTransitive\M3Mobile.M3Sdk.Xamarin.targets" />
+    <None Include="manifest\AndroidManifest.xml" />
+    <None Include="pack.ps1" />
+    <None Include="README.md" />
+    <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <Target Name="Pack" DependsOnTargets="Build">
+    <PropertyGroup>
+      <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$(MSBuildProjectDirectory)\bin\$(Configuration)</PackageOutputPath>
+    </PropertyGroup>
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\pack.ps1&quot; -ProjectDir &quot;$(MSBuildProjectDirectory)&quot; -Configuration &quot;$(Configuration)&quot; -TargetPath &quot;$(TargetPath)&quot; -DocumentationFile &quot;$(DocumentationFile)&quot; -PackageOutputPath &quot;$(PackageOutputPath)\.&quot; -PackageId &quot;$(PackageId)&quot; -Version &quot;$(Version)&quot;" />
+  </Target>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+</Project>

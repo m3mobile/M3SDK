@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>M3Mobile.M3Sdk.Xamarin</id>
+    <version>2.3.0-alpha01</version>
+    <authors>M3 Mobile</authors>
+    <owners>M3 Mobile</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Native C# Xamarin.Android SDK wrapper for M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.</description>
+    <summary>Native C# Xamarin.Android module for M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.</summary>
+    <tags>xamarin android m3mobile startup scanemul scanner wifi usb time</tags>
+    <readme>README.md</readme>
+    <dependencies>
+      <group targetFramework="MonoAndroid7.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\M3Mobile.M3Sdk.Xamarin.dll" target="lib\MonoAndroid7.0" />
+    <file src="bin\Release\M3Mobile.M3Sdk.Xamarin.xml" target="lib\MonoAndroid7.0" />
+    <file src="build\M3Mobile.M3Sdk.Xamarin.targets" target="build\M3Mobile.M3Sdk.Xamarin.targets" />
+    <file src="buildTransitive\M3Mobile.M3Sdk.Xamarin.targets" target="buildTransitive\M3Mobile.M3Sdk.Xamarin.targets" />
+    <file src="manifest\AndroidManifest.xml" target="manifest\AndroidManifest.xml" />
+    <file src="README.md" target="" />
+  </files>
+</package>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_M3MobileM3SdkXamarinTargetsAlreadyImported>$(M3MobileM3SdkXamarinTargetsImported)</_M3MobileM3SdkXamarinTargetsAlreadyImported>
+    <M3MobileM3SdkXamarinTargetsImported>true</M3MobileM3SdkXamarinTargetsImported>
+    <_M3MobileM3SdkXamarinTargetFrameworkVersion>$([System.String]::Copy('$(TargetFrameworkVersion)').Replace('v', '').Replace('V', ''))</_M3MobileM3SdkXamarinTargetFrameworkVersion>
+    <_M3MobileM3SdkXamarinQueriesManifest>$(MSBuildThisFileDirectory)..\manifest\AndroidManifest.xml</_M3MobileM3SdkXamarinQueriesManifest>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(_M3MobileM3SdkXamarinTargetsAlreadyImported)' != 'true' and '$(_M3MobileM3SdkXamarinTargetFrameworkVersion)' != '' and '$(_M3MobileM3SdkXamarinTargetFrameworkVersion)' >= '11.0'">
+    <_M3MobileM3SdkXamarinAddQueriesManifest>true</_M3MobileM3SdkXamarinAddQueriesManifest>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(_M3MobileM3SdkXamarinAddQueriesManifest)' == 'true' and Exists('$(_M3MobileM3SdkXamarinQueriesManifest)')">
+    <ExtractedManifestDocuments Include="$(_M3MobileM3SdkXamarinQueriesManifest)" />
+  </ItemGroup>
+</Project>
