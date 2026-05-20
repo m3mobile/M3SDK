@@ -6,6 +6,9 @@
     <authors>M3 Mobile</authors>
     <owners>M3 Mobile</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <projectUrl>https://github.com/m3mobile/M3SDK</projectUrl>
+    <repository type="git" url="https://github.com/m3mobile/M3SDK" />
     <description>Native C# Xamarin.Android SDK wrapper for M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.</description>
     <summary>Native C# Xamarin.Android module for M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.</summary>
     <tags>xamarin android m3mobile startup scanemul scanner wifi usb time</tags>

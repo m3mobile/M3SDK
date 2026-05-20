@@ -65,3 +65,7 @@ By default, this module matches the Kotlin SDK and does not enforce app version 
 ```
 
 For Android 11 package visibility, the NuGet package includes `build` and `buildTransitive` targets that add a library manifest containing queries for `com.m3.startup` and `net.m3mobile.app.scanemul` to consuming `MonoAndroid11.0` or newer builds. The targets intentionally skip `MonoAndroid10.0` and lower builds because `<queries>` is an Android 11 manifest element; those apps can still reference the package without the Android 11 manifest overlay.
+
+## License
+
+This package is licensed under the Apache License 2.0.
