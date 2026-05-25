@@ -13,8 +13,6 @@
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <LangVersion>7.3</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageId>M3Mobile.M3Sdk.Xamarin</PackageId>
-    <Version>2.3.0-alpha01</Version>
     <Authors>M3 Mobile</Authors>
     <Description>Native C# Xamarin.Android SDK wrapper for M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.</Description>
     <NoWarn>$(NoWarn);1591</NoWarn>
@@ -77,15 +75,8 @@
     <None Include="build\M3Mobile.M3Sdk.Xamarin.targets" />
     <None Include="buildTransitive\M3Mobile.M3Sdk.Xamarin.targets" />
     <None Include="manifest\AndroidManifest.xml" />
-    <None Include="pack.ps1" />
     <None Include="README.md" />
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
-  <Target Name="Pack" DependsOnTargets="Build">
-    <PropertyGroup>
-      <PackageOutputPath Condition=" '$(PackageOutputPath)' == '' ">$(MSBuildProjectDirectory)\bin\$(Configuration)</PackageOutputPath>
-    </PropertyGroup>
-    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\pack.ps1&quot; -ProjectDir &quot;$(MSBuildProjectDirectory)&quot; -Configuration &quot;$(Configuration)&quot; -TargetPath &quot;$(TargetPath)&quot; -DocumentationFile &quot;$(DocumentationFile)&quot; -PackageOutputPath &quot;$(PackageOutputPath)\.&quot; -PackageId &quot;$(PackageId)&quot; -Version &quot;$(Version)&quot;" />
-  </Target>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
