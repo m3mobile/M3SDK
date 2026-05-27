@@ -22,7 +22,7 @@ namespace M3Sdk.Xamarin.Shared
         /// <summary>
         /// Gets the current preferred Wi-Fi frequency band value.
         /// </summary>
-        /// <returns><c>0</c> for automatic, <c>1</c> for 5 GHz only, or <c>2</c> for 2.4 GHz only.</returns>
+        /// <returns><c>0</c> for automatic, <c>1</c> for 2.4 GHz only, or <c>2</c> for 5 GHz only.</returns>
         /// <remarks>Supported on US20 and US30.</remarks>
         int GetWifiFrequencyBand();
 
