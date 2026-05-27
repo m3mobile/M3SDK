@@ -187,6 +187,34 @@ jobs:
       - name: Set up NuGet
         uses: NuGet/setup-nuget@v2
 
+      - name: Install Android SDK platform 24
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $sdkRoot = "C:\Program Files (x86)\Android\android-sdk"
+          $platformJar = Join-Path $sdkRoot "platforms\android-24\android.jar"
+          $sdkManager = @(
+            "$sdkRoot\cmdline-tools\latest\bin\sdkmanager.bat",
+            "$sdkRoot\cmdline-tools\bin\sdkmanager.bat",
+            "$sdkRoot\tools\bin\sdkmanager.bat"
+          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+
+          if (-not $sdkManager) {
+            throw "sdkmanager.bat not found under $sdkRoot"
+          }
+
+          Write-Host "Using Android SDK root: $sdkRoot"
+          Write-Host "Using sdkmanager: $sdkManager"
+
+          ("y`n" * 40) | & $sdkManager --sdk_root="$sdkRoot" --licenses
+          & $sdkManager --sdk_root="$sdkRoot" "platforms;android-24"
+
+          if (-not (Test-Path $platformJar)) {
+            throw "Android API 24 platform was not installed: $platformJar"
+          }
+
+          Write-Host "Installed Android API 24 platform: $platformJar"
+
       - name: Generate Xamarin assembly version
         shell: powershell
         run: |
