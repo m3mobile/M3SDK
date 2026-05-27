@@ -83,6 +83,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-nanum fonts-nanum-coding
+          fc-cache -f -v
           npm ci --prefix tools/MdToPdf
           npm install -g md-to-pdf
 

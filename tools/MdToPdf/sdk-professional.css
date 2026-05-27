@@ -35,7 +35,7 @@
 
 /* ===== Typography ===== */
 body {
-  font-family: 'Segoe UI', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Noto Sans CJK KR', 'Noto Sans KR', 'NanumGothic', 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 11pt;
   line-height: 1.7;
   color: var(--text-primary);
@@ -114,7 +114,7 @@ a:hover {
 
 /* ===== Code Blocks - Enhanced spacing and styling ===== */
 code {
-  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'D2Coding', 'NanumGothicCoding', 'Noto Sans Mono CJK KR', 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 9.5pt;
   background-color: var(--bg-code);
   padding: 2pt 5pt;
@@ -508,7 +508,7 @@ pre, table, figure {
 }
 
 .api-method {
-  font-family: 'Consolas', monospace;
+  font-family: 'D2Coding', 'NanumGothicCoding', 'Noto Sans Mono CJK KR', 'Consolas', monospace;
   font-weight: 600;
   color: var(--primary-color);
 }
@@ -589,7 +589,7 @@ table:first-of-type {
 
 /* Version column (first column) */
 table:first-of-type td:first-child {
-  font-family: 'Consolas', monospace;
+  font-family: 'D2Coding', 'NanumGothicCoding', 'Noto Sans Mono CJK KR', 'Consolas', monospace;
   font-weight: 600;
   color: var(--primary-color);
   white-space: nowrap;
