@@ -1,0 +1,286 @@
+# 배포 흐름
+# 1. 수동 실행 시 입력받은 버전을 검증한다.
+# 2. 문서의 SDK 버전과 GitHub Release PDF 링크를 해당 버전으로 자동 치환한다.
+# 3. mdToPdf 도구로 매뉴얼 PDF를 생성하고 Android/JitPack 배포 가능 여부를 검증한다.
+# 4. 변경된 문서를 커밋한 뒤 그 커밋에 릴리스 태그를 생성한다.
+# 5. 태그 기준으로 JitPack 패키지 생성을 확인하고 Xamarin NuGet 패키지를 빌드/배포한다.
+# 6. 생성된 PDF와 NuGet 패키지를 첨부해 GitHub Release를 자동 생성한다.
+
+name: Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release version, for example 2.3.1"
+        required: true
+        type: string
+      target_branch:
+        description: "Branch to release from"
+        required: true
+        default: "develop"
+        type: string
+      dry_run:
+        description: "Build artifacts without pushing tag, NuGet, or GitHub Release"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ inputs.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  prepare-release:
+    name: Prepare docs, PDFs, and tag
+    runs-on: ubuntu-latest
+    outputs:
+      release_sha: ${{ steps.release_ref.outputs.release_sha }}
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_branch }}
+          fetch-depth: 0
+
+      - name: Select target branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git checkout -B "${{ inputs.target_branch }}" "origin/${{ inputs.target_branch }}"
+
+      - name: Validate release version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.tag_name }}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release version: $VERSION" >&2
+            exit 1
+          fi
+
+      - name: Ensure tag does not exist
+        if: ${{ inputs.dry_run != true }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.tag_name }}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
+            echo "Tag already exists: $VERSION" >&2
+            exit 1
+          fi
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install PDF tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --prefix tools/MdToPdf
+          npm install -g md-to-pdf
+
+      - name: Prepare release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/release/prepare-release.js \
+            --version "${{ inputs.tag_name }}" \
+            --repo-root .
+
+      - name: Generate manuals
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/MdToPdf/convert-md-to-pdf.js \
+            --input docs \
+            --output build/release/manuals \
+            --repo-root . \
+            --temp build/md-to-pdf \
+            --clean
+
+      - name: Validate Android artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew apiCheck assembleRelease publishToMavenLocal
+
+      - name: Commit release metadata and create tag
+        if: ${{ inputs.dry_run != true }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.tag_name }}"
+          TARGET_BRANCH="${{ inputs.target_branch }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
+          if ! git diff --cached --quiet; then
+            git commit -m "deployment: $VERSION 배포"
+            git push origin "HEAD:$TARGET_BRANCH"
+          fi
+
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "$VERSION"
+
+      - name: Record release ref
+        id: release_ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "release_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for JitPack package
+        if: ${{ inputs.dry_run != true }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.tag_name }}"
+          URL="https://jitpack.io/com/github/m3mobile/M3SDK/$VERSION/M3SDK-$VERSION.pom"
+
+          for attempt in {1..10}; do
+            if curl -fsSL "$URL" >/dev/null; then
+              echo "JitPack package is available: $VERSION"
+              exit 0
+            fi
+
+            echo "JitPack package is not ready yet (attempt $attempt/10)"
+            sleep 30
+          done
+
+          echo "JitPack package did not become available: $URL" >&2
+          exit 1
+
+      - name: Upload manual PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: manual-pdfs
+          path: build/release/manuals/**/*.pdf
+          if-no-files-found: error
+
+  publish-nuget:
+    name: Pack and publish Xamarin NuGet
+    runs-on: windows-2022
+    needs: prepare-release
+    steps:
+      - name: Checkout release ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Set up NuGet
+        uses: NuGet/setup-nuget@v2
+
+      - name: Generate Xamarin assembly version
+        shell: powershell
+        run: |
+          node tools\release\write-xamarin-version.js `
+            --version "${{ inputs.tag_name }}" `
+            --repo-root .
+
+      - name: Build Xamarin project
+        shell: powershell
+        run: |
+          msbuild dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.csproj `
+            /p:Configuration=Release `
+            /p:Platform=AnyCPU `
+            /t:Build
+
+      - name: Pack NuGet package
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path build\nuget | Out-Null
+          nuget pack dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.nuspec `
+            -BasePath dotnet\M3Mobile.M3Sdk.Xamarin `
+            -Version "${{ inputs.tag_name }}" `
+            -Properties "version=${{ inputs.tag_name }};Configuration=Release" `
+            -OutputDirectory build\nuget
+
+      - name: Publish NuGet package
+        if: ${{ inputs.dry_run != true }}
+        shell: powershell
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if (-not $env:NUGET_API_KEY) {
+            throw "NUGET_API_KEY secret is required to publish NuGet packages."
+          }
+
+          Get-ChildItem build\nuget\*.nupkg | ForEach-Object {
+            nuget push $_.FullName `
+              -ApiKey $env:NUGET_API_KEY `
+              -Source "https://api.nuget.org/v3/index.json" `
+              -SkipDuplicate
+          }
+
+      - name: Upload NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-package
+          path: build/nuget/*.nupkg
+          if-no-files-found: error
+
+  create-github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs:
+      - prepare-release
+      - publish-nuget
+    if: ${{ inputs.dry_run != true }}
+    steps:
+      - name: Download manual PDFs
+        uses: actions/download-artifact@v4
+        with:
+          name: manual-pdfs
+          path: build/release/manuals
+
+      - name: Download NuGet package
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-package
+          path: build/nuget
+
+      - name: Create release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.tag_name }}"
+          assets=()
+
+          while IFS= read -r file; do
+            assets+=("$file")
+          done < <(find build -type f \( -name '*.pdf' -o -name '*.nupkg' \) | sort)
+
+          if [[ ${#assets[@]} -eq 0 ]]; then
+            echo "No release assets found" >&2
+            exit 1
+          fi
+
+          gh release create "$VERSION" "${assets[@]}" \
+            --verify-tag \
+            --title "$VERSION" \
+            --generate-notes

@@ -1,4 +1,5 @@
 bin/
 obj/
+Properties/GeneratedVersionInfo.cs
 !build/
 !build/*.targets
