@@ -15,11 +15,6 @@ on:
         description: "Release version, for example 2.3.1"
         required: true
         type: string
-      target_branch:
-        description: "Branch to release from"
-        required: true
-        default: "develop"
-        type: string
       dry_run:
         description: "Build artifacts without pushing tag, NuGet, or GitHub Release"
         required: true
@@ -43,14 +38,14 @@ jobs:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.target_branch }}
+          ref: develop
           fetch-depth: 0
 
       - name: Select target branch
         shell: bash
         run: |
           set -euo pipefail
-          git checkout -B "${{ inputs.target_branch }}" "origin/${{ inputs.target_branch }}"
+          git checkout -B develop origin/develop
 
       - name: Validate release version
         shell: bash
@@ -123,7 +118,6 @@ jobs:
         run: |
           set -euo pipefail
           VERSION="${{ inputs.tag_name }}"
-          TARGET_BRANCH="${{ inputs.target_branch }}"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -131,7 +125,7 @@ jobs:
           git add docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
           if ! git diff --cached --quiet; then
             git commit -m "deployment: $VERSION 배포"
-            git push origin "HEAD:$TARGET_BRANCH"
+            git push origin HEAD:develop
           fi
 
           git tag -a "$VERSION" -m "Release $VERSION"
