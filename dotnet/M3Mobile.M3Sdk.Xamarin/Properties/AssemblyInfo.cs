@@ -8,5 +8,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright (c) M3 Mobile")]
 [assembly: ComVisible(false)]
 [assembly: Guid("0ee5600d-8e66-423b-8cb2-0f28f9fa61e7")]
-[assembly: AssemblyVersion("2.3.0.0")]
-[assembly: AssemblyFileVersion("2.3.0.0")]

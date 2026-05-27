@@ -200,5 +200,6 @@ fabric.properties
 # Dev documentation (local only)
 docs/dev/
 STARTUP-*-guide.md
+tools/MdToPdf/output/
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio,android,kotlin,java

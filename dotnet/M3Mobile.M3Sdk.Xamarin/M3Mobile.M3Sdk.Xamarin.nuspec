@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>M3Mobile.M3Sdk.Xamarin</id>
-    <version>2.3.0</version>
+    <version>$version$</version>
     <authors>M3 Mobile</authors>
     <owners>M3 Mobile</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
