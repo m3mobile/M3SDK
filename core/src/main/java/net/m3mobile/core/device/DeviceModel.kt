@@ -19,6 +19,8 @@ public enum class DeviceModel {
     SM20,
     SM20_U,
     SM30,
+    SM24,
+    SM25,
     TN15,
     TN15_OREO,
     TX15,
@@ -86,5 +88,9 @@ private fun initCurrentDeviceModel(): DeviceModel {
         DeviceModel.SL25
     } else if (Build.MODEL.contains("WD10")) {
         DeviceModel.WD10
+    }  else if (Build.MODEL.contains("SM24")) {
+        DeviceModel.SM24
+    } else if (Build.MODEL.contains("SM25")) {
+        DeviceModel.SM25
     } else DeviceModel.UNKNOWN
 }
