@@ -112,6 +112,30 @@ function updateMarkdownVersions(repoRoot, version) {
         (_match, prefix) => `${prefix}${version}`,
       );
 
+      next = replaceAll(
+        next,
+        new RegExp(`(nuget\\.org/packages/M3Mobile\\.M3Sdk\\.Xamarin/)${versionPattern.source}`, 'g'),
+        (_match, prefix) => `${prefix}${version}`,
+      );
+
+      next = replaceAll(
+        next,
+        new RegExp(`(M3Mobile\\.M3Sdk\\.Xamarin\\s+)${versionPattern.source}`, 'g'),
+        (_match, prefix) => `${prefix}${version}`,
+      );
+
+      next = replaceAll(
+        next,
+        new RegExp(`(Install-Package\\s+M3Mobile\\.M3Sdk\\.Xamarin\\s+-Version\\s+)${versionPattern.source}`, 'g'),
+        (_match, prefix) => `${prefix}${version}`,
+      );
+
+      next = replaceAll(
+        next,
+        new RegExp(`(<PackageReference\\s+Include="M3Mobile\\.M3Sdk\\.Xamarin"\\s+Version=")${versionPattern.source}(")`, 'g'),
+        (_match, prefix, suffix) => `${prefix}${version}${suffix}`,
+      );
+
       return next;
     });
 
@@ -123,13 +147,27 @@ function updateMarkdownVersions(repoRoot, version) {
   return changed;
 }
 
-function updateNuGetReadme(repoRoot) {
+function updateNuGetReadme(repoRoot, version) {
   const readmePath = path.join(repoRoot, 'dotnet', 'M3Mobile.M3Sdk.Xamarin', 'README.md');
 
-  const didChange = updateFile(readmePath, (content) => content.replace(
-    /^NuGet package: .+$/m,
-    'NuGet package: [M3Mobile.M3Sdk.Xamarin](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin)',
-  ));
+  const didChange = updateFile(readmePath, (content) => {
+    let next = content.replace(
+      /^NuGet package: .+$/m,
+      'NuGet package: [M3Mobile.M3Sdk.Xamarin](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin)',
+    );
+
+    next = next.replace(
+      /\[M3SDK_Xamarin_Manual_en\.pdf\]\(https:\/\/github\.com\/m3mobile\/M3SDK\/releases\/download\/[^/]+\/M3SDK_Xamarin_Manual_en\.pdf\)/g,
+      `[M3SDK_Xamarin_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/${version}/M3SDK_Xamarin_Manual_en.pdf)`,
+    );
+
+    next = next.replace(
+      /\[M3SDK_Xamarin_Manual_kr\.pdf\]\(https:\/\/github\.com\/m3mobile\/M3SDK\/releases\/download\/[^/]+\/M3SDK_Xamarin_Manual_kr\.pdf\)/g,
+      `[M3SDK_Xamarin_Manual_kr.pdf](https://github.com/m3mobile/M3SDK/releases/download/${version}/M3SDK_Xamarin_Manual_kr.pdf)`,
+    );
+
+    return next;
+  });
 
   return didChange ? [path.relative(repoRoot, readmePath)] : [];
 }
@@ -151,7 +189,7 @@ function main() {
 
   const changed = [
     ...updateMarkdownVersions(repoRoot, options.version),
-    ...updateNuGetReadme(repoRoot),
+    ...updateNuGetReadme(repoRoot, options.version),
   ];
 
   if (changed.length === 0) {

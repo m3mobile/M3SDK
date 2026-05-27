@@ -1,9 +1,9 @@
 # 배포 흐름
 # 1. 수동 실행 시 입력받은 버전을 검증한다.
 # 2. 문서의 SDK 버전과 GitHub Release PDF 링크를 해당 버전으로 자동 치환한다.
-# 3. mdToPdf 도구로 매뉴얼 PDF를 생성하고 Android/JitPack 배포 가능 여부를 검증한다.
+# 3. mdToPdf 도구로 매뉴얼 PDF를 생성하고 Android 배포 가능 여부를 검증한다.
 # 4. 변경된 문서를 커밋한 뒤 그 커밋에 릴리스 태그를 생성한다.
-# 5. 태그 기준으로 JitPack 패키지 생성을 확인하고 Xamarin NuGet 패키지를 빌드/배포한다.
+# 5. Xamarin NuGet 패키지를 빌드/배포한다.
 # 6. 생성된 PDF와 NuGet 패키지를 첨부해 GitHub Release를 자동 생성한다.
 
 name: Deployment
@@ -138,27 +138,6 @@ jobs:
           set -euo pipefail
           echo "release_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Wait for JitPack package
-        if: ${{ inputs.dry_run != true }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          VERSION="${{ inputs.tag_name }}"
-          URL="https://jitpack.io/com/github/m3mobile/M3SDK/$VERSION/M3SDK-$VERSION.pom"
-
-          for attempt in {1..10}; do
-            if curl -fsSL "$URL" >/dev/null; then
-              echo "JitPack package is available: $VERSION"
-              exit 0
-            fi
-
-            echo "JitPack package is not ready yet (attempt $attempt/10)"
-            sleep 30
-          done
-
-          echo "JitPack package did not become available: $URL" >&2
-          exit 1
-
       - name: Upload manual PDFs
         uses: actions/upload-artifact@v4
         with:
@@ -288,6 +267,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           VERSION="${{ inputs.tag_name }}"
@@ -302,7 +282,35 @@ jobs:
             exit 1
           fi
 
+          notes_file="build/release-notes.md"
+          generated_notes="$(gh api "repos/$GH_REPO/releases/generate-notes" -f tag_name="$VERSION" --jq '.body' || true)"
+          changes="$(printf '%s\n' "$generated_notes" | awk '
+            /^## / { next }
+            /^\*\*Full Changelog\*\*/ { next }
+            {
+              sub(/ by @[A-Za-z0-9-]+$/, "")
+              print
+            }
+          ')"
+
+          if [[ -z "$(printf '%s' "$changes" | tr -d '[:space:]')" ]]; then
+            changes="- 변경사항은 커밋 내역을 확인하세요."
+          fi
+
+          cat > "$notes_file" <<EOF
+          ## Changes
+
+          $changes
+
+          ## Documentation
+
+          - [M3SDK_Manual_kr.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_kr.pdf)
+          - [M3SDK_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_en.pdf)
+          - [M3SDK_Xamarin_Manual_kr.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_kr.pdf)
+          - [M3SDK_Xamarin_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_en.pdf)
+          EOF
+
           gh release create "$VERSION" "${assets[@]}" \
             --verify-tag \
             --title "$VERSION" \
-            --generate-notes
+            --notes-file "$notes_file"
