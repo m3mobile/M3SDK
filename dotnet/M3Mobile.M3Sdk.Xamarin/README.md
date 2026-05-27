@@ -2,7 +2,7 @@
 
 This is a Xamarin.Android SDK for M3Mobile devices, providing various functionalities and tools for application development.
 
-NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.0-alpha01](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.0-alpha01)
+NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.0](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.0)
 
 ## Requirements
 
