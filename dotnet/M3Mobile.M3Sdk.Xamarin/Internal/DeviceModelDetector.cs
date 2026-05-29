@@ -12,6 +12,8 @@ namespace M3Sdk.Xamarin.Internal
         SM20,
         SM20_U,
         SM30,
+        SM24,
+        SM25,
         TN15,
         TN15_OREO,
         TX15,
@@ -85,6 +87,10 @@ namespace M3Sdk.Xamarin.Internal
                 return DeviceModel.SL25;
             if (Contains(model, "WD10"))
                 return DeviceModel.WD10;
+            if (Contains(model, "SM24"))
+                return DeviceModel.SM24;
+            if (Contains(model, "SM25"))
+                return DeviceModel.SM25;
 
             return DeviceModel.Unknown;
         }
