@@ -72,6 +72,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Get Current USB Modes](#get-current-usb-modes)
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
+    - [Get Factory Wi-Fi MAC Address](#get-factory-wi-fi-mac-address)
     - [Captive Portal Detection](#captive-portal-detection)
     - [Frequency Band Control](#frequency-band-control)
     - [Set Wi-Fi Country](#set-wi-fi-country)
@@ -880,6 +881,59 @@ M3Mobile.instance.getWifiMac(): String
 
 // Callback (for java)
 M3Mobile.instance.getWifiMac(callback: RequestCallback<String>): Job
+```
+
+#### Get Factory Wi-Fi MAC Address
+
+Retrieves the factory Wi-Fi MAC address of the device. This is different from `getWifiMac()`, which can return the current or randomized Wi-Fi MAC address depending on Android state and Wi-Fi connection history.
+
+*   **Requires StartUp Version**: `6.7.2` or later
+*   **Returns**: `FactoryWifiMacResult`
+
+```kotlin
+// Coroutine (for kotlin)
+val result = M3Mobile.instance.getFactoryWifiMac()
+if (result.success) {
+    val mac = result.macAddress
+} else {
+    val error = result.errorMessage
+}
+```
+
+```java
+// Callback (for java)
+M3Mobile.INSTANCE.getInstance().getFactoryWifiMac((result, error) -> {
+    if (error != null) {
+        return;
+    }
+
+    if (result.isSuccess()) {
+        String mac = result.getMacAddress();
+    } else {
+        String message = result.getErrorMessage();
+    }
+});
+```
+
+Direct StartUp broadcast request:
+
+```java
+Intent request = new Intent("com.android.server.startupservice.system");
+request.putExtra("setting", "get_factory_wifi_mac");
+context.sendBroadcast(request);
+```
+
+Direct StartUp broadcast response:
+
+```java
+BroadcastReceiver receiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String mac = intent.getStringExtra("get_factory_wifi_mac");
+        boolean success = intent.getBooleanExtra("get_factory_wifi_mac_success", false);
+        String error = intent.getStringExtra("get_factory_wifi_mac_error_message");
+    }
+};
 ```
 
 #### Captive Portal Detection

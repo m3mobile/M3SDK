@@ -22,6 +22,9 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeBluetoothMac = "get_bluetooth_mac";
             internal const string TypeSerialNumber = "get_serial";
             internal const string TypeWifiMac = "get_wifi_mac";
+            internal const string TypeFactoryWifiMac = "get_factory_wifi_mac";
+            internal const string TypeFactoryWifiMacSuccess = "get_factory_wifi_mac_success";
+            internal const string TypeFactoryWifiMacErrorMessage = "get_factory_wifi_mac_error_message";
             internal const string TypeAirplane = "airplane";
             internal const string TypeInstallApk = "apk_install";
             internal const string TypeApplication = "application";

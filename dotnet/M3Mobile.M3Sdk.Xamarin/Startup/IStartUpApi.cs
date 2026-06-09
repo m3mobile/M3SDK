@@ -310,6 +310,29 @@ namespace M3Sdk.Xamarin.Startup
         IM3Cancelable GetWifiMac(M3RequestCallback<string> callback);
 
         /// <summary>
+        /// Asynchronously gets the factory Wi-Fi MAC address.
+        /// </summary>
+        /// <returns>A task that resolves to the factory Wi-Fi MAC address response.</returns>
+        /// <remarks>Requires StartUp version <c>6.7.2</c> or later.</remarks>
+        Task<FactoryWifiMacResult> GetFactoryWifiMacAsync();
+
+        /// <summary>
+        /// Asynchronously gets the factory Wi-Fi MAC address.
+        /// </summary>
+        /// <param name="cancellationToken">A token that cancels the pending broadcast request.</param>
+        /// <returns>A task that resolves to the factory Wi-Fi MAC address response.</returns>
+        /// <remarks>Requires StartUp version <c>6.7.2</c> or later.</remarks>
+        Task<FactoryWifiMacResult> GetFactoryWifiMacAsync(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Requests the factory Wi-Fi MAC address and returns the result through a main-thread callback.
+        /// </summary>
+        /// <param name="callback">The callback that receives either the factory Wi-Fi MAC address response or an exception.</param>
+        /// <returns>A cancellable request handle.</returns>
+        /// <remarks>Requires StartUp version <c>6.7.2</c> or later.</remarks>
+        IM3Cancelable GetFactoryWifiMac(M3RequestCallback<FactoryWifiMacResult> callback);
+
+        /// <summary>
         /// Enables captive portal detection for Wi-Fi.
         /// </summary>
         /// <remarks>Unsupported on SL20. Requires StartUp version <c>6.2.14</c> or later.</remarks>

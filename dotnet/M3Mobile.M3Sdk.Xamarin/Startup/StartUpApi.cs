@@ -366,6 +366,25 @@ namespace M3Sdk.Xamarin.Startup
         }
 
         /// <inheritdoc />
+        public Task<FactoryWifiMacResult> GetFactoryWifiMacAsync()
+        {
+            return GetFactoryWifiMacAsync(CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<FactoryWifiMacResult> GetFactoryWifiMacAsync(CancellationToken cancellationToken)
+        {
+            GuardStartUp("GetFactoryWifiMac", "6.7.2");
+            return new FactoryWifiMacRequester(_context).FetchAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetFactoryWifiMac(M3RequestCallback<FactoryWifiMacResult> callback)
+        {
+            return CallbackRunner.Run(GetFactoryWifiMacAsync, callback);
+        }
+
+        /// <inheritdoc />
         public void EnableCaptivePortalDetection()
         {
             GuardStartUp(
@@ -845,6 +864,45 @@ namespace M3Sdk.Xamarin.Startup
                 if (value == null)
                     throw new InvalidOperationException("Failed to get extra '" + _typeValue + "' or type mismatch.");
                 return value;
+            }
+        }
+
+        private sealed class FactoryWifiMacRequester : AwaitableBroadcastRequester<FactoryWifiMacResult>
+        {
+            internal FactoryWifiMacRequester(Context context)
+                : base(context)
+            {
+            }
+
+            protected override string RequestAction
+            {
+                get { return Constants.StartUp.RequestSystem; }
+            }
+
+            protected override string ResponseAction
+            {
+                get { return Constants.StartUp.ResponseSystem; }
+            }
+
+            protected override string TypeKey
+            {
+                get { return Constants.StartUp.TypeSetting; }
+            }
+
+            protected override string TypeValue
+            {
+                get { return Constants.StartUp.TypeFactoryWifiMac; }
+            }
+
+            protected override FactoryWifiMacResult GetExtra(Intent intent)
+            {
+                if (!intent.HasExtra(Constants.StartUp.TypeFactoryWifiMacSuccess))
+                    throw new InvalidOperationException("Failed to get extra '" + Constants.StartUp.TypeFactoryWifiMacSuccess + "' or type mismatch.");
+
+                return new FactoryWifiMacResult(
+                    intent.GetStringExtra(Constants.StartUp.TypeFactoryWifiMac),
+                    intent.GetBooleanExtra(Constants.StartUp.TypeFactoryWifiMacSuccess, false),
+                    intent.GetStringExtra(Constants.StartUp.TypeFactoryWifiMacErrorMessage));
             }
         }
     }
