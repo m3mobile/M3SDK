@@ -1182,6 +1182,8 @@ IM3Cancelable request = m3.GetWifiMac((result, error) =>
 
 Retrieves the factory Wi-Fi MAC address of the device. This API is different from `GetWifiMacAsync()`: it uses the StartUp factory MAC API and can return the device factory Wi-Fi MAC before the device has connected to a Wi-Fi AP.
 
+The device does not need to be connected to a Wi-Fi AP, but Wi-Fi must be turned on. If Wi-Fi is turned off, StartUp may not be able to return the factory Wi-Fi MAC address.
+
 *   **Requires StartUp Version**: `6.7.2` or later
 *   **Returns**: `FactoryWifiMacResult`
 

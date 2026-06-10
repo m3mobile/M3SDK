@@ -887,6 +887,8 @@ M3Mobile.instance.getWifiMac(callback: RequestCallback<String>): Job
 
 Retrieves the factory Wi-Fi MAC address of the device. This is different from `getWifiMac()`, which can return the current or randomized Wi-Fi MAC address depending on Android state and Wi-Fi connection history.
 
+The device does not need to be connected to a Wi-Fi AP, but Wi-Fi must be turned on. If Wi-Fi is turned off, StartUp may not be able to return the factory Wi-Fi MAC address.
+
 *   **Requires StartUp Version**: `6.7.2` or later
 *   **Returns**: `FactoryWifiMacResult`
 

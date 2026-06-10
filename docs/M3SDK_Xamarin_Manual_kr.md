@@ -1183,6 +1183,8 @@ IM3Cancelable request = m3.GetWifiMac((result, error) =>
 
 장치의 factory Wi-Fi MAC 주소를 조회합니다. 이 API는 `GetWifiMacAsync()`와 다릅니다. StartUp의 factory MAC API를 사용하므로, 장치가 Wi-Fi AP에 연결된 이력이 없어도 device factory Wi-Fi MAC을 조회할 수 있습니다.
 
+Wi-Fi AP에 연결되어 있을 필요는 없지만, Wi-Fi는 켜져 있어야 합니다. Wi-Fi가 꺼져 있으면 StartUp에서 factory Wi-Fi MAC을 반환하지 못할 수 있습니다.
+
 *   **필요 StartUp 버전**: `6.7.2` 이상
 *   **반환값**: `FactoryWifiMacResult`
 
