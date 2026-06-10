@@ -313,7 +313,7 @@ namespace M3Sdk.Xamarin.Startup
         /// Asynchronously gets the factory Wi-Fi MAC address.
         /// </summary>
         /// <returns>A task that resolves to the factory Wi-Fi MAC address response.</returns>
-        /// <remarks>Requires StartUp version <c>6.7.2</c> or later.</remarks>
+        /// <remarks>Requires StartUp version <c>6.7.3</c> or later.</remarks>
         Task<FactoryWifiMacResult> GetFactoryWifiMacAsync();
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace M3Sdk.Xamarin.Startup
         /// </summary>
         /// <param name="cancellationToken">A token that cancels the pending broadcast request.</param>
         /// <returns>A task that resolves to the factory Wi-Fi MAC address response.</returns>
-        /// <remarks>Requires StartUp version <c>6.7.2</c> or later.</remarks>
+        /// <remarks>Requires StartUp version <c>6.7.3</c> or later.</remarks>
         Task<FactoryWifiMacResult> GetFactoryWifiMacAsync(CancellationToken cancellationToken);
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace M3Sdk.Xamarin.Startup
         /// </summary>
         /// <param name="callback">The callback that receives either the factory Wi-Fi MAC address response or an exception.</param>
         /// <returns>A cancellable request handle.</returns>
-        /// <remarks>Requires StartUp version <c>6.7.2</c> or later.</remarks>
+        /// <remarks>Requires StartUp version <c>6.7.3</c> or later.</remarks>
         IM3Cancelable GetFactoryWifiMac(M3RequestCallback<FactoryWifiMacResult> callback);
 
         /// <summary>

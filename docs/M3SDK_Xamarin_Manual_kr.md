@@ -1185,7 +1185,7 @@ IM3Cancelable request = m3.GetWifiMac((result, error) =>
 
 Wi-Fi AP에 연결되어 있을 필요는 없지만, Wi-Fi는 켜져 있어야 합니다. Wi-Fi가 꺼져 있으면 StartUp에서 factory Wi-Fi MAC을 반환하지 못할 수 있습니다.
 
-*   **필요 StartUp 버전**: `6.7.2` 이상
+*   **필요 StartUp 버전**: `6.7.3` 이상
 *   **반환값**: `FactoryWifiMacResult`
 
 ```csharp
