@@ -1184,7 +1184,7 @@ Retrieves the factory Wi-Fi MAC address of the device. This API is different fro
 
 The device does not need to be connected to a Wi-Fi AP, but Wi-Fi must be turned on. If Wi-Fi is turned off, StartUp may not be able to return the factory Wi-Fi MAC address.
 
-*   **Requires StartUp Version**: `6.7.2` or later
+*   **Requires StartUp Version**: `6.7.3` or later
 *   **Returns**: `FactoryWifiMacResult`
 
 ```csharp

@@ -40,23 +40,23 @@ public interface StartUpWifiApi {
      * This API reads the factory Wi-Fi MAC exposed by StartUp. It is different from [getWifiMac],
      * which can return the current or randomized Wi-Fi MAC address depending on Android state.
      *
-     * StartUp version `6.7.2` or later is required.
+     * StartUp version `6.7.3` or later is required.
      *
      * @return The factory Wi-Fi MAC result.
      */
     @JvmSynthetic
-    @RequiresStartUp("6.7.2")
+    @RequiresStartUp("6.7.3")
     public suspend fun getFactoryWifiMac(): FactoryWifiMacResult
 
     /**
      * Asynchronously gets the device's factory Wi-Fi MAC address.
      *
-     * StartUp version `6.7.2` or later is required.
+     * StartUp version `6.7.3` or later is required.
      *
      * @param callback A callback to handle the result.
      * @return A [Job] representing the coroutine that is executing the request.
      */
-    @RequiresStartUp("6.7.2")
+    @RequiresStartUp("6.7.3")
     public fun getFactoryWifiMac(callback: RequestCallback<FactoryWifiMacResult>): Job
 
     /**

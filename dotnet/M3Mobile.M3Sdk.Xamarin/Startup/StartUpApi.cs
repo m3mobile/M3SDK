@@ -374,7 +374,7 @@ namespace M3Sdk.Xamarin.Startup
         /// <inheritdoc />
         public Task<FactoryWifiMacResult> GetFactoryWifiMacAsync(CancellationToken cancellationToken)
         {
-            GuardStartUp("GetFactoryWifiMac", "6.7.2");
+            GuardStartUp("GetFactoryWifiMac", "6.7.3");
             return new FactoryWifiMacRequester(_context).FetchAsync(cancellationToken);
         }
 
