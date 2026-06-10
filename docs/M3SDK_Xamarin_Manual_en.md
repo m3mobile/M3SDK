@@ -75,6 +75,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Get Current USB Modes](#get-current-usb-modes)
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
+    - [Get Factory Wi-Fi MAC Address](#get-factory-wi-fi-mac-address)
     - [Captive Portal Detection](#captive-portal-detection)
     - [Frequency Band Control](#frequency-band-control)
     - [Set Wi-Fi Country](#set-wi-fi-country)
@@ -1175,6 +1176,69 @@ IM3Cancelable request = m3.GetWifiMac((result, error) =>
 
     string wifiMacFromCallback = result;
 });
+```
+
+#### Get Factory Wi-Fi MAC Address
+
+Retrieves the factory Wi-Fi MAC address of the device. This API is different from `GetWifiMacAsync()`: it uses the StartUp factory MAC API and can return the device factory Wi-Fi MAC before the device has connected to a Wi-Fi AP.
+
+The device does not need to be connected to a Wi-Fi AP, but Wi-Fi must be turned on. If Wi-Fi is turned off, StartUp may not be able to return the factory Wi-Fi MAC address.
+
+*   **Requires StartUp Version**: `6.7.2` or later
+*   **Returns**: `FactoryWifiMacResult`
+
+```csharp
+using Android.Content;
+using System.Threading;
+using M3Sdk.Xamarin;
+using M3Sdk.Xamarin.Startup;
+
+CancellationToken cancellationToken = CancellationToken.None;
+
+// Task
+FactoryWifiMacResult result = await m3.GetFactoryWifiMacAsync();
+FactoryWifiMacResult resultWithCancel = await m3.GetFactoryWifiMacAsync(cancellationToken);
+
+if (result.IsSuccess)
+{
+    string factoryWifiMac = result.MacAddress;
+}
+else
+{
+    string error = result.ErrorMessage;
+}
+
+// Callback
+IM3Cancelable request = m3.GetFactoryWifiMac((callbackResult, error) =>
+{
+    if (error != null)
+        return;
+
+    if (callbackResult.IsSuccess)
+    {
+        string factoryWifiMacFromCallback = callbackResult.MacAddress;
+    }
+});
+```
+
+You can also call StartUp directly with broadcasts when you do not use M3SDK.
+
+```csharp
+Intent request = new Intent("com.android.server.startupservice.system");
+request.PutExtra("setting", "get_factory_wifi_mac");
+context.SendBroadcast(request);
+
+BroadcastReceiver receiver = new FactoryWifiMacReceiver();
+
+public sealed class FactoryWifiMacReceiver : BroadcastReceiver
+{
+    public override void OnReceive(Context context, Intent intent)
+    {
+        string mac = intent.GetStringExtra("get_factory_wifi_mac") ?? string.Empty;
+        bool success = intent.GetBooleanExtra("get_factory_wifi_mac_success", false);
+        string error = intent.GetStringExtra("get_factory_wifi_mac_error_message") ?? string.Empty;
+    }
+}
 ```
 
 #### Captive Portal Detection

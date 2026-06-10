@@ -4,6 +4,9 @@ internal object TypeValue {
 
     const val GET_BLUETOOTH_MAC = "get_bluetooth_mac"
     const val GET_SERIAL_NUMBER = "get_serial"
+    const val GET_FACTORY_WIFI_MAC = "get_factory_wifi_mac"
+    const val GET_FACTORY_WIFI_MAC_SUCCESS = "get_factory_wifi_mac_success"
+    const val GET_FACTORY_WIFI_MAC_ERROR_MESSAGE = "get_factory_wifi_mac_error_message"
     const val GET_WIFI_MAC = "get_wifi_mac"
     const val AIRPLANE = "airplane"
     const val INSTALL_APK = "apk_install"

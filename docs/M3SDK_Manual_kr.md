@@ -73,6 +73,7 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
     - [현재 USB 모드 조회](#현재-usb-모드-조회)
   - [Wifi API](#wifi-api)
     - [Wi-Fi MAC 주소 조회](#wi-fi-mac-주소-조회)
+    - [Factory Wi-Fi MAC 주소 조회](#factory-wi-fi-mac-주소-조회)
     - [캡티브 포털 감지 (Captive Portal Detection)](#캡티브-포털-감지-captive-portal-detection)
     - [주파수 대역 제어 (Frequency Band Control)](#주파수-대역-제어-frequency-band-control)
     - [Wi-Fi 국가 코드 설정](#wi-fi-국가-코드-설정)
@@ -883,6 +884,61 @@ M3Mobile.instance.getWifiMac(): String
 
 // 콜백 (for java)
 M3Mobile.instance.getWifiMac(callback: RequestCallback<String>): Job
+```
+
+#### Factory Wi-Fi MAC 주소 조회
+
+장치의 factory Wi-Fi MAC 주소를 조회합니다. 이 API는 `getWifiMac()`과 다릅니다. `getWifiMac()`은 Android 상태와 Wi-Fi 연결 이력에 따라 현재 MAC 또는 randomized MAC을 반환할 수 있습니다.
+
+Wi-Fi AP에 연결되어 있을 필요는 없지만, Wi-Fi는 켜져 있어야 합니다. Wi-Fi가 꺼져 있으면 StartUp에서 factory Wi-Fi MAC을 반환하지 못할 수 있습니다.
+
+*   **필요 StartUp 버전**: `6.7.2` 이상
+*   **반환값**: `FactoryWifiMacResult`
+
+```kotlin
+// 코루틴 (for kotlin)
+val result = M3Mobile.instance.getFactoryWifiMac()
+if (result.success) {
+    val mac = result.macAddress
+} else {
+    val error = result.errorMessage
+}
+```
+
+```java
+// 콜백 (for java)
+M3Mobile.INSTANCE.getInstance().getFactoryWifiMac((result, error) -> {
+    if (error != null) {
+        return;
+    }
+
+    if (result.isSuccess()) {
+        String mac = result.getMacAddress();
+    } else {
+        String message = result.getErrorMessage();
+    }
+});
+```
+
+StartUp에 직접 broadcast를 보내는 경우:
+
+```java
+Intent request = new Intent("com.android.server.startupservice.system");
+request.putExtra("setting", "get_factory_wifi_mac");
+context.sendBroadcast(request);
+```
+
+StartUp 직접 broadcast 응답:
+
+```java
+BroadcastReceiver receiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String mac = intent.getStringExtra("get_factory_wifi_mac");
+        boolean success = intent.getBooleanExtra("get_factory_wifi_mac_success", false);
+        String error = intent.getStringExtra("get_factory_wifi_mac_error_message");
+    }
+};
 ```
 
 #### 캡티브 포털 감지 (Captive Portal Detection)

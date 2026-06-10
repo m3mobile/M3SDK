@@ -313,6 +313,22 @@ public final class net/m3mobile/feature/startup/params/DisplaySetting {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class net/m3mobile/feature/startup/params/FactoryWifiMacResult {
+	public fun <init> (Ljava/lang/String;ZLjava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;ZLjava/lang/String;)Lnet/m3mobile/feature/startup/params/FactoryWifiMacResult;
+	public static synthetic fun copy$default (Lnet/m3mobile/feature/startup/params/FactoryWifiMacResult;Ljava/lang/String;ZLjava/lang/String;ILjava/lang/Object;)Lnet/m3mobile/feature/startup/params/FactoryWifiMacResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrorMessage ()Ljava/lang/String;
+	public final fun getMacAddress ()Ljava/lang/String;
+	public final fun getSuccess ()Z
+	public fun hashCode ()I
+	public final fun isSuccess ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class net/m3mobile/feature/startup/params/PolicyControl : java/lang/Enum {
 	public static final field DEFAULT Lnet/m3mobile/feature/startup/params/PolicyControl;
 	public static final field HIDE_NAVIGATION_BAR Lnet/m3mobile/feature/startup/params/PolicyControl;

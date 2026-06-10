@@ -3,6 +3,48 @@ using System;
 namespace M3Sdk.Xamarin.Startup
 {
     /// <summary>
+    /// Represents the factory Wi-Fi MAC address response returned by StartUp.
+    /// </summary>
+    public sealed class FactoryWifiMacResult
+    {
+        /// <summary>
+        /// Creates a factory Wi-Fi MAC address response.
+        /// </summary>
+        /// <param name="macAddress">The factory Wi-Fi MAC address, or an empty string when unavailable.</param>
+        /// <param name="success">Whether StartUp successfully read the factory Wi-Fi MAC address.</param>
+        /// <param name="errorMessage">The StartUp error message, or an empty string when the request succeeded.</param>
+        public FactoryWifiMacResult(string macAddress, bool success, string errorMessage)
+        {
+            MacAddress = macAddress ?? string.Empty;
+            Success = success;
+            ErrorMessage = errorMessage ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the factory Wi-Fi MAC address.
+        /// </summary>
+        public string MacAddress { get; private set; }
+
+        /// <summary>
+        /// Gets whether StartUp successfully read the factory Wi-Fi MAC address.
+        /// </summary>
+        public bool Success { get; private set; }
+
+        /// <summary>
+        /// Gets whether StartUp successfully read the factory Wi-Fi MAC address.
+        /// </summary>
+        public bool IsSuccess
+        {
+            get { return Success; }
+        }
+
+        /// <summary>
+        /// Gets the StartUp error message.
+        /// </summary>
+        public string ErrorMessage { get; private set; }
+    }
+
+    /// <summary>
     /// Represents a Wi-Fi access point configuration used by <see cref="IStartUpApi.SetAccessPoint" />.
     /// </summary>
     /// <remarks>Use <see cref="CreateBuilder" /> when constructing the configuration fluently.</remarks>

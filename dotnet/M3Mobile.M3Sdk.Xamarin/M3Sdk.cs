@@ -405,6 +405,26 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public Task<FactoryWifiMacResult> GetFactoryWifiMacAsync()
+        {
+            return GetFactoryWifiMacAsync(CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<FactoryWifiMacResult> GetFactoryWifiMacAsync(CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _startUp.GetFactoryWifiMacAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetFactoryWifiMac(M3RequestCallback<FactoryWifiMacResult> callback)
+        {
+            ThrowIfDisposed();
+            return _startUp.GetFactoryWifiMac(callback);
+        }
+
+        /// <inheritdoc />
         public void EnableCaptivePortalDetection()
         {
             ThrowIfDisposed();

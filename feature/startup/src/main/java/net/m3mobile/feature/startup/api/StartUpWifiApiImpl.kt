@@ -5,6 +5,7 @@ import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.utils.launchOnMain
 import net.m3mobile.feature.startup.params.AccessPoint
+import net.m3mobile.feature.startup.params.FactoryWifiMacResult
 import net.m3mobile.feature.startup.requester.wifi.AllowAllFrequencyBandRequester
 import net.m3mobile.feature.startup.requester.wifi.AllowOnly2_4GHzFrequencyBandRequester
 import net.m3mobile.feature.startup.requester.wifi.AllowOnly5GHzFrequencyBandRequester
@@ -13,6 +14,7 @@ import net.m3mobile.feature.startup.requester.wifi.DisableCaptivePortalDetection
 import net.m3mobile.feature.startup.requester.wifi.DisableOpenNetworkNotiRequester
 import net.m3mobile.feature.startup.requester.wifi.EnableCaptivePortalDetectionRequester
 import net.m3mobile.feature.startup.requester.wifi.EnableOpenNetworkNotiRequester
+import net.m3mobile.feature.startup.requester.wifi.GetFactoryWifiMacRequester
 import net.m3mobile.feature.startup.requester.wifi.GetWifiMacRequester
 import net.m3mobile.feature.startup.requester.wifi.RemoveWifiNetworkRequester
 import net.m3mobile.feature.startup.requester.wifi.SetAccessPointRequester
@@ -37,6 +39,21 @@ internal class StartUpWifiApiImpl(private val context: Context): StartUpWifiApi 
             try {
                 val wifiMac = getWifiMac()
                 callback.onComplete(wifiMac, null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun getFactoryWifiMac(): FactoryWifiMacResult {
+        return GetFactoryWifiMacRequester(context).fetch()
+    }
+
+    override fun getFactoryWifiMac(callback: RequestCallback<FactoryWifiMacResult>): Job {
+        return launchOnMain {
+            try {
+                val result = getFactoryWifiMac()
+                callback.onComplete(result, null)
             } catch (e: Exception) {
                 callback.onComplete(null, e)
             }

@@ -7,6 +7,7 @@ import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.core.UnsupportedModels
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.startup.params.AccessPoint
+import net.m3mobile.feature.startup.params.FactoryWifiMacResult
 
 @InternalM3Api
 public interface StartUpWifiApi {
@@ -32,6 +33,31 @@ public interface StartUpWifiApi {
      */
     @RequiresStartUp("6.4.11")
     public fun getWifiMac(callback: RequestCallback<String>): Job
+
+    /**
+     * Retrieves the factory Wi-Fi MAC address of the device.
+     *
+     * This API reads the factory Wi-Fi MAC exposed by StartUp. It is different from [getWifiMac],
+     * which can return the current or randomized Wi-Fi MAC address depending on Android state.
+     *
+     * StartUp version `6.7.2` or later is required.
+     *
+     * @return The factory Wi-Fi MAC result.
+     */
+    @JvmSynthetic
+    @RequiresStartUp("6.7.2")
+    public suspend fun getFactoryWifiMac(): FactoryWifiMacResult
+
+    /**
+     * Asynchronously gets the device's factory Wi-Fi MAC address.
+     *
+     * StartUp version `6.7.2` or later is required.
+     *
+     * @param callback A callback to handle the result.
+     * @return A [Job] representing the coroutine that is executing the request.
+     */
+    @RequiresStartUp("6.7.2")
+    public fun getFactoryWifiMac(callback: RequestCallback<FactoryWifiMacResult>): Job
 
     /**
      * Enables captive portal detection for Wi-Fi.

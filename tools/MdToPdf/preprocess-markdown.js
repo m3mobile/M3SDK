@@ -80,6 +80,33 @@ function generateTOC(headers) {
   return toc;
 }
 
+function findExistingTOCSection(lines) {
+  const tocHeaderPattern = /^##\s+(Table of Contents|목차)\s*$/i;
+  const tocHeaderIndex = lines.findIndex((line) => tocHeaderPattern.test(line.trim()));
+
+  if (tocHeaderIndex === -1) {
+    return null;
+  }
+
+  let endIndex = tocHeaderIndex + 1;
+
+  while (endIndex < lines.length) {
+    const line = lines[endIndex];
+
+    if (line.match(/^#{1,2}\s+/)) {
+      break;
+    }
+
+    endIndex++;
+  }
+
+  while (endIndex > tocHeaderIndex && lines[endIndex - 1].trim() === '') {
+    endIndex--;
+  }
+
+  return { startIndex: tocHeaderIndex, endIndex };
+}
+
 /**
  * Get Git commit history for a file
  * Returns array of {hash, date, author, message}
@@ -182,6 +209,7 @@ async function preprocessMarkdown(inputPath, outputPath, repoPath) {
 
     // Read original markdown
     const content = fs.readFileSync(inputPath, 'utf-8');
+    const lines = content.split('\n');
 
     // Extract headers for TOC
     const headers = extractHeaders(content);
@@ -192,9 +220,15 @@ async function preprocessMarkdown(inputPath, outputPath, repoPath) {
       return;
     }
 
-    // Generate TOC
-    const toc = generateTOC(headers);
-    console.log(`  ✓ Generated TOC with ${headers.length} headers`);
+    const existingTOC = findExistingTOCSection(lines);
+
+    // Generate TOC only when the source document does not already have one.
+    const toc = existingTOC ? '' : generateTOC(headers);
+    if (existingTOC) {
+      console.log(`  ✓ Existing TOC found, skipping generated TOC`);
+    } else {
+      console.log(`  ✓ Generated TOC with ${headers.length} headers`);
+    }
 
     // Get Git history
     const commits = await getGitHistory(inputPath, repoPath);
@@ -205,21 +239,22 @@ async function preprocessMarkdown(inputPath, outputPath, repoPath) {
       console.log(`  ✓ Generated version history with ${commits.length} commits`);
     }
 
-    // Find insertion point (after first header, usually the title)
-    const lines = content.split('\n');
-    let insertIndex = 0;
+    // Find insertion point. Prefer after an existing TOC, otherwise after the title.
+    let insertIndex = existingTOC ? existingTOC.endIndex : 0;
 
-    // Find first header
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].match(/^#\s+/)) {
-        insertIndex = i + 1;
-        break;
+    if (!existingTOC) {
+      // Find first header
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].match(/^#\s+/)) {
+          insertIndex = i + 1;
+          break;
+        }
       }
-    }
 
-    // Skip empty lines after title
-    while (insertIndex < lines.length && lines[insertIndex].trim() === '') {
-      insertIndex++;
+      // Skip empty lines after title
+      while (insertIndex < lines.length && lines[insertIndex].trim() === '') {
+        insertIndex++;
+      }
     }
 
     // Insert TOC and version history
