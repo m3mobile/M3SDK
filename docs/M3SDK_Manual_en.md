@@ -1,5 +1,5 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.6/M3SDK_Manual_en.pdf)
+Download PDF: [M3SDK_Manual_en_v2.3.7_rev20260622.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.7/M3SDK_Manual_en_v2.3.7_rev20260622.pdf)
 
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
@@ -123,14 +123,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.3.6")
+    implementation("com.github.m3mobile:M3SDK:2.3.7")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.3.6"
+    implementation "com.github.m3mobile:M3SDK:2.3.7"
 }
 ```
 
@@ -146,7 +146,7 @@ The SDK is automatically initialized when the application starts. You do not nee
 All functions can be accessed through a singleton instance.
 
 ```kotlin
-import net.m3mobile.feature.startup.M3Mobile
+import net.m3mobile.sdk.M3Mobile
 
 // Example: Turn on Airplane Mode
 M3Mobile.instance.turnOnAirplaneMode()
@@ -889,7 +889,7 @@ Retrieves the factory Wi-Fi MAC address of the device. This is different from `g
 
 The device does not need to be connected to a Wi-Fi AP, but Wi-Fi must be turned on. If Wi-Fi is turned off, StartUp may not be able to return the factory Wi-Fi MAC address.
 
-*   **Requires StartUp Version**: `6.7.2` or later
+*   **Requires StartUp Version**: `6.7.3` or later
 *   **Returns**: `FactoryWifiMacResult`
 
 ```kotlin
