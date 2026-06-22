@@ -1,5 +1,5 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.7/M3SDK_Manual_en.pdf)
+Download PDF: [M3SDK_Manual_en_v2.3.7_rev20260622.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.7/M3SDK_Manual_en_v2.3.7_rev20260622.pdf)
 
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
@@ -146,7 +146,7 @@ The SDK is automatically initialized when the application starts. You do not nee
 All functions can be accessed through a singleton instance.
 
 ```kotlin
-import net.m3mobile.feature.startup.M3Mobile
+import net.m3mobile.sdk.M3Mobile
 
 // Example: Turn on Airplane Mode
 M3Mobile.instance.turnOnAirplaneMode()
