@@ -90,9 +90,20 @@ function updateFile(filePath, transform) {
   return true;
 }
 
+function updateVersionedManualFilenames(content, version) {
+  return content
+    .replace(/M3SDK_Manual_en_v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:_rev\d+)?\.pdf/g, `M3SDK_Manual_en_v${version}.pdf`)
+    .replace(/M3SDK_Manual_kr_v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:_rev\d+)?\.pdf/g, `M3SDK_Manual_kr_v${version}.pdf`)
+    .replace(/M3SDK_Xamarin_Manual_en(?:_v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)?\.pdf/g, `M3SDK_Xamarin_Manual_en_v${version}.pdf`)
+    .replace(/M3SDK_Xamarin_Manual_kr(?:_v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)?\.pdf/g, `M3SDK_Xamarin_Manual_kr_v${version}.pdf`);
+}
+
 function updateMarkdownVersions(repoRoot, version) {
   const docsDir = path.join(repoRoot, 'docs');
-  const files = walkMarkdownFiles(docsDir);
+  const files = [
+    ...walkMarkdownFiles(docsDir),
+    path.join(repoRoot, 'README.md'),
+  ].filter((file) => fs.existsSync(file));
   const versionPattern = /\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g;
   const changed = [];
 
@@ -136,6 +147,8 @@ function updateMarkdownVersions(repoRoot, version) {
         (_match, prefix, suffix) => `${prefix}${version}${suffix}`,
       );
 
+      next = updateVersionedManualFilenames(next, version);
+
       return next;
     });
 
@@ -157,13 +170,13 @@ function updateNuGetReadme(repoRoot, version) {
     );
 
     next = next.replace(
-      /\[M3SDK_Xamarin_Manual_en\.pdf\]\(https:\/\/github\.com\/m3mobile\/M3SDK\/releases\/download\/[^/]+\/M3SDK_Xamarin_Manual_en\.pdf\)/g,
-      `[M3SDK_Xamarin_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/${version}/M3SDK_Xamarin_Manual_en.pdf)`,
+      /\[M3SDK_Xamarin_Manual_en(?:_v[^/]+)?\.pdf\]\(https:\/\/github\.com\/m3mobile\/M3SDK\/releases\/download\/[^/]+\/M3SDK_Xamarin_Manual_en(?:_v[^/]+)?\.pdf\)/g,
+      `[M3SDK_Xamarin_Manual_en_v${version}.pdf](https://github.com/m3mobile/M3SDK/releases/download/${version}/M3SDK_Xamarin_Manual_en_v${version}.pdf)`,
     );
 
     next = next.replace(
-      /\[M3SDK_Xamarin_Manual_kr\.pdf\]\(https:\/\/github\.com\/m3mobile\/M3SDK\/releases\/download\/[^/]+\/M3SDK_Xamarin_Manual_kr\.pdf\)/g,
-      `[M3SDK_Xamarin_Manual_kr.pdf](https://github.com/m3mobile/M3SDK/releases/download/${version}/M3SDK_Xamarin_Manual_kr.pdf)`,
+      /\[M3SDK_Xamarin_Manual_kr(?:_v[^/]+)?\.pdf\]\(https:\/\/github\.com\/m3mobile\/M3SDK\/releases\/download\/[^/]+\/M3SDK_Xamarin_Manual_kr(?:_v[^/]+)?\.pdf\)/g,
+      `[M3SDK_Xamarin_Manual_kr_v${version}.pdf](https://github.com/m3mobile/M3SDK/releases/download/${version}/M3SDK_Xamarin_Manual_kr_v${version}.pdf)`,
     );
 
     return next;

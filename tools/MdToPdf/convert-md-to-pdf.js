@@ -17,6 +17,7 @@ Options:
   --output <path>      Output directory, or a .pdf path when input is one file.
   --repo-root <path>   Git repository root. Defaults to nearest parent with .git.
   --temp <path>        Temp directory. Defaults to <repo-root>/build/md-to-pdf.
+  --version <version>  Append _v<version> to generated PDF filenames.
   --config <path>      md-to-pdf config. Defaults to tools/MdToPdf/.md-to-pdf.json.
   --basedir <path>     md-to-pdf base directory. Defaults to tools/MdToPdf.
   --clean             Remove the output directory before writing PDFs.
@@ -57,6 +58,9 @@ function parseArgs(argv) {
         break;
       case '--temp':
         options.temp = requireValue(argv, ++index, arg);
+        break;
+      case '--version':
+        options.version = requireValue(argv, ++index, arg);
         break;
       case '--config':
         options.config = requireValue(argv, ++index, arg);
@@ -150,7 +154,7 @@ function walkDirectory(dir, onFile) {
   }
 }
 
-function getOutputPath(item, outputPath, totalFiles) {
+function getOutputPath(item, outputPath, totalFiles, version) {
   const absoluteOutput = path.resolve(outputPath);
   const outputIsPdf = absoluteOutput.toLowerCase().endsWith('.pdf');
 
@@ -162,7 +166,9 @@ function getOutputPath(item, outputPath, totalFiles) {
   }
 
   const relative = path.relative(item.root, item.file);
-  const relativePdf = relative.replace(/\.md$/i, '.pdf');
+  const relativePdf = version
+    ? relative.replace(/\.md$/i, `_v${version}.pdf`)
+    : relative.replace(/\.md$/i, '.pdf');
   return path.join(absoluteOutput, relativePdf);
 }
 
@@ -273,7 +279,7 @@ async function main() {
   const failures = [];
 
   for (const item of items) {
-    const pdfPath = getOutputPath(item, outputPath, items.length);
+    const pdfPath = getOutputPath(item, outputPath, items.length, options.version);
     const tempMarkdownPath = getTempMarkdownPath(item, tempDir);
     const displayName = path.relative(repoRoot, item.file) || item.file;
 

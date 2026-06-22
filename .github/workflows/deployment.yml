@@ -106,6 +106,7 @@ jobs:
             --output build/release/manuals \
             --repo-root . \
             --temp build/md-to-pdf \
+            --version "${{ inputs.tag_name }}" \
             --clean
 
       - name: Validate Android artifacts
@@ -125,7 +126,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
+          git add README.md docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
           if ! git diff --cached --quiet; then
             git commit -m "deployment: $VERSION 배포"
             git push origin HEAD:develop
@@ -307,10 +308,10 @@ jobs:
 
           ## Documentation
 
-          - [M3SDK_Manual_kr.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_kr.pdf)
-          - [M3SDK_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_en.pdf)
-          - [M3SDK_Xamarin_Manual_kr.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_kr.pdf)
-          - [M3SDK_Xamarin_Manual_en.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_en.pdf)
+          - [M3SDK_Manual_kr_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_kr_v$VERSION.pdf)
+          - [M3SDK_Manual_en_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_en_v$VERSION.pdf)
+          - [M3SDK_Xamarin_Manual_kr_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_kr_v$VERSION.pdf)
+          - [M3SDK_Xamarin_Manual_en_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_en_v$VERSION.pdf)
           EOF
 
           gh release create "$VERSION" "${assets[@]}" \

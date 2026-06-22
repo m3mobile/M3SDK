@@ -22,6 +22,10 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
     - [원격 APK 설치](#원격-apk-설치)
     - [애플리케이션 활성화](#애플리케이션-활성화)
     - [애플리케이션 비활성화](#애플리케이션-비활성화)
+    - [애플리케이션 실행](#애플리케이션-실행)
+    - [애플리케이션 실행 및 고정](#애플리케이션-실행-및-고정)
+    - [애플리케이션 고정 해제](#애플리케이션-고정-해제)
+    - [직접 Broadcast 사용](#직접-broadcast-사용)
   - [Device API](#device-api)
     - [미디어 볼륨 설정](#미디어-볼륨-설정)
     - [벨소리 볼륨 설정](#벨소리-볼륨-설정)
@@ -220,7 +224,7 @@ M3Mobile.instance.turnOffAirplaneMode()
 
 ### App API
 
-애플리케이션을 설치하거나 특정 패키지를 활성화/비활성화합니다.
+애플리케이션을 설치하거나 특정 패키지를 활성화/비활성화하고, 앱 실행 및 화면 고정을 제어합니다.
 
 #### 로컬 APK 설치
 
@@ -269,6 +273,55 @@ M3Mobile.instance.enableApp(packageName: String)
 ```kotlin
 M3Mobile.instance.disableApp(packageName: String)
 ```
+#### 애플리케이션 실행
+
+지정된 애플리케이션 패키지를 활성화한 뒤 실행합니다.
+
+*   **필요 StartUp 버전**: `6.8.0` 이상
+*   **매개변수**:
+    *   `packageName` (String): 활성화하고 실행할 애플리케이션의 패키지 이름입니다.
+*   **참고**:
+    *   이 API는 앱을 실행하기 전에 패키지를 자동으로 활성화합니다. `enableApp`을 먼저 호출할 필요가 없습니다.
+    *   `enableApp`은 패키지 활성화만 수행하며 앱을 실행하지 않습니다.
+
+```kotlin
+M3Mobile.instance.runApp(packageName: String)
+```
+
+#### 애플리케이션 실행 및 고정
+
+지정된 애플리케이션 패키지를 활성화한 뒤 실행하고 화면에 고정합니다.
+
+*   **필요 StartUp 버전**: `6.8.0` 이상
+*   **매개변수**:
+    *   `packageName` (String): 활성화, 실행, 고정할 애플리케이션의 패키지 이름입니다.
+*   **사용 전제**:
+    *   OS/StartUp 환경에서 Screen Pinning 기능이 활성화되어 있어야 합니다.
+*   **참고**:
+    *   이 API는 앱을 실행하고 고정하기 전에 패키지를 자동으로 활성화합니다. `enableApp`을 먼저 호출할 필요가 없습니다.
+    *   StartUp 6.8.0은 앱 고정 해제용 SDK API 또는 broadcast API를 제공하지 않습니다. 고정된 앱에서 수동으로 빠져나오려면 홈 버튼을 10회 연속으로 누르세요.
+
+```kotlin
+M3Mobile.instance.runAndPinApp(packageName: String)
+```
+
+
+#### 직접 Broadcast 사용
+
+M3SDK를 사용하지 않는 경우 StartUp broadcast를 직접 보낼 수 있습니다.
+
+앱 실행 및 고정:
+
+```java
+Intent request = new Intent("com.android.server.startupservice.system");
+request.putExtra("setting", "application");
+request.putExtra("package_name", "com.example.app");
+request.putExtra("enable", true);
+request.putExtra("auto_run", true);
+request.putExtra("pin_app", true);
+context.sendBroadcast(request);
+```
+
 
 ---
 
