@@ -78,6 +78,8 @@ public abstract interface class net/m3mobile/feature/startup/api/StartUpAppApi {
 	public abstract fun enableApp (Ljava/lang/String;)V
 	public abstract fun installLocalApk (Ljava/lang/String;)V
 	public abstract fun installRemoteApk (Ljava/lang/String;)V
+	public abstract fun runAndPinApp (Ljava/lang/String;)V
+	public abstract fun runApp (Ljava/lang/String;)V
 }
 
 public abstract interface class net/m3mobile/feature/startup/api/StartUpDeviceApi {

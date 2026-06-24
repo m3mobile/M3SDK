@@ -43,4 +43,24 @@ public interface StartUpAppApi {
      */
     @RequiresStartUp("6.2.14")
     public fun disableApp(packageName: String)
+
+    /**
+     * Enables and runs a specified application package.
+     *
+     * StartUp version `6.8.0` or later is required.
+     *
+     * @param packageName The package name of the application to enable and run
+     */
+    @RequiresStartUp("6.8.0")
+    public fun runApp(packageName: String)
+
+    /**
+     * Enables, runs, and pins a specified application package.
+     *
+     * StartUp version `6.8.0` or later is required.
+     *
+     * @param packageName The package name of the application to enable, run, and pin
+     */
+    @RequiresStartUp("6.8.0")
+    public fun runAndPinApp(packageName: String)
 }

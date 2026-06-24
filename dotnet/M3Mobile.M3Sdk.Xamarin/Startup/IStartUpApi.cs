@@ -50,6 +50,20 @@ namespace M3Sdk.Xamarin.Startup
         void DisableApp(string packageName);
 
         /// <summary>
+        /// Enables and runs the specified application package.
+        /// </summary>
+        /// <param name="packageName">The package name of the application to enable and run.</param>
+        /// <remarks>Requires StartUp version <c>6.8.0</c> or later.</remarks>
+        void RunApp(string packageName);
+
+        /// <summary>
+        /// Enables, runs, and pins the specified application package.
+        /// </summary>
+        /// <param name="packageName">The package name of the application to enable, run, and pin.</param>
+        /// <remarks>Requires StartUp version <c>6.8.0</c> or later.</remarks>
+        void RunAndPinApp(string packageName);
+
+        /// <summary>
         /// Sets the media volume level.
         /// </summary>
         /// <param name="value">The media volume level. Kotlin KDoc defines the supported range as <c>0</c> to <c>15</c>.</param>

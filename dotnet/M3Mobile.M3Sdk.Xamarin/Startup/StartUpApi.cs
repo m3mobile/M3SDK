@@ -92,6 +92,18 @@ namespace M3Sdk.Xamarin.Startup
         }
 
         /// <inheritdoc />
+        public void RunApp(string packageName)
+        {
+            RunApp("RunApp", packageName, false);
+        }
+
+        /// <inheritdoc />
+        public void RunAndPinApp(string packageName)
+        {
+            RunApp("RunAndPinApp", packageName, true);
+        }
+
+        /// <inheritdoc />
         public void SetMediaVolume(int value)
         {
             SetVolume("SetMediaVolume", Constants.StartUp.ExtraVolumeMedia, value);
@@ -545,6 +557,20 @@ namespace M3Sdk.Xamarin.Startup
             var extras = new Bundle();
             extras.PutString(Constants.StartUp.ExtraSetAppStatePackageName, packageName);
             extras.PutBoolean(Constants.StartUp.ExtraSetAppState, enabled);
+            SendSystem(Constants.StartUp.TypeApplication, extras);
+        }
+
+        private void RunApp(string methodName, string packageName, bool pinApp)
+        {
+            if (packageName == null)
+                throw new ArgumentNullException(nameof(packageName));
+
+            GuardStartUp(methodName, "6.8.0");
+            var extras = new Bundle();
+            extras.PutString(Constants.StartUp.ExtraSetAppStatePackageName, packageName);
+            extras.PutBoolean(Constants.StartUp.ExtraSetAppState, true);
+            extras.PutBoolean(Constants.StartUp.ExtraSetAppAutoRun, true);
+            extras.PutBoolean(Constants.StartUp.ExtraSetAppPin, pinApp);
             SendSystem(Constants.StartUp.TypeApplication, extras);
         }
 

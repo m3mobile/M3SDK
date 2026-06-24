@@ -24,6 +24,9 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Install Remote APK](#install-remote-apk)
     - [Enable Application](#enable-application)
     - [Disable Application](#disable-application)
+    - [Run Application](#run-application)
+    - [Run and Pin Application](#run-and-pin-application)
+    - [Direct Broadcast Usage](#direct-broadcast-usage)
   - [Device API](#device-api)
     - [Set Media Volume](#set-media-volume)
     - [Set Ringtone Volume](#set-ringtone-volume)
@@ -257,7 +260,7 @@ m3.TurnOffAirplaneMode();
 
 ### App API
 
-Installs applications and enables or disables specific packages.
+Installs applications, enables or disables specific packages, runs applications, and controls app pinning.
 
 #### Install Local APK
 
@@ -306,6 +309,56 @@ Disables a specified application package.
 ```csharp
 m3.DisableApp(packageName);
 ```
+
+#### Run Application
+
+Enables and runs a specified application package.
+
+*   **Requires StartUp Version**: `6.8.0` or later
+*   **Parameters**:
+    *   `packageName` (string): The package name of the application to enable and run.
+*   **Notes**:
+    *   This API automatically enables the package before launching it. You do not need to call `EnableApp` first.
+    *   `EnableApp` only enables the package and does not launch it.
+
+```csharp
+m3.RunApp(packageName);
+```
+
+#### Run and Pin Application
+
+Enables, runs, and pins a specified application package.
+
+*   **Requires StartUp Version**: `6.8.0` or later
+*   **Parameters**:
+    *   `packageName` (string): The package name of the application to enable, run, and pin.
+*   **Prerequisites**:
+    *   Screen Pinning must be enabled in the OS/StartUp environment.
+*   **Notes**:
+    *   This API automatically enables the package before launching and pinning it. You do not need to call `EnableApp` first.
+    *   StartUp 6.8.0 does not provide an SDK or broadcast API to stop app pinning. To exit the pinned app manually, press the Home button 10 times in a row.
+
+```csharp
+m3.RunAndPinApp(packageName);
+```
+
+
+#### Direct Broadcast Usage
+
+If you do not use M3SDK, you can send the StartUp broadcast directly.
+
+Run and pin an app:
+
+```csharp
+Intent request = new Intent("com.android.server.startupservice.system");
+request.PutExtra("setting", "application");
+request.PutExtra("package_name", "com.example.app");
+request.PutExtra("enable", true);
+request.PutExtra("auto_run", true);
+request.PutExtra("pin_app", true);
+context.SendBroadcast(request);
+```
+
 
 ---
 

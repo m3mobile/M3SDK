@@ -6,6 +6,8 @@ internal object ExtraKey {
     const val INSTALL_REMOTE_APK_PATH = "url"
     const val SET_APP_STATE_PACKAGE_NAME = "package_name"
     const val SET_APP_STATE = "enable"
+    const val SET_APP_AUTO_RUN = "auto_run"
+    const val SET_APP_PIN = "pin_app"
     const val SET_DISPLAY_SETTING_AUTO_BRIGHTNESS = "display_auto_brightness"
     const val SET_DISPLAY_SETTING_BRIGHTNESS_STEP = "display_brightness_step"
     const val SET_DISPLAY_SETTING_AUTO_ROTATE = "display_auto_rotate"

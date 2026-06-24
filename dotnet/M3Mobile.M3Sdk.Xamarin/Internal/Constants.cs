@@ -59,6 +59,8 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraInstallRemoteApkPath = "url";
             internal const string ExtraSetAppStatePackageName = "package_name";
             internal const string ExtraSetAppState = "enable";
+            internal const string ExtraSetAppAutoRun = "auto_run";
+            internal const string ExtraSetAppPin = "pin_app";
             internal const string ExtraDisplayAutoBrightness = "display_auto_brightness";
             internal const string ExtraDisplayBrightnessStep = "display_brightness_step";
             internal const string ExtraDisplayAutoRotate = "display_auto_rotate";

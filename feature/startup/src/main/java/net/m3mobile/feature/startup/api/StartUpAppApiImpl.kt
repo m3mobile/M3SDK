@@ -5,6 +5,8 @@ import net.m3mobile.feature.startup.requester.app.DisableAppRequester
 import net.m3mobile.feature.startup.requester.app.EnableAppRequester
 import net.m3mobile.feature.startup.requester.app.InstallLocalApkRequester
 import net.m3mobile.feature.startup.requester.app.InstallRemoteApkRequester
+import net.m3mobile.feature.startup.requester.app.RunAndPinAppRequester
+import net.m3mobile.feature.startup.requester.app.RunAppRequester
 
 internal class StartUpAppApiImpl(private val context: Context): StartUpAppApi {
 
@@ -22,5 +24,13 @@ internal class StartUpAppApiImpl(private val context: Context): StartUpAppApi {
 
     override fun disableApp(packageName: String) {
         DisableAppRequester(context, packageName).request()
+    }
+
+    override fun runApp(packageName: String) {
+        RunAppRequester(context, packageName).request()
+    }
+
+    override fun runAndPinApp(packageName: String) {
+        RunAndPinAppRequester(context, packageName).request()
     }
 }
