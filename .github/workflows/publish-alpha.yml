@@ -1,0 +1,150 @@
+name: Publish Alpha Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Alpha package version, for example 2.3.8-alpha.1"
+        required: true
+        type: string
+      dry_run:
+        description: "Build alpha artifacts without publishing to GitHub Packages"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: alpha-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  publish-android-alpha:
+    name: Publish Android alpha to GitHub Packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Validate version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+$ ]]; then
+            echo "Invalid alpha version: $VERSION" >&2
+            exit 1
+          fi
+
+      - name: Build Android artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          ./gradlew apiCheck assembleRelease
+
+      - name: Publish Android artifacts
+        if: ${{ inputs.dry_run != true }}
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ./gradlew publish \
+            -Pm3sdk.publish.version="${{ inputs.version }}" \
+            -Pm3sdk.githubPackagesUrl="https://maven.pkg.github.com/${{ github.repository }}" \
+            -Pm3sdk.githubPackagesUser="${{ github.actor }}" \
+            -Pm3sdk.githubPackagesToken="$GITHUB_TOKEN"
+
+  publish-xamarin-alpha:
+    name: Publish Xamarin alpha to GitHub Packages
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - uses: NuGet/setup-nuget@v2
+
+      - name: Install Android SDK platform 24
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $sdkRoot = "C:\Program Files (x86)\Android\android-sdk"
+          $platformJar = Join-Path $sdkRoot "platforms\android-24\android.jar"
+          $sdkManager = @(
+            "$sdkRoot\cmdline-tools\latest\bin\sdkmanager.bat",
+            "$sdkRoot\cmdline-tools\bin\sdkmanager.bat",
+            "$sdkRoot\tools\bin\sdkmanager.bat"
+          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
+
+          if (-not $sdkManager) {
+            throw "sdkmanager.bat not found under $sdkRoot"
+          }
+
+          ("y`n" * 40) | & $sdkManager --sdk_root="$sdkRoot" --licenses
+          & $sdkManager --sdk_root="$sdkRoot" "platforms;android-24"
+
+          if (-not (Test-Path $platformJar)) {
+            throw "Android API 24 platform was not installed: $platformJar"
+          }
+
+      - name: Generate Xamarin assembly version
+        shell: powershell
+        run: |
+          node tools\release\write-xamarin-version.js `
+            --version "${{ inputs.version }}" `
+            --repo-root .
+
+      - name: Build Xamarin project
+        shell: powershell
+        run: |
+          msbuild dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.csproj `
+            /p:Configuration=Release `
+            /p:Platform=AnyCPU `
+            /t:Build
+
+      - name: Pack NuGet package
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force -Path build\nuget | Out-Null
+          nuget pack dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.nuspec `
+            -BasePath dotnet\M3Mobile.M3Sdk.Xamarin `
+            -Version "${{ inputs.version }}" `
+            -Properties "version=${{ inputs.version }};Configuration=Release" `
+            -OutputDirectory build\nuget
+
+      - name: Publish NuGet package to GitHub Packages
+        if: ${{ inputs.dry_run != true }}
+        shell: powershell
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if (-not $env:GITHUB_TOKEN) {
+            throw "GITHUB_TOKEN is required to publish GitHub Packages NuGet packages."
+          }
+
+          Get-ChildItem build\nuget\*.nupkg | ForEach-Object {
+            nuget push $_.FullName `
+              -ApiKey $env:GITHUB_TOKEN `
+              -Source "https://nuget.pkg.github.com/m3mobile/index.json" `
+              -SkipDuplicate
+          }
+
+      - name: Upload alpha NuGet package
+        uses: actions/upload-artifact@v4
+        with:
+          name: xamarin-alpha-nuget
+          path: build/nuget/*.nupkg
+          if-no-files-found: error

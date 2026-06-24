@@ -36,3 +36,29 @@ internal class DisableAppRequester(
         ExtraKey.SET_APP_STATE to false
     )
 }
+
+internal class RunAppRequester(
+    override val context: Context,
+    packageName: String
+) : SetAppStateRequester() {
+
+    override val extras = bundleOf(
+        ExtraKey.SET_APP_STATE_PACKAGE_NAME to packageName,
+        ExtraKey.SET_APP_STATE to true,
+        ExtraKey.SET_APP_AUTO_RUN to true,
+        ExtraKey.SET_APP_PIN to false
+    )
+}
+
+internal class RunAndPinAppRequester(
+    override val context: Context,
+    packageName: String
+) : SetAppStateRequester() {
+
+    override val extras = bundleOf(
+        ExtraKey.SET_APP_STATE_PACKAGE_NAME to packageName,
+        ExtraKey.SET_APP_STATE to true,
+        ExtraKey.SET_APP_AUTO_RUN to true,
+        ExtraKey.SET_APP_PIN to true
+    )
+}

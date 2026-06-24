@@ -1,6 +1,6 @@
 # M3 SDK Xamarin Manual
 
-NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.6](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.6)
+NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.8](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.8)
 
 
 The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 Mobile devices from Xamarin.Android applications.
@@ -24,6 +24,9 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Install Remote APK](#install-remote-apk)
     - [Enable Application](#enable-application)
     - [Disable Application](#disable-application)
+    - [Run Application](#run-application)
+    - [Run and Pin Application](#run-and-pin-application)
+    - [Direct Broadcast Usage](#direct-broadcast-usage)
   - [Device API](#device-api)
     - [Set Media Volume](#set-media-volume)
     - [Set Ringtone Volume](#set-ringtone-volume)
@@ -108,7 +111,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
 Search for `M3Mobile.M3Sdk.Xamarin` in Visual Studio NuGet Package Manager, or run the following command in Package Manager Console.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.6
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.8
 ```
 
 The NuGet package page is linked at the top of this document.
@@ -118,7 +121,7 @@ The NuGet package page is linked at the top of this document.
 The project file should contain the following package reference.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.6" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.8" />
 ```
 
 ## Basic Usage
@@ -257,7 +260,7 @@ m3.TurnOffAirplaneMode();
 
 ### App API
 
-Installs applications and enables or disables specific packages.
+Installs applications, enables or disables specific packages, runs applications, and controls app pinning.
 
 #### Install Local APK
 
@@ -306,6 +309,56 @@ Disables a specified application package.
 ```csharp
 m3.DisableApp(packageName);
 ```
+
+#### Run Application
+
+Enables and runs a specified application package.
+
+*   **Requires StartUp Version**: `6.8.0` or later
+*   **Parameters**:
+    *   `packageName` (string): The package name of the application to enable and run.
+*   **Notes**:
+    *   This API automatically enables the package before launching it. You do not need to call `EnableApp` first.
+    *   `EnableApp` only enables the package and does not launch it.
+
+```csharp
+m3.RunApp(packageName);
+```
+
+#### Run and Pin Application
+
+Enables, runs, and pins a specified application package.
+
+*   **Requires StartUp Version**: `6.8.0` or later
+*   **Parameters**:
+    *   `packageName` (string): The package name of the application to enable, run, and pin.
+*   **Prerequisites**:
+    *   Screen Pinning must be enabled in the OS/StartUp environment.
+*   **Notes**:
+    *   This API automatically enables the package before launching and pinning it. You do not need to call `EnableApp` first.
+    *   StartUp 6.8.0 does not provide an SDK or broadcast API to stop app pinning. To exit the pinned app manually, press the Home button 10 times in a row.
+
+```csharp
+m3.RunAndPinApp(packageName);
+```
+
+
+#### Direct Broadcast Usage
+
+If you do not use M3SDK, you can send the StartUp broadcast directly.
+
+Run and pin an app:
+
+```csharp
+Intent request = new Intent("com.android.server.startupservice.system");
+request.PutExtra("setting", "application");
+request.PutExtra("package_name", "com.example.app");
+request.PutExtra("enable", true);
+request.PutExtra("auto_run", true);
+request.PutExtra("pin_app", true);
+context.SendBroadcast(request);
+```
+
 
 ---
 
@@ -1184,7 +1237,7 @@ Retrieves the factory Wi-Fi MAC address of the device. This API is different fro
 
 The device does not need to be connected to a Wi-Fi AP, but Wi-Fi must be turned on. If Wi-Fi is turned off, StartUp may not be able to return the factory Wi-Fi MAC address.
 
-*   **Requires StartUp Version**: `6.7.2` or later
+*   **Requires StartUp Version**: `6.7.3` or later
 *   **Returns**: `FactoryWifiMacResult`
 
 ```csharp

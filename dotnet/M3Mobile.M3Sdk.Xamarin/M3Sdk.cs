@@ -149,6 +149,20 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void RunApp(string packageName)
+        {
+            ThrowIfDisposed();
+            _startUp.RunApp(packageName);
+        }
+
+        /// <inheritdoc />
+        public void RunAndPinApp(string packageName)
+        {
+            ThrowIfDisposed();
+            _startUp.RunAndPinApp(packageName);
+        }
+
+        /// <inheritdoc />
         public void SetMediaVolume(int value)
         {
             ThrowIfDisposed();
