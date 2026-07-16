@@ -48,7 +48,7 @@
 4. 아래 위험 기준에 해당할 때만 GitHub Packages Alpha를 동일한 샘플 소스로 검증한다. 생략 근거는 PR 테스트 결과에 기록한다.
 5. Deployment workflow를 `dry_run=true`로 실행해 문서, Android 산출물, Xamarin nupkg를 검증한다.
 6. dry run 성공 후 같은 버전으로 `dry_run=false`를 실행해 태그, NuGet 패키지, GitHub Release를 생성한다.
-7. GitHub Release의 `published` 이벤트가 `Verify Published Samples` workflow를 시작한다.
+7. Deployment workflow가 GitHub Release 생성 직후 `Verify Published Samples`를 `workflow_dispatch`로 명시 실행한다. `GITHUB_TOKEN`으로 만든 Release는 일반 `published` 이벤트 workflow를 연쇄 실행하지 않기 때문이다.
 8. Android job은 해당 태그를 JitPack에서 받아 Compose 샘플 APK를 빌드한다.
 9. C# job은 같은 버전을 NuGet Gallery에서 받아 `net10.0-android` 샘플 APK를 빌드한다.
 10. 두 빌드가 통과한 후 workflow APK를 M3 장치에 설치해 아래 수동 검증을 수행한다.
