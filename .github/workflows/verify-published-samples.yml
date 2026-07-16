@@ -1,0 +1,117 @@
+name: Verify Published Samples
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Published SDK tag/package version"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: published-samples-${{ github.event.release.tag_name || inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  android-jitpack:
+    name: Android Compose sample from JitPack
+    runs-on: ubuntu-latest
+    env:
+      M3_SDK_VERSION: ${{ github.event.release.tag_name || inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.M3_SDK_VERSION }}
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Assert no local SDK dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RE 'project\([^)]*sdk|projects\.sdk' samples/android-compose-jitpack; then
+            echo "Android published-package sample must not reference a local SDK project." >&2
+            exit 1
+          fi
+
+      - name: Build against JitPack release
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x gradlew
+          for attempt in 1 2 3 4 5 6; do
+            if ./gradlew -p samples/android-compose-jitpack :app:assembleDebug \
+              -Pm3SdkVersion="$M3_SDK_VERSION" --refresh-dependencies; then
+              exit 0
+            fi
+            if [[ "$attempt" == "6" ]]; then
+              echo "JitPack sample build failed after $attempt attempts." >&2
+              exit 1
+            fi
+            sleep 30
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-compose-published-sample-${{ env.M3_SDK_VERSION }}
+          path: samples/android-compose-jitpack/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+  dotnet-nuget:
+    name: .NET for Android sample from NuGet Gallery
+    runs-on: windows-2022
+    env:
+      M3_SDK_VERSION: ${{ github.event.release.tag_name || inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.M3_SDK_VERSION }}
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install .NET Android workload
+        shell: powershell
+        run: dotnet workload install android
+
+      - name: Assert no local SDK dependency
+        shell: powershell
+        run: |
+          $content = Get-Content samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -Raw
+          if ($content -match "ProjectReference") {
+            throw ".NET published-package sample must not reference a local SDK project."
+          }
+
+      - name: Restore published NuGet package
+        shell: powershell
+        run: |
+          $project = "samples\dotnet-android-nuget\M3SdkPublishedSample.csproj"
+          foreach ($attempt in 1..6) {
+            dotnet restore $project -p:M3SdkVersion="$env:M3_SDK_VERSION" --no-cache
+            if ($LASTEXITCODE -eq 0) { exit 0 }
+            if ($attempt -eq 6) { throw "NuGet restore failed after $attempt attempts." }
+            Start-Sleep -Seconds 30
+          }
+
+      - name: Build published NuGet sample
+        shell: powershell
+        run: |
+          dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj `
+            -p:M3SdkVersion="$env:M3_SDK_VERSION" `
+            --no-restore `
+            --configuration Release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-android-published-sample-${{ env.M3_SDK_VERSION }}
+          path: samples/dotnet-android-nuget/bin/Release/**/*.apk
+          if-no-files-found: error

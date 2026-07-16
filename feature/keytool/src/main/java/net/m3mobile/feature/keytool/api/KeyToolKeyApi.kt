@@ -41,6 +41,35 @@ public interface KeyToolKeyApi {
      * to see the list of assignable functions.
      * @throws IllegalArgumentException If the key or function is incorrect
      */
-    @SupportedModels(DeviceModel.SL20, DeviceModel.SL20K, DeviceModel.SL20P)
+    @SupportedModels(
+        DeviceModel.SL20,
+        DeviceModel.SL20K,
+        DeviceModel.SL20P,
+        DeviceModel.SL25,
+        DeviceModel.WD10,
+        DeviceModel.SM24,
+        DeviceModel.SM25
+    )
     public fun setKeyFunction(key: String, function: String)
+
+    /**
+     * Enables the Home navigation button.
+     *
+     * This sends a one-way request to KeyTool. A normal return only confirms that
+     * the request was sent; it does not confirm that SystemUI applied the setting.
+     */
+    @SupportedModels(DeviceModel.SM24, DeviceModel.SM25)
+    public fun enableHomeButton()
+
+    /** Disables the Home navigation button through KeyTool. */
+    @SupportedModels(DeviceModel.SM24, DeviceModel.SM25)
+    public fun disableHomeButton()
+
+    /** Enables the Recent navigation button through KeyTool. */
+    @SupportedModels(DeviceModel.SM24, DeviceModel.SM25)
+    public fun enableRecentButton()
+
+    /** Disables the Recent navigation button through KeyTool. */
+    @SupportedModels(DeviceModel.SM24, DeviceModel.SM25)
+    public fun disableRecentButton()
 }

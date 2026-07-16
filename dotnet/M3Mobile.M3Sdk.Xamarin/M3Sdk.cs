@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.Content;
 using M3Sdk.Xamarin.Internal;
+using M3Sdk.Xamarin.KeyTool;
 using M3Sdk.Xamarin.ScanEmul;
 using M3Sdk.Xamarin.Shared;
 using M3Sdk.Xamarin.Startup;
@@ -11,12 +12,13 @@ using M3Sdk.Xamarin.Startup;
 namespace M3Sdk.Xamarin
 {
     /// <summary>
-    /// Native C# facade over the M3 Mobile StartUp, ScanEmul, Time, Wifi, and Usb APIs.
+    /// Native C# facade over the M3 Mobile StartUp, ScanEmul, KeyTool, Time, Wifi, and Usb APIs.
     /// </summary>
     public sealed class M3Sdk : IM3Sdk
     {
         private readonly StartUpApi _startUp;
         private readonly ScanEmulApi _scanEmul;
+        private readonly KeyToolApi _keyTool;
         private readonly TimeApi _time;
         private readonly WifiApi _wifi;
         private readonly UsbApi _usb;
@@ -29,6 +31,7 @@ namespace M3Sdk.Xamarin
 
             _startUp = new StartUpApi(appContext, guard);
             _scanEmul = new ScanEmulApi(appContext, guard);
+            _keyTool = new KeyToolApi(appContext, guard);
             _time = new TimeApi(appContext, guard);
             _wifi = new WifiApi(appContext, guard);
             _usb = new UsbApi(appContext);
@@ -47,6 +50,12 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public IKeyToolApi KeyTool
+        {
+            get { return _keyTool; }
+        }
+
+        /// <inheritdoc />
         public ITimeApi Time
         {
             get { return _time; }
@@ -62,6 +71,90 @@ namespace M3Sdk.Xamarin
         public IUsbApi Usb
         {
             get { return _usb; }
+        }
+
+        /// <inheritdoc />
+        public void EnableFn()
+        {
+            ThrowIfDisposed();
+            _keyTool.EnableFn();
+        }
+
+        /// <inheritdoc />
+        public void DisableFn()
+        {
+            ThrowIfDisposed();
+            _keyTool.DisableFn();
+        }
+
+        /// <inheritdoc />
+        public void LockFn()
+        {
+            ThrowIfDisposed();
+            _keyTool.LockFn();
+        }
+
+        /// <inheritdoc />
+        public void SetKeyFunction(string key, string function)
+        {
+            ThrowIfDisposed();
+            _keyTool.SetKeyFunction(key, function);
+        }
+
+        /// <inheritdoc />
+        public void EnableHomeButton()
+        {
+            ThrowIfDisposed();
+            _keyTool.EnableHomeButton();
+        }
+
+        /// <inheritdoc />
+        public void DisableHomeButton()
+        {
+            ThrowIfDisposed();
+            _keyTool.DisableHomeButton();
+        }
+
+        /// <inheritdoc />
+        public void EnableRecentButton()
+        {
+            ThrowIfDisposed();
+            _keyTool.EnableRecentButton();
+        }
+
+        /// <inheritdoc />
+        public void DisableRecentButton()
+        {
+            ThrowIfDisposed();
+            _keyTool.DisableRecentButton();
+        }
+
+        /// <inheritdoc />
+        public void EnableLeftScanWakeUp()
+        {
+            ThrowIfDisposed();
+            _keyTool.EnableLeftScanWakeUp();
+        }
+
+        /// <inheritdoc />
+        public void DisableLeftScanWakeUp()
+        {
+            ThrowIfDisposed();
+            _keyTool.DisableLeftScanWakeUp();
+        }
+
+        /// <inheritdoc />
+        public void EnableRightScanWakeUp()
+        {
+            ThrowIfDisposed();
+            _keyTool.EnableRightScanWakeUp();
+        }
+
+        /// <inheritdoc />
+        public void DisableRightScanWakeUp()
+        {
+            ThrowIfDisposed();
+            _keyTool.DisableRightScanWakeUp();
         }
 
         /// <inheritdoc />

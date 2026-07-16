@@ -158,6 +158,33 @@ namespace M3Sdk.Xamarin.Internal
             internal const int WifiHighStability = 2;
         }
 
+        internal static class KeyTool
+        {
+            internal const string Sl20AppName = "KeyTool SL20";
+            internal const string Sl20PackageName = "com.m3.keytoolsl20";
+            internal const string WakeUpAppName = "KeyTool";
+            internal const string WakeUpPackageName = "net.m3.keytool";
+
+            internal const string LeftScanWakeUp = "net.m3.keytool.WAKEUP_CONTROL_LEFT";
+            internal const string RightScanWakeUp = "net.m3.keytool.WAKEUP_CONTROL_RIGHT";
+            internal const string ControlFn = "com.m3.keytoolsl20.ACTION_CONTROL_FN_STATE";
+            internal const string SetKey = "com.m3.keytoolsl20.ACTION_SET_KEY";
+
+            internal const string ExtraWakeUpEnabled = "wakeup_enable";
+            internal const string ExtraFnState = "fn_state";
+            internal const string ExtraKeyTitle = "key_title";
+            internal const string ExtraKeyFunction = "key_function";
+
+            internal const string Home = "Home";
+            internal const string Recent = "Recent";
+            internal const string Default = "Default";
+            internal const string Disable = "Disable";
+
+            internal const int DisableFn = 0;
+            internal const int EnableFn = 1;
+            internal const int LockFn = 2;
+        }
+
         internal static class ScanEmul
         {
             internal const string AppName = "ScanEmul";

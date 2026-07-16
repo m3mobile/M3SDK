@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: release-${{ inputs.tag_name }}
@@ -318,3 +319,16 @@ jobs:
             --verify-tag \
             --title "$VERSION" \
             --notes-file "$notes_file"
+
+      - name: Start published sample verification
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.tag_name }}"
+          gh workflow run verify-published-samples.yml \
+            --repo "$GH_REPO" \
+            --ref "$VERSION" \
+            -f version="$VERSION"
