@@ -58,6 +58,21 @@ namespace M3Sdk.Xamarin
         }
     }
 
+    /// <summary>
+    /// Exception thrown when a KeyTool API cannot reach its required companion app.
+    /// </summary>
+    public sealed class KeyToolAppUnavailableException : Exception
+    {
+        /// <summary>
+        /// Creates an exception with the unavailable companion app message.
+        /// </summary>
+        /// <param name="message">The exception message.</param>
+        public KeyToolAppUnavailableException(string message)
+            : base(message)
+        {
+        }
+    }
+
     internal sealed class M3Cancelable : IM3Cancelable
     {
         private readonly CancellationTokenSource _source = new CancellationTokenSource();

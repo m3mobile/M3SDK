@@ -1,0 +1,489 @@
+using System.Reflection;
+using Android.Graphics;
+using Android;
+using Android.App;
+using Android.Content.PM;
+using Android.Nfc;
+using Android.OS;
+using Android.Provider;
+using Android.Views;
+using Android.Views.InputMethods;
+using Android.Widget;
+using M3Sdk.Xamarin;
+using M3Sdk.Xamarin.Startup;
+
+namespace M3SdkPublishedSample;
+
+[Activity(Label = "@string/app_name", Exported = false)]
+public sealed class CategoryActivity : Activity
+{
+    internal const string CategoryExtra = "sample_category";
+    private const string StartUpPackage = "com.m3.startup";
+    private const string ScanEmulPackage = "net.m3mobile.app.scanemul";
+    private const string KeyToolSl20Package = "com.m3.keytoolsl20";
+    private const string KeyToolWakeUpPackage = "net.m3.keytool";
+
+    private IM3Sdk? _sdk;
+    private LinearLayout? _content;
+    private ScrollView? _scroll;
+    private IDisposable? _scanRegistration;
+    private readonly ExecutionTrace _executionTrace = new();
+
+    protected override void OnCreate(Bundle? savedInstanceState)
+    {
+        base.OnCreate(savedInstanceState);
+        Window?.SetSoftInputMode(SoftInput.AdjustResize);
+        var categoryValue = Intent?.GetIntExtra(CategoryExtra, -1) ?? -1;
+        if (!Enum.IsDefined(typeof(SampleCategory), categoryValue))
+        {
+            Finish();
+            return;
+        }
+        var category = (SampleCategory)categoryValue;
+
+        _scroll = new ScrollView(this);
+        SystemBarPadding.Apply(_scroll);
+        _content = new LinearLayout(this)
+        {
+            Orientation = Orientation.Vertical
+        };
+        _content.SetPadding(32, 32, 32, 32);
+        _scroll.AddView(_content);
+        SetContentView(_scroll);
+
+        ShowHeading(category);
+        try
+        {
+            _sdk = M3Mobile.Create(ApplicationContext);
+            ShowCategory(category);
+        }
+        catch (Exception error)
+        {
+            var section = Section(SampleCategoryCatalog.Title(category));
+            section.Result.Text = _executionTrace.Message("M3Mobile.Create", Failure(error));
+        }
+    }
+
+    protected override void OnDestroy()
+    {
+        _scanRegistration?.Dispose();
+        _sdk?.Dispose();
+        base.OnDestroy();
+    }
+
+    private void ShowHeading(SampleCategory category)
+    {
+        var title = new TextView(this)
+        {
+            Text = GetString(SampleCategoryCatalog.Title(category)),
+            TextSize = 26
+        };
+        title.SetPadding(0, 0, 0, 8);
+        _content!.AddView(title);
+
+        var subtitle = new TextView(this)
+        {
+            Text = GetString(Resource.String.screen_title)
+        };
+        subtitle.SetPadding(0, 0, 0, 24);
+        _content.AddView(subtitle);
+    }
+
+    private void ShowCategory(SampleCategory category)
+    {
+        switch (category)
+        {
+            case SampleCategory.DeviceInfo: DeviceInfo(); break;
+            case SampleCategory.AirplaneMode: AirplaneMode(); break;
+            case SampleCategory.Application: ApplicationSample(); break;
+            case SampleCategory.Device: DeviceSample(); break;
+            case SampleCategory.Language: LanguageSample(); break;
+            case SampleCategory.Network: NetworkSample(); break;
+            case SampleCategory.Permission: PermissionSample(); break;
+            case SampleCategory.QuickTile: QuickTileSample(); break;
+            case SampleCategory.Scanner: ScannerSample(); break;
+            case SampleCategory.StartUpSetting: StartUpSettingSample(); break;
+            case SampleCategory.Time: TimeSample(); break;
+            case SampleCategory.Usb: UsbSample(); break;
+            case SampleCategory.Wifi: WifiSample(); break;
+            case SampleCategory.KeyTool: KeyToolSample(); break;
+            default: throw new ArgumentOutOfRangeException(nameof(category), category, null);
+        }
+    }
+
+    private void DeviceInfo()
+    {
+        var section = Section(Resource.String.device_info);
+        section.Result.Text = _executionTrace.Message("environment", EnvironmentText());
+        AddButton(section, Resource.String.refresh, () =>
+            section.Result.Text = _executionTrace.Message("environment", EnvironmentText()));
+    }
+
+    private void AirplaneMode()
+    {
+        var section = Section(Resource.String.airplane_mode);
+        AddButton(section, Resource.String.turn_on, () =>
+        {
+            RunOneWay(section, "turnOnAirplaneMode", () => _sdk!.TurnOnAirplaneMode());
+            section.Result.Append("\nobserved=" + AirplaneModeEnabled());
+        });
+        AddButton(section, Resource.String.turn_off, () =>
+        {
+            RunOneWay(section, "turnOffAirplaneMode", () => _sdk!.TurnOffAirplaneMode());
+            section.Result.Append("\nobserved=" + AirplaneModeEnabled());
+        });
+    }
+
+    private void ApplicationSample()
+    {
+        var section = Section(Resource.String.application);
+        var packageName = TextField(Resource.String.package_name, PackageName ?? string.Empty);
+        section.Add(packageName);
+        AddButton(section, Resource.String.run_application, () =>
+            RunOneWay(section, "runApp(package=" + (packageName.Text ?? string.Empty) + ")", () => _sdk!.RunApp(packageName.Text ?? string.Empty)));
+    }
+
+    private void DeviceSample()
+    {
+        var section = Section(Resource.String.device);
+        AddAsyncButton(section, Resource.String.get_serial, "getSerialNumber", async () =>
+        {
+            var serial = await _sdk!.GetSerialNumberAsync();
+            return "SUCCESS\n" + serial;
+        });
+    }
+
+    private void LanguageSample()
+    {
+        var section = Section(Resource.String.language);
+        AddButton(section, Resource.String.english, () =>
+            RunOneWay(section, "setLanguage(en, US)", () => _sdk!.SetLanguage("en", "US")));
+        AddButton(section, Resource.String.korean, () =>
+            RunOneWay(section, "setLanguage(ko, KR)", () => _sdk!.SetLanguage("ko", "KR")));
+    }
+
+    private void NetworkSample()
+    {
+        var section = Section(Resource.String.network);
+        AddButton(section, Resource.String.enable_nfc, () =>
+        {
+            RunOneWay(section, "enableNfc", () => _sdk!.EnableNfc());
+            section.Result.Append("\nobserved=" + NfcAdapter.GetDefaultAdapter(this)?.IsEnabled);
+        });
+        AddButton(section, Resource.String.disable_nfc, () =>
+        {
+            RunOneWay(section, "disableNfc", () => _sdk!.DisableNfc());
+            section.Result.Append("\nobserved=" + NfcAdapter.GetDefaultAdapter(this)?.IsEnabled);
+        });
+    }
+
+    private void PermissionSample()
+    {
+        var section = Section(Resource.String.permission);
+        AddButton(section, Resource.String.grant_camera, () =>
+        {
+            RunOneWay(section, "grantPermission(package=" + (PackageName ?? string.Empty) + ", CAMERA)", () => _sdk!.GrantPermission(PackageName ?? string.Empty, Manifest.Permission.Camera));
+            section.Result.Append("\nobserved=" +
+                (CheckSelfPermission(Manifest.Permission.Camera) == Permission.Granted));
+        });
+    }
+
+    private void QuickTileSample()
+    {
+        var section = Section(Resource.String.quick_tile);
+        AddButton(section, Resource.String.set_quick_tile, () =>
+            RunOneWay(section, "setQuickTiles(id=Wifi, title=Wi-Fi)", () => _sdk!.SetQuickTiles(new QuickTile(QuickTileId.Wifi, "Wi-Fi"))));
+    }
+
+    private void ScannerSample()
+    {
+        var section = Section(Resource.String.scanner);
+        try
+        {
+            _scanRegistration = _sdk!.RegisterOnScanResultListener(result =>
+                RunOnUiThread(() => section.Result.Text = _executionTrace.Message("scanResult", "SUCCESS\nbarcode=" + result.Barcode + "\ntype=" + result.Type)));
+            section.Result.Text = _executionTrace.Message("registerOnScanResultListener", "LISTENING");
+        }
+        catch (Exception error)
+        {
+            section.Result.Text = _executionTrace.Message("registerOnScanResultListener", Failure(error));
+        }
+    }
+
+    private void StartUpSettingSample()
+    {
+        var section = Section(Resource.String.startup_setting);
+        AddButton(section, Resource.String.reset_startup, () =>
+            RunOneWay(section, "resetStartUpSetting", () => _sdk!.ResetStartUpSetting()));
+    }
+
+    private void TimeSample()
+    {
+        var section = Section(Resource.String.time);
+        AddButton(section, Resource.String.get_timezone, () =>
+            RunValue(section, "getTimeZone", () => _sdk!.GetTimeZone()));
+    }
+
+    private void UsbSample()
+    {
+        var section = Section(Resource.String.usb);
+        AddButton(section, Resource.String.get_usb_modes, () =>
+            RunValue(section, "getCurrentUsbModes", () => string.Join(", ", _sdk!.GetCurrentUsbModes())));
+    }
+
+    private void WifiSample()
+    {
+        var section = Section(Resource.String.wifi);
+        AddAsyncButton(section, Resource.String.get_factory_wifi_mac, "getFactoryWifiMac", async () =>
+        {
+            var result = await _sdk!.GetFactoryWifiMacAsync();
+            return result.Success
+                ? "SUCCESS\n" + result.MacAddress
+                : Failure(new InvalidOperationException("StartUp error=" + result.ErrorMessage));
+        });
+    }
+
+    private void KeyToolSample()
+    {
+        var section = Section(Resource.String.keytool);
+        var warning = new TextView(this)
+        {
+            Text = GetString(Resource.String.keytool_warning)
+        };
+        var mappingTitle = SectionTitle(Resource.String.key_mapping);
+        var mappingDescription = new TextView(this)
+        {
+            Text = GetString(Resource.String.key_mapping_description)
+        };
+        var key = TextField(Resource.String.key_title, "Left Scan");
+        var function = TextField(Resource.String.function_title, "Volume Up");
+        section.Add(warning);
+        section.Add(mappingTitle);
+        section.Add(mappingDescription);
+        section.Add(key);
+        section.Add(function);
+        AddButton(section, Resource.String.set_key_function, () =>
+            RunOneWay(section, "setKeyFunction(key=" + (key.Text ?? string.Empty) + ", function=" + (function.Text ?? string.Empty) + ")", () => _sdk!.SetKeyFunction(key.Text ?? string.Empty, function.Text ?? string.Empty)));
+
+        section.Add(SectionTitle(Resource.String.navigation_buttons));
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.navigation_buttons_description)
+        });
+        section.Add(SectionTitle(Resource.String.home_button));
+        AddButton(section, Resource.String.enable, () =>
+            RunOneWay(section, "EnableHomeButton", () => _sdk!.EnableHomeButton()));
+        AddButton(section, Resource.String.disable, () =>
+            RunOneWay(section, "DisableHomeButton", () => _sdk!.DisableHomeButton()));
+        section.Add(SectionTitle(Resource.String.recent_button));
+        AddButton(section, Resource.String.enable, () =>
+            RunOneWay(section, "EnableRecentButton", () => _sdk!.EnableRecentButton()));
+        AddButton(section, Resource.String.disable, () =>
+            RunOneWay(section, "DisableRecentButton", () => _sdk!.DisableRecentButton()));
+    }
+
+    private SectionView Section(int titleId)
+    {
+        var layout = new LinearLayout(this)
+        {
+            Orientation = Orientation.Vertical
+        };
+        layout.SetPadding(24, 24, 24, 24);
+
+        var title = new TextView(this)
+        {
+            Text = GetString(titleId),
+            TextSize = 20
+        };
+        var result = new TextView(this)
+        {
+            Text = GetString(Resource.String.not_run)
+        };
+        result.SetPadding(0, 16, 0, 0);
+
+        layout.AddView(title);
+        layout.AddView(result);
+        _content!.AddView(layout, new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MatchParent,
+            ViewGroup.LayoutParams.WrapContent)
+        {
+            BottomMargin = 20
+        });
+        return new SectionView(layout, result);
+    }
+
+    private EditText TextField(int hintId, string value)
+    {
+        var field = new EditText(this)
+        {
+            Hint = GetString(hintId),
+            Text = value
+        };
+        field.SetSingleLine(true);
+        return field;
+    }
+
+    private TextView SectionTitle(int titleId)
+    {
+        var title = new TextView(this)
+        {
+            Text = GetString(titleId),
+            TextSize = 18
+        };
+        title.SetPadding(0, 24, 0, 4);
+        return title;
+    }
+
+    private void AddButton(SectionView section, int labelId, Action action)
+    {
+        var button = new Button(this)
+        {
+            Text = GetString(labelId)
+        };
+        button.Click += (_, _) =>
+        {
+            HideSoftKeyboard(button);
+            action();
+            RevealResult(section);
+        };
+        section.Add(button);
+    }
+
+    private void AddAsyncButton(SectionView section, int labelId, string operation, Func<Task<string>> action)
+    {
+        var button = new Button(this)
+        {
+            Text = GetString(labelId)
+        };
+        button.Click += async (_, _) =>
+        {
+            HideSoftKeyboard(button);
+            try
+            {
+                var body = await action();
+                section.Result.Text = _executionTrace.Message(operation, body);
+            }
+            catch (Exception error)
+            {
+                section.Result.Text = _executionTrace.Message(operation, Failure(error));
+            }
+            RevealResult(section);
+        };
+        section.Add(button);
+    }
+
+    private void HideSoftKeyboard(View source)
+    {
+        CurrentFocus?.ClearFocus();
+        var keyboard = GetSystemService(InputMethodService) as InputMethodManager;
+        keyboard?.HideSoftInputFromWindow(source.WindowToken, HideSoftInputFlags.None);
+    }
+
+    private static void RevealResult(SectionView section)
+    {
+        section.Result.Post(() => section.Result.RequestRectangleOnScreen(
+            new Rect(0, 0, section.Result.Width, section.Result.Height),
+            true));
+    }
+
+    private void RunOneWay(SectionView section, string operation, Action action)
+    {
+        string body;
+        try
+        {
+            action();
+            body = GetString(Resource.String.request_sent_unverified);
+        }
+        catch (Exception error)
+        {
+            body = Failure(error);
+        }
+        section.Result.Text = _executionTrace.Message(operation, body);
+    }
+
+    private void RunValue(SectionView section, string operation, Func<string> value)
+    {
+        string body;
+        try
+        {
+            body = "SUCCESS\n" + value();
+        }
+        catch (Exception error)
+        {
+            body = Failure(error);
+        }
+        section.Result.Text = _executionTrace.Message(operation, body);
+    }
+
+    private bool AirplaneModeEnabled()
+    {
+        return Settings.Global.GetInt(ContentResolver, Settings.Global.AirplaneModeOn, 0) == 1;
+    }
+
+    private string EnvironmentText()
+    {
+        var sample = PackageManager?.GetPackageInfo(PackageName ?? string.Empty, PackageInfoFlags.Activities)?.VersionName;
+        return
+            "model=" + Build.Model +
+            "\nandroid=" + Build.VERSION.Release + " (API " + (int)Build.VERSION.SdkInt + ")" +
+            "\nsample=" + sample +
+            "\nm3sdk=" + SdkVersion() +
+            "\nStartUp=" + PackageVersion(StartUpPackage) +
+            "\nScanEmul=" + PackageVersion(ScanEmulPackage) +
+            "\nKeyTool SL20=" + PackageVersion(KeyToolSl20Package) +
+            "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage);
+    }
+
+    private string Failure(Exception error)
+    {
+        return
+            "FAILED" +
+            "\ntype=" + error.GetType().FullName +
+            "\nmessage=" + (error.Message ?? "No message") +
+            "\nmodel=" + Build.Model +
+            "\nandroid=" + Build.VERSION.Release + " (API " + (int)Build.VERSION.SdkInt + ")" +
+            "\nm3sdk=" + SdkVersion() +
+            "\nStartUp=" + PackageVersion(StartUpPackage) +
+            "\nScanEmul=" + PackageVersion(ScanEmulPackage) +
+            "\nKeyTool SL20=" + PackageVersion(KeyToolSl20Package) +
+            "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage);
+    }
+
+    private static string SdkVersion()
+    {
+        return typeof(M3Mobile).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                   ?.InformationalVersion
+               ?? typeof(M3Mobile).Assembly.GetName().Version?.ToString()
+               ?? "UNKNOWN";
+    }
+
+    private string PackageVersion(string packageName)
+    {
+        try
+        {
+            return PackageManager?.GetPackageInfo(packageName, PackageInfoFlags.Activities)?.VersionName
+                   ?? "INSTALLED_VERSION_UNAVAILABLE";
+        }
+        catch (PackageManager.NameNotFoundException)
+        {
+            return "NOT_INSTALLED_OR_NOT_VISIBLE";
+        }
+    }
+
+    private sealed class SectionView
+    {
+        internal SectionView(LinearLayout layout, TextView result)
+        {
+            Layout = layout;
+            Result = result;
+        }
+
+        internal LinearLayout Layout { get; }
+        internal TextView Result { get; }
+
+        internal void Add(View view)
+        {
+            Layout.AddView(view, Layout.ChildCount - 1);
+        }
+    }
+}

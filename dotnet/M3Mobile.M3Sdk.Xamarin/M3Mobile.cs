@@ -13,7 +13,7 @@ namespace M3Sdk.Xamarin
         /// Pass <c>Application.Context</c> from a Xamarin.Android application.
         /// </summary>
         /// <param name="context">The Android context used to send broadcasts and read system settings.</param>
-        /// <returns>An SDK instance that exposes StartUp, ScanEmul, time, Wi-Fi, and USB APIs.</returns>
+        /// <returns>An SDK instance that exposes StartUp, ScanEmul, KeyTool, time, Wi-Fi, and USB APIs.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="context" /> is <c>null</c>.</exception>
         public static IM3Sdk Create(Context context)
         {

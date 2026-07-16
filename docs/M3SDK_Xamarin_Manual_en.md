@@ -60,6 +60,10 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [GS1 Parsed Listener](#gs1-parsed-listener)
     - [Digital Link Parsed Listener](#digital-link-parsed-listener)
     - [Scanner Settings](#scanner-settings)
+  - [KeyTool API](#keytool-api)
+    - [Control Function-key Mode](#control-function-key-mode)
+    - [Set Key Function](#set-key-function)
+    - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [Time API](#time-api)
@@ -209,6 +213,8 @@ The M3 SDK provides a **Strict Mode** that affects how API calls behave when req
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on an unsupported device model.
     *   `UnsatisfiedVersionException`: Thrown if the installed StartUp or ScanEmul app version is lower than the API requirement.
+    *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This check always runs because KeyTool requests are one-way broadcasts.
+
 
 *   **Disabled**: In this mode, API calls that do not meet the required conditions are **ignored automatically**. No exception is thrown, so the application continues running.
 
@@ -1030,6 +1036,89 @@ IM3Cancelable request = m3.IsScannerProfileEnabled((result, error) =>
 ```
 
 ---
+### KeyTool API
+
+Controls physical key configuration through KeyTool companion apps. The methods are available both
+from the flat SDK facade and from the `KeyTool` API group.
+
+> **One-way request:** KeyTool broadcasts do not return an acknowledgement. A normal return means
+> only that Android accepted the request. Verify the physical key or wake-up behavior after the call.
+> If the required package is unavailable, the SDK throws `KeyToolAppUnavailableException`.
+
+#### Control Function-key Mode
+
+*   **Supported model**: `SL20K`
+*   **Required package**: `com.m3.keytoolsl20`
+
+```csharp
+using IM3Sdk m3 = M3Mobile.Create(Application.Context);
+
+m3.EnableFn();
+m3.DisableFn();
+m3.LockFn();
+
+// The grouped form is also available.
+m3.KeyTool.EnableFn();
+```
+
+#### Set Key Function
+
+Assigns a KeyTool function title to a physical key title.
+
+*   **Supported models**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
+*   **Required package**: `com.m3.keytoolsl20`
+
+```csharp
+try
+{
+    m3.SetKeyFunction("Left Scan", "Volume Up");
+    // REQUEST_SENT_UNVERIFIED: verify the physical key on the device.
+}
+catch (Exception error)
+{
+    Android.Util.Log.Error("M3SDK", error.ToString());
+}
+```
+
+Use the current KeyTool title spelling, including `Volume Up` and `Volume Down`. KeyTool 1.4.1
+also normalizes settings saved by older releases as `Volume up` or `Volume down`.
+
+#### Control Home and Recent Buttons
+
+*   **Supported models**: `SM24`, `SM25`
+*   **Required package**: `com.m3.keytoolsl20` version `1.4.1` or later
+
+```csharp
+m3.EnableHomeButton();
+m3.DisableHomeButton();
+m3.EnableRecentButton();
+m3.DisableRecentButton();
+
+// The grouped form is also available.
+m3.KeyTool.DisableRecentButton();
+```
+
+These are one-way requests. Verify the actual navigation button after each call.
+
+#### Control Scan-key Wake-Up
+
+Controls whether the left or right scan key wakes an `SL20P` device.
+
+*   **Supported model**: `SL20P`
+*   **Required package**: `net.m3.keytool`
+
+```csharp
+m3.EnableLeftScanWakeUp();
+m3.DisableLeftScanWakeUp();
+m3.EnableRightScanWakeUp();
+m3.DisableRightScanWakeUp();
+```
+
+The published-package sample displays installed KeyTool package versions and reports one-way calls
+as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+---
+
 
 ### StartUp Setting API
 

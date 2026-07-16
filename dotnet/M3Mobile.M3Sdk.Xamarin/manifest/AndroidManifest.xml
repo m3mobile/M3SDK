@@ -4,5 +4,7 @@
   <queries>
     <package android:name="com.m3.startup" />
     <package android:name="net.m3mobile.app.scanemul" />
+    <package android:name="com.m3.keytoolsl20" />
+    <package android:name="net.m3.keytool" />
   </queries>
 </manifest>

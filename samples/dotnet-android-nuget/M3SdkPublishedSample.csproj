@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+    <ApplicationId>net.m3mobile.samples.dotnet</ApplicationId>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <M3SdkVersion Condition="'$(M3SdkVersion)' == ''">RELEASE_VERSION_REQUIRED</M3SdkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="$(M3SdkVersion)" />
+  </ItemGroup>
+
+  <Target Name="RequirePublishedM3SdkVersion" BeforeTargets="CollectPackageReferences">
+    <Error
+      Condition="'$(M3SdkVersion)' == 'RELEASE_VERSION_REQUIRED'"
+      Text="Provide -p:M3SdkVersion=&lt;released NuGet Gallery version&gt;. Local project references are intentionally unsupported." />
+  </Target>
+</Project>

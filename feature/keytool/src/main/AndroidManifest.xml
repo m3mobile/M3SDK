@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <queries>
+        <package android:name="com.m3.keytoolsl20" />
+        <package android:name="net.m3.keytool" />
+    </queries>
 
 </manifest>

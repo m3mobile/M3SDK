@@ -67,6 +67,23 @@ namespace M3Sdk.Xamarin.Internal
         }
 
         /// <summary>
+        /// Verifies that a companion app required by a one-way API is installed and visible.
+        /// </summary>
+        /// <param name="methodName">The public SDK method being guarded.</param>
+        /// <param name="appName">The display name of the required companion app.</param>
+        /// <param name="packageName">The Android package name of the required companion app.</param>
+        internal void AssertCompanionAppAvailable(string methodName, string appName, string packageName)
+        {
+            var currentVersion = GetAppVersionName(packageName);
+            if (!string.IsNullOrEmpty(currentVersion))
+                return;
+
+            throw new KeyToolAppUnavailableException(
+                "\"" + methodName + "\" is unavailable because " + appName + " (" + packageName + ") " +
+                "is not installed or is not visible to the SDK.");
+        }
+
+        /// <summary>
         /// Verifies that the current device model is accepted for the guarded API when strict mode is enabled.
         /// </summary>
         /// <param name="methodName">The public SDK method being guarded.</param>
