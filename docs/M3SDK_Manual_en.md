@@ -59,6 +59,10 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Scanner Settings](#scanner-settings)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
+  - [KeyTool API](#keytool-api)
+    - [Control Function-key Mode](#control-function-key-mode)
+    - [Set Key Function](#set-key-function)
+    - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
   - [Time API](#time-api)
     - [Set Date and Time](#set-date-and-time)
     - [Set NTP Server](#set-ntp-server)
@@ -170,6 +174,8 @@ The M3 SDK provides a "Strict Mode" that influences how certain API calls behave
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on a device model not listed as supported.
     *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp or ScanEmul application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed.
+    *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This availability check always runs because KeyTool requests are one-way broadcasts.
+
 *   **Disabled**: In this mode, API calls that do not meet the required conditions (e.g., unsupported device, insufficient StartUp version) will **fail silently** and simply do nothing. No exceptions will be thrown, allowing your application to continue execution without interruption.
 
 **Enabling Strict Mode:**
@@ -771,6 +777,90 @@ M3Mobile.instance.resetStartUpSetting()
 ```
 
 ---
+### KeyTool API
+
+Controls physical key configuration through the KeyTool companion apps. KeyTool methods are exposed
+directly from `M3Mobile.instance`, like the StartUp and ScanEmul methods.
+
+> **One-way request:** KeyTool broadcasts do not return an acknowledgement. A method returning
+> normally means only that Android accepted the request. It does not prove that the device setting
+> changed. Verify the physical key after the call. If the required package is unavailable, the SDK
+> throws `KeyToolAppUnavailableException` with the method and package details.
+
+#### Control Function-key Mode
+
+Enables, disables, or locks Function-key mode.
+
+*   **Supported model**: `SL20K`
+*   **Required package**: `com.m3.keytoolsl20`
+
+```kotlin
+M3Mobile.instance.enableFN()
+M3Mobile.instance.disableFN()
+M3Mobile.instance.lockFN()
+```
+
+#### Set Key Function
+
+Assigns a KeyTool function title to a physical key title.
+
+*   **Supported models**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
+*   **Required package**: `com.m3.keytoolsl20`
+*   **Parameters**:
+    *   `key`: KeyTool key title.
+    *   `function`: KeyTool function title.
+
+```kotlin
+try {
+    M3Mobile.instance.setKeyFunction(
+        key = "Left Scan",
+        function = "Volume Up"
+    )
+    // REQUEST_SENT_UNVERIFIED: verify the physical key on the device.
+} catch (error: Exception) {
+    Log.e("M3SDK", "KeyTool request failed", error)
+}
+```
+
+Use the current KeyTool title spelling, including `Volume Up` and `Volume Down`. KeyTool 1.4.1
+also normalizes settings saved by older releases as `Volume up` or `Volume down`.
+
+#### Control Home and Recent Buttons
+
+Enables or disables the SystemUI Home and Recent navigation buttons. These methods send the same
+`ACTION_SET_KEY` request used by KeyTool 1.4.1 with `Default` for enabled and `Disable` for disabled.
+
+*   **Supported models**: `SM24`, `SM25`
+*   **Required package**: `com.m3.keytoolsl20` version `1.4.1` or later
+
+```kotlin
+M3Mobile.instance.enableHomeButton()
+M3Mobile.instance.disableHomeButton()
+M3Mobile.instance.enableRecentButton()
+M3Mobile.instance.disableRecentButton()
+```
+
+These are one-way requests. Verify the actual navigation button after each call.
+
+#### Control Scan-key Wake-Up
+
+Controls whether the left or right scan key wakes an `SL20P` device.
+
+*   **Supported model**: `SL20P`
+*   **Required package**: `net.m3.keytool`
+
+```kotlin
+M3Mobile.instance.enableLeftScanWakeUp()
+M3Mobile.instance.disableLeftScanWakeUp()
+M3Mobile.instance.enableRightScanWakeUp()
+M3Mobile.instance.disableRightScanWakeUp()
+```
+
+The published-package sample displays the installed KeyTool package version and reports one-way
+calls as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+---
+
 
 ### Time API
 

@@ -60,6 +60,10 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [스캔 결과 리스너](#스캔-결과-리스너-scan-result-listener)
     - [GS1 파싱 결과 리스너](#gs1-파싱-결과-리스너-gs1-parsed-listener)
     - [디지털 링크 파싱 결과 리스너](#디지털-링크-파싱-결과-리스너-digital-link-parsed-listener)
+  - [KeyTool API](#keytool-api)
+    - [Function 키 모드 제어](#function-키-모드-제어)
+    - [키 기능 설정](#키-기능-설정)
+    - [스캔 키 Wake-Up 제어](#스캔-키-wake-up-제어)
     - [스캐너 설정 (Scanner Settings)](#스캐너-설정-scanner-settings)
   - [StartUp Setting API](#startup-setting-api)
     - [StartUp 설정 초기화](#startup-설정-초기화)
@@ -210,6 +214,8 @@ M3 SDK는 특정 API 호출이 (장치 지원 또는 앱 버전과 같은) 조�
 
     발생할 수 있는 예외는 다음과 같습니다.
     *   `UnsupportedDeviceModelException`: 지원되지 않는 장치 모델에서 API가 호출될 경우 발생합니다.
+    *   `KeyToolAppUnavailableException`: API에 필요한 KeyTool 앱이 설치되어 있지 않거나 앱에서 확인할 수 없을 때 발생합니다. KeyTool 호출은 단방향 broadcast이므로 이 검사는 Strict Mode 설정과 관계없이 수행됩니다.
+
     *   `UnsatisfiedVersionException`: API가 설치된 장치의 StartUp 또는 ScanEmul 애플리케이션 버전보다 더 높은 버전을 요구할 경우 발생합니다.
 
 *   **비활성화된 경우**: 이 모드에서는 필요한 조건을 충족하지 못하는 API 호출은 **자동으로 무시**됩니다. 예외가 발생하지 않으므로 애플리케이션은 중단 없이 계속 실행됩니다.
@@ -1031,6 +1037,89 @@ IM3Cancelable request = m3.IsScannerProfileEnabled((result, error) =>
 ```
 
 ---
+### KeyTool API
+
+KeyTool 앱을 통해 물리 키 설정을 제어합니다. 평면 SDK facade와 `KeyTool` API 그룹에서
+동일한 메서드를 사용할 수 있습니다.
+
+> **단방향 요청:** KeyTool broadcast는 처리 결과를 응답하지 않습니다. 메서드가 정상 반환되어도
+> 실제 설정 변경을 보장하지 않습니다. 호출 후 물리 키 또는 Wake-Up 동작을 직접 확인해야 합니다.
+> 필요한 패키지가 없으면 SDK가 `KeyToolAppUnavailableException`을 발생시킵니다.
+
+#### Function 키 모드 제어
+
+*   **지원 모델**: `SL20K`
+*   **필요 패키지**: `com.m3.keytoolsl20`
+
+```csharp
+using IM3Sdk m3 = M3Mobile.Create(Application.Context);
+
+m3.EnableFn();
+m3.DisableFn();
+m3.LockFn();
+
+// 그룹 형태도 사용할 수 있습니다.
+m3.KeyTool.EnableFn();
+```
+
+#### 키 기능 설정
+
+물리 키 이름에 KeyTool 기능 이름을 할당합니다.
+
+*   **지원 모델**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
+*   **필요 패키지**: `com.m3.keytoolsl20`
+
+```csharp
+try
+{
+    m3.SetKeyFunction("Left Scan", "Volume Up");
+    // REQUEST_SENT_UNVERIFIED: 장치의 물리 키를 직접 확인합니다.
+}
+catch (Exception error)
+{
+    Android.Util.Log.Error("M3SDK", error.ToString());
+}
+```
+
+현재 KeyTool 표기인 `Volume Up`, `Volume Down`을 사용합니다. KeyTool 1.4.1은 이전 버전이
+저장한 `Volume up`, `Volume down` 값도 읽을 때 현재 표기로 정규화합니다.
+
+#### Home 및 Recent 버튼 제어
+
+*   **지원 모델**: `SM24`, `SM25`
+*   **필요 패키지**: `com.m3.keytoolsl20` 버전 `1.4.1` 이상
+
+```csharp
+m3.EnableHomeButton();
+m3.DisableHomeButton();
+m3.EnableRecentButton();
+m3.DisableRecentButton();
+
+// 그룹 형태도 사용할 수 있습니다.
+m3.KeyTool.DisableRecentButton();
+```
+
+단방향 요청이므로 각 호출 후 실제 내비게이션 버튼 동작을 확인해야 합니다.
+
+#### 스캔 키 Wake-Up 제어
+
+`SL20P`의 왼쪽 또는 오른쪽 스캔 키로 장치를 깨울 수 있는지 제어합니다.
+
+*   **지원 모델**: `SL20P`
+*   **필요 패키지**: `net.m3.keytool`
+
+```csharp
+m3.EnableLeftScanWakeUp();
+m3.DisableLeftScanWakeUp();
+m3.EnableRightScanWakeUp();
+m3.DisableRightScanWakeUp();
+```
+
+배포 패키지 샘플은 설치된 KeyTool 패키지 버전을 표시하며, 단방향 호출을 성공이 아닌
+`REQUEST_SENT_UNVERIFIED` 상태로 표시합니다.
+
+---
+
 
 ### StartUp Setting API
 

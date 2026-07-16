@@ -1,4 +1,5 @@
 using System;
+using M3Sdk.Xamarin.KeyTool;
 using M3Sdk.Xamarin.ScanEmul;
 using M3Sdk.Xamarin.Shared;
 using M3Sdk.Xamarin.Startup;
@@ -8,7 +9,7 @@ namespace M3Sdk.Xamarin
     /// <summary>
     /// Public M3 Mobile SDK contract exposed to Xamarin.Android consumers.
     /// </summary>
-    public interface IM3Sdk : IStartUpApi, IScanEmulApi, ITimeApi, IWifiApi, IUsbApi, IDisposable
+    public interface IM3Sdk : IStartUpApi, IScanEmulApi, IKeyToolApi, ITimeApi, IWifiApi, IUsbApi, IDisposable
     {
         /// <summary>
         /// Gets the StartUp app API group.
@@ -19,6 +20,11 @@ namespace M3Sdk.Xamarin
         /// Gets the ScanEmul app API group.
         /// </summary>
         IScanEmulApi ScanEmul { get; }
+
+        /// <summary>
+        /// Gets the KeyTool app API group.
+        /// </summary>
+        IKeyToolApi KeyTool { get; }
 
         /// <summary>
         /// Gets the time read API group.

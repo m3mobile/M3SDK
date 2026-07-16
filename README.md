@@ -15,3 +15,12 @@ This is a comprehensive SDK for M3Mobile devices, providing various functionalit
 *   [M3SDK Manual (Korean)](./docs/M3SDK_Manual_kr.md)
 *   [M3SDK Xamarin Manual (English)](./docs/M3SDK_Xamarin_Manual_en.md)
 *   [M3SDK Xamarin Manual (Korean)](./docs/M3SDK_Xamarin_Manual_kr.md)
+
+## Published-package samples
+
+These standalone applications verify packages downloaded from public distribution channels. They do
+not reference local SDK projects.
+
+*   [Kotlin + Compose sample using JitPack](./samples/android-compose-jitpack)
+*   [.NET 10 for Android sample using NuGet Gallery](./samples/dotnet-android-nuget)
+*   [Release verification process](./docs/SAMPLE_RELEASE_VERIFICATION.md)

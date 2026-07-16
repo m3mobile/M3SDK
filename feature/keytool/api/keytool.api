@@ -8,9 +8,17 @@ public final class net/m3mobile/feature/generated/device/KeyToolWakeUpApiDeviceS
 	public fun get ()Ljava/util/Map;
 }
 
+public final class net/m3mobile/feature/keytool/KeyToolAppUnavailableException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
 public abstract interface class net/m3mobile/feature/keytool/api/KeyToolKeyApi {
 	public abstract fun disableFN ()V
+	public abstract fun disableHomeButton ()V
+	public abstract fun disableRecentButton ()V
 	public abstract fun enableFN ()V
+	public abstract fun enableHomeButton ()V
+	public abstract fun enableRecentButton ()V
 	public abstract fun lockFN ()V
 	public abstract fun setKeyFunction (Ljava/lang/String;Ljava/lang/String;)V
 }
