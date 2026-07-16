@@ -1,6 +1,6 @@
 # M3 SDK Xamarin 매뉴얼
 
-NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.8](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.8)
+NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.9](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.9)
 
 
 M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile 장치를 구성하고 제어하기 위한 C# API 모음을 제공합니다.
@@ -117,7 +117,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
 Visual Studio의 NuGet 패키지 관리자에서 `M3Mobile.M3Sdk.Xamarin`을 검색하여 설치하거나, 패키지 관리자 콘솔에서 다음 명령을 실행합니다.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.8
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.9
 ```
 
 NuGet 패키지 페이지는 문서 상단의 배포 링크에서 확인할 수 있습니다.
@@ -127,7 +127,7 @@ NuGet 패키지 페이지는 문서 상단의 배포 링크에서 확인할 수 
 프로젝트 파일에서 다음과 같은 패키지 참조를 확인할 수 있습니다.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.8" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.9" />
 ```
 
 ## 기본 사용법 (Basic Usage)
