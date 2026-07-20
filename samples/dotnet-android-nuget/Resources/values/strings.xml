@@ -24,6 +24,16 @@
   <string name="turn_on">Turn on</string>
   <string name="turn_off">Turn off</string>
   <string name="run_application">Run application</string>
+  <string name="apk_install">APK installation</string>
+  <string name="apk_install_warning">StartUp performs installation asynchronously and does not return a result. Same-version reinstall requires StartUp 6.8.1 or later; launch after install requires 6.8.2 or later. Verify the StartUp notification, logs, installed package, and launched screen.</string>
+  <string name="local_apk_path">Local APK absolute path</string>
+  <string name="remote_apk_url">Remote APK URL</string>
+  <string name="allow_same_version_update">Allow same-version reinstall (StartUp 6.8.1+)</string>
+  <string name="launch_after_install">Launch after successful install (StartUp 6.8.2+)</string>
+  <string name="install_local_apk">Install local APK</string>
+  <string name="install_remote_apk">Install remote APK</string>
+  <string name="local_apk_path_required">Enter a local APK absolute path.</string>
+  <string name="remote_apk_url_required">Enter a remote APK URL.</string>
   <string name="get_serial">Get serial number</string>
   <string name="english">English</string>
   <string name="korean">Korean</string>

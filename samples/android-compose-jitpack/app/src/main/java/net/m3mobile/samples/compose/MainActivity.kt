@@ -25,6 +25,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -34,11 +35,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.launch
@@ -74,6 +78,10 @@ internal fun CategoryScreen(category: SampleCategory) {
     val scope = rememberCoroutineScope()
     val results = remember { mutableStateMapOf<String, String>() }
     var packageName by remember { mutableStateOf(context.packageName) }
+    var localApkPath by remember { mutableStateOf("") }
+    var remoteApkUrl by remember { mutableStateOf("") }
+    var allowSameVersionUpdate by remember { mutableStateOf(false) }
+    var launchAfterInstall by remember { mutableStateOf(false) }
     var keyTitle by remember { mutableStateOf("Left Scan") }
     var functionTitle by remember { mutableStateOf("Volume Up") }
     val requestSentUnverified = stringResource(R.string.request_sent_unverified)
@@ -113,11 +121,12 @@ internal fun CategoryScreen(category: SampleCategory) {
     fun oneWay(
         key: String,
         operation: String,
+        successBody: String = requestSentUnverified,
         action: () -> Unit
     ) {
         val body = try {
             action()
-            requestSentUnverified
+            successBody
         } catch (error: Throwable) {
             failure(context, error)
         }
@@ -171,6 +180,101 @@ internal fun CategoryScreen(category: SampleCategory) {
             )
             SdkActionButton(onClick = { oneWay("app", "runApp(package=$packageName)") { sdk.runApp(packageName) } }) {
                 Text(stringResource(R.string.run_application))
+            }
+            Spacer(Modifier.height(8.dp))
+            Text(stringResource(R.string.apk_install), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.apk_install_warning))
+            OutlinedTextField(
+                value = localApkPath,
+                onValueChange = { localApkPath = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.local_apk_path)) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Uri
+                ),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = remoteApkUrl,
+                onValueChange = { remoteApkUrl = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.remote_apk_url)) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Uri
+                ),
+                singleLine = true
+            )
+            OptionRow(
+                label = stringResource(R.string.allow_same_version_update),
+                checked = allowSameVersionUpdate,
+                onCheckedChange = { allowSameVersionUpdate = it }
+            )
+            OptionRow(
+                label = stringResource(R.string.launch_after_install),
+                checked = launchAfterInstall,
+                onCheckedChange = { launchAfterInstall = it }
+            )
+            SdkActionButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    oneWay(
+                        "app",
+                        "installLocalApk(allowSameVersionUpdate=$allowSameVersionUpdate, " +
+                            "launchAfterInstall=$launchAfterInstall)",
+                        "$requestSentUnverified\nStartUp=${packageVersion(context, STARTUP_PACKAGE)}"
+                    ) {
+                        val filePath = localApkPath.trim()
+                        require(filePath.isNotEmpty()) {
+                            context.getString(R.string.local_apk_path_required)
+                        }
+                        when {
+                            launchAfterInstall -> sdk.installLocalApk(
+                                filePath,
+                                allowSameVersionUpdate,
+                                launchAfterInstall
+                            )
+                            allowSameVersionUpdate -> sdk.installLocalApk(
+                                filePath,
+                                allowSameVersionUpdate
+                            )
+                            else -> sdk.installLocalApk(filePath)
+                        }
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.install_local_apk))
+            }
+            SdkActionButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    oneWay(
+                        "app",
+                        "installRemoteApk(allowSameVersionUpdate=$allowSameVersionUpdate, " +
+                            "launchAfterInstall=$launchAfterInstall)",
+                        "$requestSentUnverified\nStartUp=${packageVersion(context, STARTUP_PACKAGE)}"
+                    ) {
+                        val url = remoteApkUrl.trim()
+                        require(url.isNotEmpty()) {
+                            context.getString(R.string.remote_apk_url_required)
+                        }
+                        when {
+                            launchAfterInstall -> sdk.installRemoteApk(
+                                url,
+                                allowSameVersionUpdate,
+                                launchAfterInstall
+                            )
+                            allowSameVersionUpdate -> sdk.installRemoteApk(
+                                url,
+                                allowSameVersionUpdate
+                            )
+                            else -> sdk.installRemoteApk(url)
+                        }
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.install_remote_apk))
             }
         }
 
@@ -367,6 +471,22 @@ private fun ActionRow(
         SdkActionButton(onClick = second.second, modifier = Modifier.weight(1f)) {
             Text(second.first)
         }
+    }
+}
+
+@Composable
+private fun OptionRow(
+    label: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(label, modifier = Modifier.weight(1f))
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 

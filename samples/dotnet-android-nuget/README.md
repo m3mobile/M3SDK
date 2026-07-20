@@ -28,6 +28,11 @@ Every executed operation writes `operation`, `attempt`, and `at` before its resu
 the same API or changing its arguments therefore always produces a visibly new result. KeyTool
 results include the requested key and function values.
 
+The App screen exposes local and remote APK installation, same-version reinstall, and launch after
+install. The result records only option values, not the full file path or URL. StartUp handles the
+request asynchronously, so the screen reports `REQUEST_SENT_UNVERIFIED`; verify the StartUp
+notification and logs, installed package, and launched screen.
+
 The application enables M3 SDK strict mode and shows:
 
 - `SUCCESS` for APIs with a response or observable value.

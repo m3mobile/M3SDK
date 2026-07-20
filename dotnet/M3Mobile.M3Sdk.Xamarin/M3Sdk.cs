@@ -221,10 +221,44 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void InstallLocalApk(string filePath, bool allowSameVersionUpdate)
+        {
+            ThrowIfDisposed();
+            _startUp.InstallLocalApk(filePath, allowSameVersionUpdate);
+        }
+
+        /// <inheritdoc />
+        public void InstallLocalApk(
+            string filePath,
+            bool allowSameVersionUpdate,
+            bool launchAfterInstall)
+        {
+            ThrowIfDisposed();
+            _startUp.InstallLocalApk(filePath, allowSameVersionUpdate, launchAfterInstall);
+        }
+
+        /// <inheritdoc />
         public void InstallRemoteApk(string url)
         {
             ThrowIfDisposed();
             _startUp.InstallRemoteApk(url);
+        }
+
+        /// <inheritdoc />
+        public void InstallRemoteApk(string url, bool allowSameVersionUpdate)
+        {
+            ThrowIfDisposed();
+            _startUp.InstallRemoteApk(url, allowSameVersionUpdate);
+        }
+
+        /// <inheritdoc />
+        public void InstallRemoteApk(
+            string url,
+            bool allowSameVersionUpdate,
+            bool launchAfterInstall)
+        {
+            ThrowIfDisposed();
+            _startUp.InstallRemoteApk(url, allowSameVersionUpdate, launchAfterInstall);
         }
 
         /// <inheritdoc />

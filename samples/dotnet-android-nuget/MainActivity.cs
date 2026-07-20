@@ -6,6 +6,7 @@ using Android.Content.PM;
 using Android.Nfc;
 using Android.OS;
 using Android.Provider;
+using Android.Text;
 using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
@@ -141,6 +142,80 @@ public sealed class CategoryActivity : Activity
         section.Add(packageName);
         AddButton(section, Resource.String.run_application, () =>
             RunOneWay(section, "runApp(package=" + (packageName.Text ?? string.Empty) + ")", () => _sdk!.RunApp(packageName.Text ?? string.Empty)));
+
+        section.Add(SectionTitle(Resource.String.apk_install));
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.apk_install_warning)
+        });
+        var localApkPath = TextField(Resource.String.local_apk_path, string.Empty);
+        var remoteApkUrl = TextField(Resource.String.remote_apk_url, string.Empty);
+        localApkPath.InputType = InputTypes.ClassText | InputTypes.TextVariationUri;
+        remoteApkUrl.InputType = InputTypes.ClassText | InputTypes.TextVariationUri;
+        var allowSameVersionUpdate = new CheckBox(this)
+        {
+            Text = GetString(Resource.String.allow_same_version_update)
+        };
+        var launchAfterInstall = new CheckBox(this)
+        {
+            Text = GetString(Resource.String.launch_after_install)
+        };
+        section.Add(localApkPath);
+        section.Add(remoteApkUrl);
+        section.Add(allowSameVersionUpdate);
+        section.Add(launchAfterInstall);
+        AddButton(section, Resource.String.install_local_apk, () =>
+            RunOneWay(
+                section,
+                "InstallLocalApk(allowSameVersionUpdate=" + allowSameVersionUpdate.Checked +
+                    ", launchAfterInstall=" + launchAfterInstall.Checked + ")",
+                () => InstallLocalApk(
+                    localApkPath.Text ?? string.Empty,
+                    allowSameVersionUpdate.Checked,
+                    launchAfterInstall.Checked),
+                "StartUp=" + PackageVersion(StartUpPackage)));
+        AddButton(section, Resource.String.install_remote_apk, () =>
+            RunOneWay(
+                section,
+                "InstallRemoteApk(allowSameVersionUpdate=" + allowSameVersionUpdate.Checked +
+                    ", launchAfterInstall=" + launchAfterInstall.Checked + ")",
+                () => InstallRemoteApk(
+                    remoteApkUrl.Text ?? string.Empty,
+                    allowSameVersionUpdate.Checked,
+                    launchAfterInstall.Checked),
+                "StartUp=" + PackageVersion(StartUpPackage)));
+    }
+
+    private void InstallLocalApk(
+        string filePath,
+        bool allowSameVersionUpdate,
+        bool launchAfterInstall)
+    {
+        if (string.IsNullOrWhiteSpace(filePath))
+            throw new ArgumentException(GetString(Resource.String.local_apk_path_required), nameof(filePath));
+
+        if (launchAfterInstall)
+            _sdk!.InstallLocalApk(filePath.Trim(), allowSameVersionUpdate, launchAfterInstall);
+        else if (allowSameVersionUpdate)
+            _sdk!.InstallLocalApk(filePath.Trim(), allowSameVersionUpdate);
+        else
+            _sdk!.InstallLocalApk(filePath.Trim());
+    }
+
+    private void InstallRemoteApk(
+        string url,
+        bool allowSameVersionUpdate,
+        bool launchAfterInstall)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+            throw new ArgumentException(GetString(Resource.String.remote_apk_url_required), nameof(url));
+
+        if (launchAfterInstall)
+            _sdk!.InstallRemoteApk(url.Trim(), allowSameVersionUpdate, launchAfterInstall);
+        else if (allowSameVersionUpdate)
+            _sdk!.InstallRemoteApk(url.Trim(), allowSameVersionUpdate);
+        else
+            _sdk!.InstallRemoteApk(url.Trim());
     }
 
     private void DeviceSample()
@@ -386,13 +461,19 @@ public sealed class CategoryActivity : Activity
             true));
     }
 
-    private void RunOneWay(SectionView section, string operation, Action action)
+    private void RunOneWay(
+        SectionView section,
+        string operation,
+        Action action,
+        string? successDetails = null)
     {
         string body;
         try
         {
             action();
             body = GetString(Resource.String.request_sent_unverified);
+            if (!string.IsNullOrEmpty(successDetails))
+                body += "\n" + successDetails;
         }
         catch (Exception error)
         {

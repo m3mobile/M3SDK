@@ -29,11 +29,51 @@ namespace M3Sdk.Xamarin.Startup
         void InstallLocalApk(string filePath);
 
         /// <summary>
+        /// Installs an APK from a local file path and optionally permits reinstalling the same version code.
+        /// </summary>
+        /// <param name="filePath">The absolute path to the APK file to install.</param>
+        /// <param name="allowSameVersionUpdate">Whether to reinstall when the APK version code matches the installed app.</param>
+        /// <remarks>Requires StartUp version <c>6.8.1</c> or later.</remarks>
+        void InstallLocalApk(string filePath, bool allowSameVersionUpdate);
+
+        /// <summary>
+        /// Installs an APK from a local file path with same-version and post-install launch options.
+        /// </summary>
+        /// <param name="filePath">The absolute path to the APK file to install.</param>
+        /// <param name="allowSameVersionUpdate">Whether to reinstall when the APK version code matches the installed app.</param>
+        /// <param name="launchAfterInstall">Whether to launch the installed app after installation succeeds.</param>
+        /// <remarks>
+        /// Requires StartUp version <c>6.8.2</c> or later. A normal return confirms only that the
+        /// one-way broadcast was sent, not that installation or launch succeeded.
+        /// </remarks>
+        void InstallLocalApk(string filePath, bool allowSameVersionUpdate, bool launchAfterInstall);
+
+        /// <summary>
         /// Installs an APK from a remote URL.
         /// </summary>
         /// <param name="url">The URL of the APK file to install.</param>
         /// <remarks>Requires StartUp version <c>6.2.14</c> or later.</remarks>
         void InstallRemoteApk(string url);
+
+        /// <summary>
+        /// Installs an APK from a remote URL and optionally permits reinstalling the same version code.
+        /// </summary>
+        /// <param name="url">The URL of the APK file to install.</param>
+        /// <param name="allowSameVersionUpdate">Whether to reinstall when the APK version code matches the installed app.</param>
+        /// <remarks>Requires StartUp version <c>6.8.1</c> or later.</remarks>
+        void InstallRemoteApk(string url, bool allowSameVersionUpdate);
+
+        /// <summary>
+        /// Installs an APK from a remote URL with same-version and post-install launch options.
+        /// </summary>
+        /// <param name="url">The URL of the APK file to install.</param>
+        /// <param name="allowSameVersionUpdate">Whether to reinstall when the APK version code matches the installed app.</param>
+        /// <param name="launchAfterInstall">Whether to launch the installed app after installation succeeds.</param>
+        /// <remarks>
+        /// Requires StartUp version <c>6.8.2</c> or later. A normal return confirms only that the
+        /// one-way broadcast was sent, not that download, installation, or launch succeeded.
+        /// </remarks>
+        void InstallRemoteApk(string url, bool allowSameVersionUpdate, bool launchAfterInstall);
 
         /// <summary>
         /// Enables the specified application package.
