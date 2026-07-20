@@ -4,6 +4,8 @@ internal object ExtraKey {
     const val INSTALL_APK_TYPE = "type"
     const val INSTALL_LOCAL_APK_PATH = "path"
     const val INSTALL_REMOTE_APK_PATH = "url"
+    const val INSTALL_APK_ALLOW_SAME_VERSION_UPDATE = "allow_same_version_update"
+    const val INSTALL_APK_LAUNCH_AFTER_INSTALL = "launch_after_install"
     const val SET_APP_STATE_PACKAGE_NAME = "package_name"
     const val SET_APP_STATE = "enable"
     const val SET_APP_AUTO_RUN = "auto_run"

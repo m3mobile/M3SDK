@@ -18,22 +18,40 @@ internal abstract class InstallApkRequester: BroadcastRequester() {
 
 internal class InstallLocalApkRequester(
     override val context: Context,
-    filePath: String
+    filePath: String,
+    allowSameVersionUpdate: Boolean? = null,
+    launchAfterInstall: Boolean? = null
 ): InstallApkRequester() {
 
     override val extras = bundleOf(
         ExtraKey.INSTALL_APK_TYPE to ExtraValue.INSTALL_LOCAL_APK,
         ExtraKey.INSTALL_LOCAL_APK_PATH to filePath
-    )
+    ).apply {
+        allowSameVersionUpdate?.let {
+            putBoolean(ExtraKey.INSTALL_APK_ALLOW_SAME_VERSION_UPDATE, it)
+        }
+        launchAfterInstall?.let {
+            putBoolean(ExtraKey.INSTALL_APK_LAUNCH_AFTER_INSTALL, it)
+        }
+    }
 }
 
 internal class InstallRemoteApkRequester(
     override val context: Context,
-    url: String
+    url: String,
+    allowSameVersionUpdate: Boolean? = null,
+    launchAfterInstall: Boolean? = null
 ): InstallApkRequester() {
 
     override val extras = bundleOf(
         ExtraKey.INSTALL_APK_TYPE to ExtraValue.INSTALL_REMOVE_APK,
         ExtraKey.INSTALL_REMOTE_APK_PATH to url
-    )
+    ).apply {
+        allowSameVersionUpdate?.let {
+            putBoolean(ExtraKey.INSTALL_APK_ALLOW_SAME_VERSION_UPDATE, it)
+        }
+        launchAfterInstall?.let {
+            putBoolean(ExtraKey.INSTALL_APK_LAUNCH_AFTER_INSTALL, it)
+        }
+    }
 }

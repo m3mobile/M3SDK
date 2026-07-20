@@ -272,27 +272,58 @@ m3.TurnOffAirplaneMode();
 
 #### 로컬 APK 설치
 
-로컬 파일 경로에서 APK를 설치합니다.
+로컬 파일 경로에서 APK를 설치합니다. 기존 1인자 overload는 원래 동작을 유지합니다.
+추가 overload로 동일 `versionCode` APK 재설치와 설치 성공 후 대상 앱 실행을 선택할 수 있습니다.
 
-*   **필요 StartUp 버전**: `6.2.14` 이상
+*   **필요 StartUp 버전**:
+    *   경로만 전달: `6.2.14` 이상
+    *   `allowSameVersionUpdate`: `6.8.1` 이상
+    *   `launchAfterInstall`: `6.8.2` 이상
 *   **매개변수**:
     *   `filePath` (string): 설치할 .apk 파일의 절대 경로입니다.
+    *   `allowSameVersionUpdate` (bool): APK `versionCode`가 설치된 앱과 같을 때 재설치합니다.
+    *   `launchAfterInstall` (bool): 설치에 성공한 경우에만 설치된 앱을 실행합니다.
 
 ```csharp
 m3.InstallLocalApk(filePath);
+m3.InstallLocalApk(filePath, allowSameVersionUpdate: true);
+m3.InstallLocalApk(
+    filePath,
+    allowSameVersionUpdate: true,
+    launchAfterInstall: true);
 ```
+
+StartUp 6.8.1에서 동일 버전 재설치만 필요하면 2인자 overload를 사용합니다.
+3인자 overload는 `launchAfterInstall`이 `false`여도 항상 StartUp 6.8.2 이상이 필요합니다.
 
 #### 원격 APK 설치
 
-원격 URL에서 APK를 다운로드하여 설치합니다.
+원격 URL에서 APK를 다운로드하여 설치합니다. 로컬 APK 설치와 동일하게 동일 버전 재설치와
+설치 후 실행 옵션을 제공합니다.
 
-*   **필요 StartUp 버전**: `6.2.14` 이상
+*   **필요 StartUp 버전**:
+    *   URL만 전달: `6.2.14` 이상
+    *   `allowSameVersionUpdate`: `6.8.1` 이상
+    *   `launchAfterInstall`: `6.8.2` 이상
 *   **매개변수**:
     *   `url` (string): APK 파일의 URL입니다.
+    *   `allowSameVersionUpdate` (bool): APK `versionCode`가 설치된 앱과 같을 때 재설치합니다.
+    *   `launchAfterInstall` (bool): 설치에 성공한 경우에만 설치된 앱을 실행합니다.
 
 ```csharp
 m3.InstallRemoteApk(url);
+m3.InstallRemoteApk(url, allowSameVersionUpdate: true);
+m3.InstallRemoteApk(
+    url,
+    allowSameVersionUpdate: true,
+    launchAfterInstall: true);
 ```
+
+APK 설치 요청은 단방향 broadcast입니다. 정상 반환은 M3SDK가 요청을 보냈다는 의미이며,
+다운로드·설치·실행 성공을 보장하지 않습니다. StartUp은 `PackageInstaller`가 성공을 반환하고
+설치된 package name을 제공한 경우에만 앱을 실행합니다. 다운로드나 설치 실패, package name 누락,
+동일 버전 설치 생략 시에는 앱을 실행하지 않습니다. StartUp 알림과 로그, 설치된 패키지 및
+실행 화면을 확인하세요.
 
 #### 애플리케이션 활성화
 
