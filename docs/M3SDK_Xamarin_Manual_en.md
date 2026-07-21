@@ -1,6 +1,6 @@
 # M3 SDK Xamarin Manual
 
-NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.9](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.9)
+NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.10](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.10)
 
 
 The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 Mobile devices from Xamarin.Android applications.
@@ -115,7 +115,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
 Search for `M3Mobile.M3Sdk.Xamarin` in Visual Studio NuGet Package Manager, or run the following command in Package Manager Console.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.9
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.10
 ```
 
 The NuGet package page is linked at the top of this document.
@@ -125,7 +125,7 @@ The NuGet package page is linked at the top of this document.
 The project file should contain the following package reference.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.9" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.10" />
 ```
 
 ## Basic Usage
@@ -270,27 +270,60 @@ Installs applications, enables or disables specific packages, runs applications,
 
 #### Install Local APK
 
-Installs an APK from a local file path.
+Installs an APK from a local file path. The existing one-parameter overload keeps the original
+behavior. Additional overloads can permit a same-`versionCode` reinstall and launch the installed
+application after installation succeeds.
 
-*   **Requires StartUp Version**: `6.2.14` or later
+*   **Required StartUp version**:
+    *   Path only: `6.2.14` or later
+    *   `allowSameVersionUpdate`: `6.8.1` or later
+    *   `launchAfterInstall`: `6.8.2` or later
 *   **Parameters**:
     *   `filePath` (string): The absolute path to the .apk file to install.
+    *   `allowSameVersionUpdate` (bool): Reinstalls when the APK `versionCode` matches the installed app.
+    *   `launchAfterInstall` (bool): Launches the installed app only after installation succeeds.
 
 ```csharp
 m3.InstallLocalApk(filePath);
+m3.InstallLocalApk(filePath, allowSameVersionUpdate: true);
+m3.InstallLocalApk(
+    filePath,
+    allowSameVersionUpdate: true,
+    launchAfterInstall: true);
 ```
+
+Use the two-parameter overload when only same-version reinstall support is needed on StartUp 6.8.1.
+The three-parameter overload always requires StartUp 6.8.2, even when `launchAfterInstall` is `false`.
 
 #### Install Remote APK
 
-Installs an APK from a remote URL.
+Downloads and installs an APK from a remote URL. It provides the same reinstall and post-install
+launch options as local APK installation.
 
-*   **Requires StartUp Version**: `6.2.14` or later
+*   **Required StartUp version**:
+    *   URL only: `6.2.14` or later
+    *   `allowSameVersionUpdate`: `6.8.1` or later
+    *   `launchAfterInstall`: `6.8.2` or later
 *   **Parameters**:
     *   `url` (string): The URL of the APK file.
+    *   `allowSameVersionUpdate` (bool): Reinstalls when the APK `versionCode` matches the installed app.
+    *   `launchAfterInstall` (bool): Launches the installed app only after installation succeeds.
 
 ```csharp
 m3.InstallRemoteApk(url);
+m3.InstallRemoteApk(url, allowSameVersionUpdate: true);
+m3.InstallRemoteApk(
+    url,
+    allowSameVersionUpdate: true,
+    launchAfterInstall: true);
 ```
+
+APK installation requests are one-way broadcasts. A normal return confirms only that M3SDK sent
+the request. It does not confirm download, installation, or launch success. StartUp launches the
+application only after `PackageInstaller` reports success and supplies an installed package name.
+It does not launch when download or installation fails, the package name is unavailable, or a
+same-version installation is skipped. Verify the StartUp notification and logs, the installed
+package, and the launched screen.
 
 #### Enable Application
 

@@ -14,8 +14,42 @@ internal class StartUpAppApiImpl(private val context: Context): StartUpAppApi {
         InstallLocalApkRequester(context, filePath).request()
     }
 
+    override fun installLocalApk(filePath: String, allowSameVersionUpdate: Boolean) {
+        InstallLocalApkRequester(context, filePath, allowSameVersionUpdate).request()
+    }
+
+    override fun installLocalApk(
+        filePath: String,
+        allowSameVersionUpdate: Boolean,
+        launchAfterInstall: Boolean
+    ) {
+        InstallLocalApkRequester(
+            context,
+            filePath,
+            allowSameVersionUpdate,
+            launchAfterInstall
+        ).request()
+    }
+
     override fun installRemoteApk(url: String) {
         InstallRemoteApkRequester(context, url).request()
+    }
+
+    override fun installRemoteApk(url: String, allowSameVersionUpdate: Boolean) {
+        InstallRemoteApkRequester(context, url, allowSameVersionUpdate).request()
+    }
+
+    override fun installRemoteApk(
+        url: String,
+        allowSameVersionUpdate: Boolean,
+        launchAfterInstall: Boolean
+    ) {
+        InstallRemoteApkRequester(
+            context,
+            url,
+            allowSameVersionUpdate,
+            launchAfterInstall
+        ).request()
     }
 
     override fun enableApp(packageName: String) {

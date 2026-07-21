@@ -1,5 +1,5 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en_v2.3.9.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.9/M3SDK_Manual_en_v2.3.9.pdf)
+Download PDF: [M3SDK_Manual_en_v2.3.10.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.10/M3SDK_Manual_en_v2.3.10.pdf)
 
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
@@ -130,14 +130,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.3.9")
+    implementation("com.github.m3mobile:M3SDK:2.3.10")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.3.9"
+    implementation "com.github.m3mobile:M3SDK:2.3.10"
 }
 ```
 
@@ -230,27 +230,62 @@ Installs applications, enables or disables specific packages, runs applications,
 
 #### Install Local APK
 
-Installs an APK from a local file path.
+Installs an APK from a local file path. The existing one-parameter overload keeps the original
+behavior. Additional overloads can permit a same-`versionCode` reinstall and launch the installed
+application after installation succeeds.
 
-*   **Requires StartUp Version**: `6.2.14` or later
+*   **Required StartUp version**:
+    *   Path only: `6.2.14` or later
+    *   `allowSameVersionUpdate`: `6.8.1` or later
+    *   `launchAfterInstall`: `6.8.2` or later
 *   **Parameters**:
     *   `filePath` (String): The absolute path to the .apk file to install
+    *   `allowSameVersionUpdate` (Boolean): Reinstalls when the APK `versionCode` matches the installed app
+    *   `launchAfterInstall` (Boolean): Launches the installed app only after installation succeeds
 
 ```kotlin
-M3Mobile.instance.installLocalApk(filePath: String)
+M3Mobile.instance.installLocalApk(filePath)
+M3Mobile.instance.installLocalApk(filePath, allowSameVersionUpdate = true)
+M3Mobile.instance.installLocalApk(
+    filePath,
+    allowSameVersionUpdate = true,
+    launchAfterInstall = true
+)
 ```
+
+Use the two-parameter overload when only same-version reinstall support is needed on StartUp 6.8.1.
+The three-parameter overload always requires StartUp 6.8.2, even when `launchAfterInstall` is `false`.
 
 #### Install Remote APK
 
-Installs an APK from a remote URL.
+Downloads and installs an APK from a remote URL. It provides the same reinstall and post-install
+launch options as local APK installation.
 
-*   **Requires StartUp Version**: `6.2.14` or later
+*   **Required StartUp version**:
+    *   URL only: `6.2.14` or later
+    *   `allowSameVersionUpdate`: `6.8.1` or later
+    *   `launchAfterInstall`: `6.8.2` or later
 *   **Parameters**:
     *   `url` (String): The URL of the APK file
+    *   `allowSameVersionUpdate` (Boolean): Reinstalls when the APK `versionCode` matches the installed app
+    *   `launchAfterInstall` (Boolean): Launches the installed app only after installation succeeds
 
 ```kotlin
-M3Mobile.instance.installRemoteApk(url: String)
+M3Mobile.instance.installRemoteApk(url)
+M3Mobile.instance.installRemoteApk(url, allowSameVersionUpdate = true)
+M3Mobile.instance.installRemoteApk(
+    url,
+    allowSameVersionUpdate = true,
+    launchAfterInstall = true
+)
 ```
+
+APK installation requests are one-way broadcasts. A normal return confirms only that M3SDK sent
+the request. It does not confirm download, installation, or launch success. StartUp launches the
+application only after `PackageInstaller` reports success and supplies an installed package name.
+It does not launch when download or installation fails, the package name is unavailable, or a
+same-version installation is skipped. Verify the StartUp notification and logs, the installed
+package, and the launched screen.
 
 #### Enable Application
 

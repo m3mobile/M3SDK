@@ -60,10 +60,42 @@ namespace M3Sdk.Xamarin.Startup
                 throw new ArgumentNullException(nameof(filePath));
 
             GuardStartUp("InstallLocalApk", "6.2.14");
-            var extras = new Bundle();
-            extras.PutInt(Constants.StartUp.ExtraInstallApkType, Constants.StartUp.InstallLocalApk);
-            extras.PutString(Constants.StartUp.ExtraInstallLocalApkPath, filePath);
-            SendSystem(Constants.StartUp.TypeInstallApk, extras);
+            SendSystem(Constants.StartUp.TypeInstallApk, ApkInstallExtras(
+                Constants.StartUp.InstallLocalApk,
+                Constants.StartUp.ExtraInstallLocalApkPath,
+                filePath));
+        }
+
+        /// <inheritdoc />
+        public void InstallLocalApk(string filePath, bool allowSameVersionUpdate)
+        {
+            if (filePath == null)
+                throw new ArgumentNullException(nameof(filePath));
+
+            GuardStartUp("InstallLocalApk", "6.8.1");
+            SendSystem(Constants.StartUp.TypeInstallApk, ApkInstallExtras(
+                Constants.StartUp.InstallLocalApk,
+                Constants.StartUp.ExtraInstallLocalApkPath,
+                filePath,
+                allowSameVersionUpdate));
+        }
+
+        /// <inheritdoc />
+        public void InstallLocalApk(
+            string filePath,
+            bool allowSameVersionUpdate,
+            bool launchAfterInstall)
+        {
+            if (filePath == null)
+                throw new ArgumentNullException(nameof(filePath));
+
+            GuardStartUp("InstallLocalApk", "6.8.2");
+            SendSystem(Constants.StartUp.TypeInstallApk, ApkInstallExtras(
+                Constants.StartUp.InstallLocalApk,
+                Constants.StartUp.ExtraInstallLocalApkPath,
+                filePath,
+                allowSameVersionUpdate,
+                launchAfterInstall));
         }
 
         /// <inheritdoc />
@@ -73,10 +105,42 @@ namespace M3Sdk.Xamarin.Startup
                 throw new ArgumentNullException(nameof(url));
 
             GuardStartUp("InstallRemoteApk", "6.2.14");
-            var extras = new Bundle();
-            extras.PutInt(Constants.StartUp.ExtraInstallApkType, Constants.StartUp.InstallRemoteApk);
-            extras.PutString(Constants.StartUp.ExtraInstallRemoteApkPath, url);
-            SendSystem(Constants.StartUp.TypeInstallApk, extras);
+            SendSystem(Constants.StartUp.TypeInstallApk, ApkInstallExtras(
+                Constants.StartUp.InstallRemoteApk,
+                Constants.StartUp.ExtraInstallRemoteApkPath,
+                url));
+        }
+
+        /// <inheritdoc />
+        public void InstallRemoteApk(string url, bool allowSameVersionUpdate)
+        {
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
+
+            GuardStartUp("InstallRemoteApk", "6.8.1");
+            SendSystem(Constants.StartUp.TypeInstallApk, ApkInstallExtras(
+                Constants.StartUp.InstallRemoteApk,
+                Constants.StartUp.ExtraInstallRemoteApkPath,
+                url,
+                allowSameVersionUpdate));
+        }
+
+        /// <inheritdoc />
+        public void InstallRemoteApk(
+            string url,
+            bool allowSameVersionUpdate,
+            bool launchAfterInstall)
+        {
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
+
+            GuardStartUp("InstallRemoteApk", "6.8.2");
+            SendSystem(Constants.StartUp.TypeInstallApk, ApkInstallExtras(
+                Constants.StartUp.InstallRemoteApk,
+                Constants.StartUp.ExtraInstallRemoteApkPath,
+                url,
+                allowSameVersionUpdate,
+                launchAfterInstall));
         }
 
         /// <inheritdoc />
@@ -673,6 +737,27 @@ namespace M3Sdk.Xamarin.Startup
         {
             var extras = new Bundle();
             extras.PutBoolean(key, value);
+            return extras;
+        }
+
+        private static Bundle ApkInstallExtras(
+            int installType,
+            string locationKey,
+            string location,
+            bool? allowSameVersionUpdate = null,
+            bool? launchAfterInstall = null)
+        {
+            var extras = new Bundle();
+            extras.PutInt(Constants.StartUp.ExtraInstallApkType, installType);
+            extras.PutString(locationKey, location);
+            if (allowSameVersionUpdate.HasValue)
+                extras.PutBoolean(
+                    Constants.StartUp.ExtraInstallApkAllowSameVersionUpdate,
+                    allowSameVersionUpdate.Value);
+            if (launchAfterInstall.HasValue)
+                extras.PutBoolean(
+                    Constants.StartUp.ExtraInstallApkLaunchAfterInstall,
+                    launchAfterInstall.Value);
             return extras;
         }
 

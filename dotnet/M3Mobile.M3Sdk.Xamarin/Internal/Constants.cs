@@ -57,6 +57,8 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraInstallApkType = "type";
             internal const string ExtraInstallLocalApkPath = "path";
             internal const string ExtraInstallRemoteApkPath = "url";
+            internal const string ExtraInstallApkAllowSameVersionUpdate = "allow_same_version_update";
+            internal const string ExtraInstallApkLaunchAfterInstall = "launch_after_install";
             internal const string ExtraSetAppStatePackageName = "package_name";
             internal const string ExtraSetAppState = "enable";
             internal const string ExtraSetAppAutoRun = "auto_run";
