@@ -361,6 +361,10 @@ public sealed class CategoryActivity : Activity
     private void WifiSample()
     {
         var section = Section(Resource.String.wifi);
+        AddButton(section, Resource.String.enable_wifi, () =>
+            RunOneWay(section, "SetWifiEnabled(true)", () => _sdk!.SetWifiEnabled(true)));
+        AddButton(section, Resource.String.disable_wifi, () =>
+            RunOneWay(section, "SetWifiEnabled(false)", () => _sdk!.SetWifiEnabled(false)));
         AddAsyncButton(section, Resource.String.get_factory_wifi_mac, "getFactoryWifiMac", async () =>
         {
             var result = await _sdk!.GetFactoryWifiMacAsync();

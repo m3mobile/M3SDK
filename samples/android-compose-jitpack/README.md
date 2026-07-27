@@ -28,6 +28,10 @@ install. The result records only option values, not the full file path or URL. S
 request asynchronously, so the screen reports `REQUEST_SENT_UNVERIFIED`; verify the StartUp
 notification and logs, installed package, and launched screen.
 
+The Wi-Fi screen exposes `Enable Wi-Fi` and `Disable Wi-Fi` buttons that call
+`setWifiEnabled(true)` and `setWifiEnabled(false)`. Verify the device Wi-Fi state after calling
+them on SM24 with StartUp 6.8.3 or later.
+
 The application enables M3 SDK strict mode and shows the following for every operation:
 
 - `SUCCESS` when a response or observable value is available.

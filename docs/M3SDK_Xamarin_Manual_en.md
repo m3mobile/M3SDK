@@ -83,6 +83,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
     - [Get Factory Wi-Fi MAC Address](#get-factory-wi-fi-mac-address)
+    - [Set Wi-Fi Enabled](#set-wi-fi-enabled)
     - [Captive Portal Detection](#captive-portal-detection)
     - [Frequency Band Control](#frequency-band-control)
     - [Set Wi-Fi Country](#set-wi-fi-country)
@@ -1414,6 +1415,31 @@ public sealed class FactoryWifiMacReceiver : BroadcastReceiver
         string error = intent.GetStringExtra("get_factory_wifi_mac_error_message") ?? string.Empty;
     }
 }
+```
+
+#### Set Wi-Fi Enabled
+
+Enables or disables Wi-Fi on the device.
+
+This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
+
+*   **Requires StartUp Version**: `6.8.3` or later
+*   **Supported Models**: `SM24`
+*   **Parameters**:
+    *   `enabled` (bool): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
+
+```csharp
+m3.SetWifiEnabled(true);
+m3.SetWifiEnabled(false);
+```
+
+Direct StartUp broadcast request:
+
+```csharp
+Intent request = new Intent("com.android.server.startupservice.system");
+request.PutExtra("setting", "wifi_enabled");
+request.PutExtra("enabled", true);
+context.SendBroadcast(request);
 ```
 
 #### Captive Portal Detection

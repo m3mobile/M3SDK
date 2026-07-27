@@ -80,6 +80,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
     - [Get Factory Wi-Fi MAC Address](#get-factory-wi-fi-mac-address)
+    - [Set Wi-Fi Enabled](#set-wi-fi-enabled)
     - [Captive Portal Detection](#captive-portal-detection)
     - [Frequency Band Control](#frequency-band-control)
     - [Set Wi-Fi Country](#set-wi-fi-country)
@@ -1114,6 +1115,31 @@ BroadcastReceiver receiver = new BroadcastReceiver() {
         String error = intent.getStringExtra("get_factory_wifi_mac_error_message");
     }
 };
+```
+
+#### Set Wi-Fi Enabled
+
+Enables or disables Wi-Fi on the device.
+
+This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
+
+*   **Requires StartUp Version**: `6.8.3` or later
+*   **Supported Models**: `SM24`
+*   **Parameters**:
+    *   `enabled` (Boolean): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
+
+```kotlin
+M3Mobile.instance.setWifiEnabled(true)
+M3Mobile.instance.setWifiEnabled(false)
+```
+
+Direct StartUp broadcast request:
+
+```java
+Intent request = new Intent("com.android.server.startupservice.system");
+request.putExtra("setting", "wifi_enabled");
+request.putExtra("enabled", true);
+context.sendBroadcast(request);
 ```
 
 #### Captive Portal Detection

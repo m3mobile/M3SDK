@@ -483,6 +483,12 @@ internal fun CategoryScreen(category: SampleCategory) {
 
         SampleCard(SampleCategory.WIFI, category, stringResource(R.string.wifi), results["wifi"]) {
             SdkActionButton(onClick = {
+                oneWay("wifi", "setWifiEnabled(true)") { sdk.setWifiEnabled(true) }
+            }) { Text(stringResource(R.string.enable_wifi)) }
+            SdkActionButton(onClick = {
+                oneWay("wifi", "setWifiEnabled(false)") { sdk.setWifiEnabled(false) }
+            }) { Text(stringResource(R.string.disable_wifi)) }
+            SdkActionButton(onClick = {
                 scope.launch {
                     val body = try {
                         val result = sdk.getFactoryWifiMac()

@@ -566,6 +566,13 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void SetWifiEnabled(bool enabled)
+        {
+            ThrowIfDisposed();
+            _startUp.SetWifiEnabled(enabled);
+        }
+
+        /// <inheritdoc />
         public void EnableCaptivePortalDetection()
         {
             ThrowIfDisposed();

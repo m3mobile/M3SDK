@@ -45,6 +45,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeWifiChannel = "wifi_channel";
             internal const string TypeApn = "apn";
             internal const string TypeAccessPoint = "access_point";
+            internal const string TypeWifiEnabled = "wifi_enabled";
             internal const string TypeClearWifi = "remove_all_wifi";
             internal const string TypeRemoveWifi = "remove_wifi_by_ssid";
             internal const string TypeDisplay = "display";
@@ -126,6 +127,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraRoamingThreshold = "value";
             internal const string ExtraWifiChannels = "value";
             internal const string ExtraWifiCountry = "value";
+            internal const string ExtraWifiEnabled = "enabled";
             internal const string ExtraWifiSleepPolicy = "value";
             internal const string ExtraWifiStability = "value";
             internal const string ExtraLanguageTag = "language_value";

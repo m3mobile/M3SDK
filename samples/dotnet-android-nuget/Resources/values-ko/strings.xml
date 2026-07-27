@@ -52,6 +52,8 @@
   <string name="reset_startup">StartUp 설정 초기화</string>
   <string name="get_timezone">시간대 조회</string>
   <string name="get_usb_modes">현재 USB 모드 조회</string>
+  <string name="enable_wifi">Wi-Fi 활성화</string>
+  <string name="disable_wifi">Wi-Fi 비활성화</string>
   <string name="get_factory_wifi_mac">공장 Wi-Fi MAC 조회</string>
   <string name="set_key_function">키 기능 설정</string>
   <string name="package_name">패키지명</string>

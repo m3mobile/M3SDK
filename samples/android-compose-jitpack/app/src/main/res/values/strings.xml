@@ -53,6 +53,8 @@
     <string name="reset_startup">Reset StartUp settings</string>
     <string name="get_timezone">Get timezone</string>
     <string name="get_usb_modes">Get current USB modes</string>
+    <string name="enable_wifi">Enable Wi-Fi</string>
+    <string name="disable_wifi">Disable Wi-Fi</string>
     <string name="get_factory_wifi_mac">Get factory Wi-Fi MAC</string>
     <string name="set_key_function">Set key function</string>
     <string name="package_name">Package name</string>

@@ -84,6 +84,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
   - [Wifi API](#wifi-api)
     - [Wi-Fi MAC 주소 조회](#wi-fi-mac-주소-조회)
     - [Factory Wi-Fi MAC 주소 조회](#factory-wi-fi-mac-주소-조회)
+    - [Wi-Fi 활성화 상태 설정](#wi-fi-활성화-상태-설정)
     - [캡티브 포털 감지 (Captive Portal Detection)](#캡티브-포털-감지-captive-portal-detection)
     - [주파수 대역 제어 (Frequency Band Control)](#주파수-대역-제어-frequency-band-control)
     - [Wi-Fi 국가 코드 설정](#wi-fi-국가-코드-설정)
@@ -1413,6 +1414,31 @@ public sealed class FactoryWifiMacReceiver : BroadcastReceiver
         string error = intent.GetStringExtra("get_factory_wifi_mac_error_message") ?? string.Empty;
     }
 }
+```
+
+#### Wi-Fi 활성화 상태 설정
+
+장치의 Wi-Fi를 활성화하거나 비활성화합니다.
+
+이 API는 StartUp에서 처리합니다. Android 10 이상에서는 일반 Android 앱이 Wi-Fi를 직접 제어할 수 없으므로, StartUp이 system 또는 privileged app으로 배포되어 있어야 합니다.
+
+*   **필요 StartUp 버전**: `6.8.3` 이상
+*   **지원 모델**: `SM24`
+*   **매개변수**:
+    *   `enabled` (bool): `true`이면 Wi-Fi 활성화, `false`이면 Wi-Fi 비활성화
+
+```csharp
+m3.SetWifiEnabled(true);
+m3.SetWifiEnabled(false);
+```
+
+StartUp에 직접 broadcast를 보내는 경우:
+
+```csharp
+Intent request = new Intent("com.android.server.startupservice.system");
+request.PutExtra("setting", "wifi_enabled");
+request.PutExtra("enabled", true);
+context.SendBroadcast(request);
 ```
 
 #### 캡티브 포털 감지 (Captive Portal Detection)

@@ -73,6 +73,7 @@ internal object ExtraKey {
     const val SET_ROAMING_THRESHOLD = "value"
     const val SET_WIFI_CHANNELS = "value"
     const val SET_WIFI_COUNTRY = "value"
+    const val SET_WIFI_ENABLED = "enabled"
     const val SET_WIFI_SLEEP_POLICY = "value"
     const val SET_WIFI_STABILITY = "value"
     const val LANGUAGE_TAG = "language_value"
