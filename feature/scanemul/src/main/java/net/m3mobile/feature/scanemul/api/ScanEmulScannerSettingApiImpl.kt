@@ -8,6 +8,9 @@ import net.m3mobile.feature.scanemul.params.EndCharacter
 import net.m3mobile.feature.scanemul.params.OutputMode
 import net.m3mobile.feature.scanemul.params.ReadMode
 import net.m3mobile.feature.scanemul.params.ScanSound
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiOptions
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiResult
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiVerificationResult
 import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanLedRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.DisableScanVibrationRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.EnableScanLedRequester
@@ -25,6 +28,7 @@ import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultPrefi
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanSoundRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScanResultOutputModeRequester
 import net.m3mobile.feature.scanemul.requester.scannerSetting.SetScannerReadModeRequester
+import net.m3mobile.feature.scanemul.requester.scannerSetting.ScannerButtonUiRequester
 
 internal class ScanEmulScannerSettingApiImpl(private val context: Context): ScanEmulScannerSettingApi {
 
@@ -150,6 +154,99 @@ internal class ScanEmulScannerSettingApiImpl(private val context: Context): Scan
         return launchOnMain {
             try {
                 callback.onComplete(getScannerReadMode(), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+    ): ScannerButtonUiResult =
+        setScannerButtonUi(options, ScannerButtonUiRequester.requestId())
+
+    override suspend fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+    ): ScannerButtonUiResult =
+        ScannerButtonUiRequester(context, requestId, options).fetch()
+
+    override fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job =
+        setScannerButtonUi(options, ScannerButtonUiRequester.requestId(), callback)
+
+    override fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(setScannerButtonUi(options, requestId), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun getScannerButtonUi(): ScannerButtonUiResult =
+        getScannerButtonUi(ScannerButtonUiRequester.requestId())
+
+    override suspend fun getScannerButtonUi(requestId: String): ScannerButtonUiResult =
+        ScannerButtonUiRequester(context, requestId, null).fetch()
+
+    override fun getScannerButtonUi(
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job =
+        getScannerButtonUi(ScannerButtonUiRequester.requestId(), callback)
+
+    override fun getScannerButtonUi(
+        requestId: String,
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(getScannerButtonUi(requestId), null)
+            } catch (e: Exception) {
+                callback.onComplete(null, e)
+            }
+        }
+    }
+
+    override suspend fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+    ): ScannerButtonUiVerificationResult =
+        setAndVerifyScannerButtonUi(options, ScannerButtonUiRequester.requestId())
+
+    override suspend fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+    ): ScannerButtonUiVerificationResult {
+        val setResult = setScannerButtonUi(options, requestId)
+        val getResult = if (setResult.saved()) {
+            getScannerButtonUi(ScannerButtonUiRequester.requestId())
+        } else {
+            null
+        }
+        return ScannerButtonUiVerificationResult(setResult, getResult)
+    }
+
+    override fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        callback: RequestCallback<ScannerButtonUiVerificationResult>,
+    ): Job =
+        setAndVerifyScannerButtonUi(options, ScannerButtonUiRequester.requestId(), callback)
+
+    override fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+        callback: RequestCallback<ScannerButtonUiVerificationResult>,
+    ): Job {
+        return launchOnMain {
+            try {
+                callback.onComplete(setAndVerifyScannerButtonUi(options, requestId), null)
             } catch (e: Exception) {
                 callback.onComplete(null, e)
             }

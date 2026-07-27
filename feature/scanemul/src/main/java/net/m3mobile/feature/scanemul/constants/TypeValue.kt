@@ -11,4 +11,5 @@ internal object TypeValue {
     const val SET_SCAN_RESULT_END_CHARACTER = "end_char"
     const val SET_SCAN_RESULT_PREFIX = "prefix"
     const val SET_SCAN_RESULT_POSTFIX = "postfix"
+    const val SCANNER_BUTTON_UI = "scanner_button_ui"
 }

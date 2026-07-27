@@ -36,16 +36,28 @@ public abstract interface class net/m3mobile/feature/scanemul/api/ScanEmulScanne
 	public abstract fun getScanResultPostfix (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract synthetic fun getScanResultPrefix (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getScanResultPrefix (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScannerButtonUi (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScannerButtonUi (Ljava/lang/String;Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun getScannerButtonUi (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getScannerButtonUi (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract synthetic fun getScannerReadMode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getScannerReadMode (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract synthetic fun isScannerProfileEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun isScannerProfileEnabled (Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun setAndVerifyScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setAndVerifyScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Ljava/lang/String;Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun setAndVerifyScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setAndVerifyScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract fun setScanLedTime (I)V
 	public abstract fun setScanResultEndCharacter (Lnet/m3mobile/feature/scanemul/params/EndCharacter;)V
 	public abstract fun setScanResultOutputMode (Lnet/m3mobile/feature/scanemul/params/OutputMode;)V
 	public abstract fun setScanResultPostfix (Ljava/lang/String;)V
 	public abstract fun setScanResultPrefix (Ljava/lang/String;)V
 	public abstract fun setScanSound (Lnet/m3mobile/feature/scanemul/params/ScanSound;)V
+	public abstract synthetic fun setScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Ljava/lang/String;Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
+	public abstract synthetic fun setScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setScannerButtonUi (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract fun setScannerReadMode (Lnet/m3mobile/feature/scanemul/params/ReadMode;)V
 }
 
@@ -144,5 +156,111 @@ public final class net/m3mobile/feature/scanemul/params/ScanSound : java/lang/En
 	public static final field NONE Lnet/m3mobile/feature/scanemul/params/ScanSound;
 	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScanSound;
 	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/ScanSound;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiOptions {
+	public static final field Companion Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions$Companion;
+	public static final field MAX_OPACITY_PERCENT I
+	public static final field MIN_OPACITY_PERCENT I
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Integer;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Integer;Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Integer;Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun empty ()Z
+	public final fun imagePath ()Ljava/lang/String;
+	public static final fun imagePath (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;
+	public final fun opacityPercent ()Ljava/lang/Integer;
+	public static final fun opacityPercent (I)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;
+	public final fun size ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final fun size (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;
+	public final fun valid ()Z
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiOptions$Companion {
+	public final fun imagePath (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;
+	public final fun opacityPercent (I)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;
+	public final fun size (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiOptions;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiResult {
+	public fun <init> (Ljava/lang/String;Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;ZLnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;Ljava/lang/String;ZLnet/m3mobile/feature/scanemul/params/ScannerButtonUiSettings;)V
+	public final fun rawStatus ()Ljava/lang/String;
+	public final fun requestId ()Ljava/lang/String;
+	public final fun runtimeApplied ()Z
+	public final fun saved ()Z
+	public final fun settings ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSettings;
+	public final fun status ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public final fun success ()Z
+	public fun toString ()Ljava/lang/String;
+	public final fun transportStatus ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiSettings {
+	public fun <init> (Ljava/lang/String;ILnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;)V
+	public final fun customImage ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun imagePath ()Ljava/lang/String;
+	public final fun opacityPercent ()I
+	public final fun size ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiSize : java/lang/Enum {
+	public static final field Companion Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize$Companion;
+	public static final field EXTRA_LARGE Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final field EXTRA_SMALL Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final field LARGE Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final field MEDIUM Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final field SMALL Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final field UNKNOWN Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static final fun byValue (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public final fun value ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiSize$Companion {
+	public final fun byValue (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiSize;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiStatus : java/lang/Enum {
+	public static final field APPLIED Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field BUSY Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field Companion Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus$Companion;
+	public static final field INVALID_IMAGE Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field INVALID_REQUEST Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field SAVED_BUTTON_NOT_VISIBLE Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field SAVED_SERVICE_NOT_READY Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field SAVE_FAILED Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field UNKNOWN Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final field UNSUPPORTED_DEVICE Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static final fun byValue (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public final fun saved ()Z
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiStatus$Companion {
+	public final fun byValue (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiStatus;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus : java/lang/Enum {
+	public static final field FEATURE_NOT_AVAILABLE Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static final field INVALID_SDK_REQUEST Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static final field OK Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static final field SCANEMUL_NOT_INSTALLED Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static final field SEND_FAILED Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static final field TIMEOUT Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+	public static fun values ()[Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiTransportStatus;
+}
+
+public final class net/m3mobile/feature/scanemul/params/ScannerButtonUiVerificationResult {
+	public fun <init> (Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiResult;Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiResult;)V
+	public final fun getResult ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiResult;
+	public final fun setResult ()Lnet/m3mobile/feature/scanemul/params/ScannerButtonUiResult;
+	public final fun verified ()Z
 }
 
