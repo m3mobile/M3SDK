@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using M3Sdk.Xamarin.Internal;
 
@@ -530,6 +532,170 @@ namespace M3Sdk.Xamarin.ScanEmul
         }
 
         /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(ScannerButtonUiOptions options)
+        {
+            return SetScannerButtonUiAsync(options, ScannerButtonUiRequester.CreateRequestId());
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken)
+        {
+            return SetScannerButtonUiAsync(
+                options,
+                ScannerButtonUiRequester.CreateRequestId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId)
+        {
+            return SetScannerButtonUiAsync(options, requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return new ScannerButtonUiRequester(_context, requestId, options)
+                .FetchAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return SetScannerButtonUi(options, ScannerButtonUiRequester.CreateRequestId(), callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return CallbackRunner.Run(
+                token => SetScannerButtonUiAsync(options, requestId, token),
+                callback);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync()
+        {
+            return GetScannerButtonUiAsync(ScannerButtonUiRequester.CreateRequestId());
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(CancellationToken cancellationToken)
+        {
+            return GetScannerButtonUiAsync(
+                ScannerButtonUiRequester.CreateRequestId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(string requestId)
+        {
+            return GetScannerButtonUiAsync(requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return new ScannerButtonUiRequester(_context, requestId, null)
+                .FetchAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetScannerButtonUi(M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return GetScannerButtonUi(ScannerButtonUiRequester.CreateRequestId(), callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetScannerButtonUi(
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return CallbackRunner.Run(token => GetScannerButtonUiAsync(requestId, token), callback);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options)
+        {
+            return SetAndVerifyScannerButtonUiAsync(options, ScannerButtonUiRequester.CreateRequestId());
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken)
+        {
+            return SetAndVerifyScannerButtonUiAsync(
+                options,
+                ScannerButtonUiRequester.CreateRequestId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId)
+        {
+            return SetAndVerifyScannerButtonUiAsync(options, requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public async Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            var setResult = await SetScannerButtonUiAsync(options, requestId, cancellationToken);
+            var getResult = setResult.IsSaved
+                ? await GetScannerButtonUiAsync(ScannerButtonUiRequester.CreateRequestId(), cancellationToken)
+                : null;
+            return new ScannerButtonUiVerificationResult(setResult, getResult);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback)
+        {
+            ThrowIfDisposed();
+            return SetAndVerifyScannerButtonUi(options, ScannerButtonUiRequester.CreateRequestId(), callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback)
+        {
+            ThrowIfDisposed();
+            return CallbackRunner.Run(
+                token => SetAndVerifyScannerButtonUiAsync(options, requestId, token),
+                callback);
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
             if (_disposed)
@@ -815,6 +981,306 @@ namespace M3Sdk.Xamarin.ScanEmul
                 if (!Enum.IsDefined(typeof(ReadMode), value))
                     throw new InvalidOperationException("Failed to map read mode value '" + value + "'.");
                 return (ReadMode)value;
+            }
+        }
+
+        private sealed class ScannerButtonUiRequester
+        {
+            private const int ReceiverExported = 2;
+            private const int TimeoutMillis = 3000;
+            private readonly Context _context;
+            private readonly string _requestId;
+            private readonly ScannerButtonUiOptions _options;
+            private ScannerButtonUiResult _dynamicResult;
+
+            internal ScannerButtonUiRequester(
+                Context context,
+                string requestId,
+                ScannerButtonUiOptions options)
+            {
+                _context = context.ApplicationContext ?? context;
+                _requestId = string.IsNullOrEmpty(requestId) ? CreateRequestId() : requestId;
+                _options = options;
+            }
+
+            internal static string CreateRequestId()
+            {
+                return Guid.NewGuid().ToString();
+            }
+
+            internal Task<ScannerButtonUiResult> FetchAsync(CancellationToken cancellationToken)
+            {
+                if (_options != null && !_options.IsValid)
+                    return Task.FromResult(TransportResult(ScannerButtonUiTransportStatus.InvalidSdkRequest));
+                if (!IsScanEmulInstalled())
+                    return Task.FromResult(TransportResult(ScannerButtonUiTransportStatus.ScanEmulNotInstalled));
+
+                var taskSource = new TaskCompletionSource<ScannerButtonUiResult>();
+                var handler = new Handler(Looper.MainLooper);
+                var finished = false;
+                var gate = new object();
+                var dynamicRegistered = false;
+                var cancellationRegistration = default(CancellationTokenRegistration);
+                ActionBroadcastReceiver dynamicReceiver = null;
+                ActionBroadcastReceiver finalReceiver = null;
+                RunnableAction timeout = null;
+
+                Action cleanup = () =>
+                {
+                    if (timeout != null)
+                        handler.RemoveCallbacks(timeout);
+                    if (dynamicRegistered && dynamicReceiver != null)
+                    {
+                        try
+                        {
+                            _context.UnregisterReceiver(dynamicReceiver);
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        dynamicRegistered = false;
+                    }
+                    cancellationRegistration.Dispose();
+                };
+
+                Action<ScannerButtonUiResult> complete = result =>
+                {
+                    lock (gate)
+                    {
+                        if (finished)
+                            return;
+                        finished = true;
+                    }
+                    cleanup();
+                    taskSource.TrySetResult(result);
+                };
+
+                dynamicReceiver = new ActionBroadcastReceiver((context, intent) =>
+                {
+                    var result = Result(intent);
+                    if (result != null)
+                        _dynamicResult = result;
+                });
+
+                finalReceiver = new ActionBroadcastReceiver((context, intent) =>
+                {
+                    ScannerButtonUiResult result = null;
+                    try
+                    {
+                        result = Result(finalReceiver.GetResultExtras(false));
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    complete(result ??
+                             _dynamicResult ??
+                             TransportResult(ScannerButtonUiTransportStatus.FeatureNotAvailable));
+                });
+
+                timeout = new RunnableAction(() =>
+                {
+                    complete(_dynamicResult ??
+                             TransportResult(ScannerButtonUiTransportStatus.Timeout));
+                });
+
+                if (cancellationToken.CanBeCanceled)
+                {
+                    cancellationRegistration = cancellationToken.Register(() =>
+                    {
+                        lock (gate)
+                        {
+                            if (finished)
+                                return;
+                            finished = true;
+                        }
+                        cleanup();
+                        taskSource.TrySetCanceled();
+                    });
+                }
+
+                try
+                {
+                    RegisterDynamicReceiver(dynamicReceiver);
+                    dynamicRegistered = true;
+                    handler.PostDelayed(timeout, TimeoutMillis);
+                    _context.SendOrderedBroadcast(
+                        RequestIntent(),
+                        null,
+                        finalReceiver,
+                        handler,
+                        Android.App.Result.Canceled,
+                        null,
+                        null);
+                }
+                catch (Exception)
+                {
+                    complete(TransportResult(ScannerButtonUiTransportStatus.SendFailed));
+                }
+
+                return taskSource.Task;
+            }
+
+            private Intent RequestIntent()
+            {
+                var action = _options == null
+                    ? Constants.ScanEmul.GetScannerSetting
+                    : Constants.ScanEmul.SetScannerSetting;
+                var intent = new Intent(action)
+                    .SetPackage(Constants.ScanEmul.PackageName)
+                    .PutExtra(Constants.ScanEmul.TypeSetting, Constants.ScanEmul.TypeScannerButtonUi)
+                    .PutExtra(Constants.ScanEmul.ExtraRequestId, _requestId);
+
+                if (_options != null)
+                {
+                    if (_options.ImagePath != null)
+                        intent.PutExtra(Constants.ScanEmul.ExtraScannerButtonImagePath, _options.ImagePath);
+                    if (_options.OpacityPercent.HasValue)
+                        intent.PutExtra(Constants.ScanEmul.ExtraScannerButtonOpacityPercent, _options.OpacityPercent.Value);
+                    if (_options.Size.HasValue)
+                        intent.PutExtra(Constants.ScanEmul.ExtraScannerButtonSize, SizeValue(_options.Size.Value));
+                }
+
+                return intent;
+            }
+
+            private void RegisterDynamicReceiver(BroadcastReceiver receiver)
+            {
+                var filter = new IntentFilter(Constants.ScanEmul.ResponseScannerSetting);
+                if ((int)Build.VERSION.SdkInt >= 33)
+                {
+                    var method = _context.Class.GetMethod(
+                        "registerReceiver",
+                        Java.Lang.Class.FromType(typeof(BroadcastReceiver)),
+                        Java.Lang.Class.FromType(typeof(IntentFilter)),
+                        Java.Lang.Integer.Type);
+
+                    method.Invoke(_context, receiver, filter, Java.Lang.Integer.ValueOf(ReceiverExported));
+                    return;
+                }
+
+                _context.RegisterReceiver(receiver, filter);
+            }
+
+            private bool IsScanEmulInstalled()
+            {
+                try
+                {
+                    _context.PackageManager.GetPackageInfo(
+                        Constants.ScanEmul.PackageName,
+                        PackageInfoFlags.Activities);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+
+            private ScannerButtonUiResult Result(Intent intent)
+            {
+                if (intent == null || intent.Action != Constants.ScanEmul.ResponseScannerSetting)
+                    return null;
+                return Result(intent.Extras);
+            }
+
+            private ScannerButtonUiResult Result(Bundle extras)
+            {
+                if (extras == null)
+                    return null;
+                if (extras.GetString(Constants.ScanEmul.TypeSetting) != Constants.ScanEmul.TypeScannerButtonUi)
+                    return null;
+                if (extras.GetString(Constants.ScanEmul.ExtraRequestId) != _requestId)
+                    return null;
+
+                var rawStatus = extras.GetString(Constants.ScanEmul.ExtraStatus);
+                var imagePath = extras.GetString(Constants.ScanEmul.ExtraScannerButtonImagePath);
+                if (imagePath == null ||
+                    !extras.ContainsKey(Constants.ScanEmul.ExtraScannerButtonOpacityPercent))
+                    return null;
+
+                var settings = new ScannerButtonUiSettings(
+                    imagePath,
+                    extras.GetInt(Constants.ScanEmul.ExtraScannerButtonOpacityPercent),
+                    SizeByValue(extras.GetString(Constants.ScanEmul.ExtraScannerButtonSize)));
+
+                return new ScannerButtonUiResult(
+                    _requestId,
+                    ScannerButtonUiTransportStatus.Ok,
+                    extras.GetBoolean(Constants.ScanEmul.ExtraSuccess, false),
+                    StatusByValue(rawStatus),
+                    rawStatus,
+                    extras.GetBoolean(Constants.ScanEmul.ExtraRuntimeApplied, false),
+                    settings);
+            }
+
+            private ScannerButtonUiResult TransportResult(ScannerButtonUiTransportStatus status)
+            {
+                return new ScannerButtonUiResult(
+                    _requestId,
+                    status,
+                    false,
+                    ScannerButtonUiStatus.Unknown,
+                    null,
+                    false,
+                    null);
+            }
+
+            private static string SizeValue(ScannerButtonUiSize size)
+            {
+                switch (size)
+                {
+                    case ScannerButtonUiSize.ExtraSmall: return "extra_small";
+                    case ScannerButtonUiSize.Small: return "small";
+                    case ScannerButtonUiSize.Medium: return "medium";
+                    case ScannerButtonUiSize.Large: return "large";
+                    case ScannerButtonUiSize.ExtraLarge: return "extra_large";
+                    default: return "unknown";
+                }
+            }
+
+            private static ScannerButtonUiSize SizeByValue(string value)
+            {
+                switch (value)
+                {
+                    case "extra_small": return ScannerButtonUiSize.ExtraSmall;
+                    case "small": return ScannerButtonUiSize.Small;
+                    case "medium": return ScannerButtonUiSize.Medium;
+                    case "large": return ScannerButtonUiSize.Large;
+                    case "extra_large": return ScannerButtonUiSize.ExtraLarge;
+                    default: return ScannerButtonUiSize.Unknown;
+                }
+            }
+
+            private static ScannerButtonUiStatus StatusByValue(string value)
+            {
+                switch (value)
+                {
+                    case "APPLIED": return ScannerButtonUiStatus.Applied;
+                    case "SAVED_SERVICE_NOT_READY": return ScannerButtonUiStatus.SavedServiceNotReady;
+                    case "SAVED_BUTTON_NOT_VISIBLE": return ScannerButtonUiStatus.SavedButtonNotVisible;
+                    case "UNSUPPORTED_DEVICE": return ScannerButtonUiStatus.UnsupportedDevice;
+                    case "INVALID_REQUEST": return ScannerButtonUiStatus.InvalidRequest;
+                    case "INVALID_IMAGE": return ScannerButtonUiStatus.InvalidImage;
+                    case "SAVE_FAILED": return ScannerButtonUiStatus.SaveFailed;
+                    case "BUSY": return ScannerButtonUiStatus.Busy;
+                    default: return ScannerButtonUiStatus.Unknown;
+                }
+            }
+        }
+
+        private sealed class RunnableAction : Java.Lang.Object, Java.Lang.IRunnable
+        {
+            private readonly Action _action;
+
+            internal RunnableAction(Action action)
+            {
+                _action = action;
+            }
+
+            public void Run()
+            {
+                _action();
             }
         }
     }

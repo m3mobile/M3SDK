@@ -211,6 +211,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeEndCharacter = "end_char";
             internal const string TypePrefix = "prefix";
             internal const string TypePostfix = "postfix";
+            internal const string TypeScannerButtonUi = "scanner_button_ui";
 
             internal const string ExtraSound = "sound_mode";
             internal const string ExtraVibration = "vibration_value";
@@ -221,6 +222,13 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraEndCharacter = "end_char_value";
             internal const string ExtraPrefix = "prefix_value";
             internal const string ExtraPostfix = "postfix_value";
+            internal const string ExtraRequestId = "request_id";
+            internal const string ExtraSuccess = "success";
+            internal const string ExtraStatus = "status";
+            internal const string ExtraRuntimeApplied = "runtime_applied";
+            internal const string ExtraScannerButtonImagePath = "scanner_button_image_path";
+            internal const string ExtraScannerButtonOpacityPercent = "scanner_button_opacity_percent";
+            internal const string ExtraScannerButtonSize = "scanner_button_size";
 
             internal const string ResponsePrefix = "m3scanner_prefix";
             internal const string ResponsePostfix = "m3scanner_postfix";

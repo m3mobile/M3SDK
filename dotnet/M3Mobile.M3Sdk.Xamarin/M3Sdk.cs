@@ -1013,6 +1013,161 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(ScannerButtonUiOptions options)
+        {
+            return SetScannerButtonUiAsync(options, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUiAsync(
+                options,
+                ScannerButtonUiRequesterId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId)
+        {
+            return SetScannerButtonUiAsync(options, requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUiAsync(options, requestId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUi(options, callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUi(options, requestId, callback);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync()
+        {
+            return GetScannerButtonUiAsync(CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUiAsync(ScannerButtonUiRequesterId(), cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(string requestId)
+        {
+            return GetScannerButtonUiAsync(requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUiAsync(requestId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetScannerButtonUi(M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUi(callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetScannerButtonUi(
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUi(requestId, callback);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options)
+        {
+            return SetAndVerifyScannerButtonUiAsync(options, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUiAsync(
+                options,
+                ScannerButtonUiRequesterId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId)
+        {
+            return SetAndVerifyScannerButtonUiAsync(options, requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUiAsync(options, requestId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUi(options, callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUi(options, requestId, callback);
+        }
+
+        /// <inheritdoc />
         public string GetNtpServer()
         {
             ThrowIfDisposed();
@@ -1082,6 +1237,11 @@ namespace M3Sdk.Xamarin
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);
+        }
+
+        private static string ScannerButtonUiRequesterId()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }
