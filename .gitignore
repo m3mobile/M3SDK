@@ -201,5 +201,7 @@ fabric.properties
 docs/dev/
 STARTUP-*-guide.md
 tools/MdToPdf/output/
+tools/MdToPdf/node_modules/
+tmp-dotnet-android-check/
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio,android,kotlin,java
