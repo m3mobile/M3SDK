@@ -44,7 +44,8 @@ android {
 }
 
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:$m3SdkVersion")
+    val m3SdkArtifact = if (m3SdkVersion.endsWith("-local")) "sdk" else "M3SDK"
+    implementation("com.github.m3mobile:$m3SdkArtifact:$m3SdkVersion")
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.10.1")

@@ -14,6 +14,14 @@
     <string name="permission">Permission</string>
     <string name="quick_tile">Quick Tile</string>
     <string name="scanner">Scanner</string>
+    <string name="floating_button_image_path">Floating button image path</string>
+    <string name="set_floating_button_image">Set image</string>
+    <string name="default_floating_button_image">Default image</string>
+    <string name="get_floating_button">Get floating button</string>
+    <string name="reset_floating_button">Reset floating button</string>
+    <string name="floating_button_small_20">Small 20%</string>
+    <string name="floating_button_large_100">Large 100%</string>
+    <string name="floating_button_invalid_image">Invalid image test</string>
     <string name="startup_setting">StartUp Setting</string>
     <string name="time">Time</string>
     <string name="usb">USB</string>

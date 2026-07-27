@@ -41,6 +41,14 @@
   <string name="disable_nfc">NFC 끄기</string>
   <string name="grant_camera">카메라 권한 부여</string>
   <string name="set_quick_tile">Wi-Fi 빠른 설정 타일 적용</string>
+  <string name="floating_button_image_path">플로팅 버튼 이미지 경로</string>
+  <string name="set_floating_button_image">이미지 적용</string>
+  <string name="default_floating_button_image">기본 이미지</string>
+  <string name="get_floating_button">플로팅 버튼 조회</string>
+  <string name="reset_floating_button">플로팅 버튼 초기화</string>
+  <string name="floating_button_small_20">작게 20%</string>
+  <string name="floating_button_large_100">크게 100%</string>
+  <string name="floating_button_invalid_image">잘못된 이미지 테스트</string>
   <string name="reset_startup">StartUp 설정 초기화</string>
   <string name="get_timezone">시간대 조회</string>
   <string name="get_usb_modes">현재 USB 모드 조회</string>

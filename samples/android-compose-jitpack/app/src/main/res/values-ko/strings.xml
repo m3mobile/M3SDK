@@ -14,6 +14,14 @@
     <string name="permission">권한</string>
     <string name="quick_tile">빠른 설정 타일</string>
     <string name="scanner">스캐너</string>
+    <string name="floating_button_image_path">플로팅 버튼 이미지 경로</string>
+    <string name="set_floating_button_image">이미지 적용</string>
+    <string name="default_floating_button_image">기본 이미지</string>
+    <string name="get_floating_button">플로팅 버튼 조회</string>
+    <string name="reset_floating_button">플로팅 버튼 초기화</string>
+    <string name="floating_button_small_20">작게 20%</string>
+    <string name="floating_button_large_100">크게 100%</string>
+    <string name="floating_button_invalid_image">잘못된 이미지 테스트</string>
     <string name="startup_setting">StartUp 설정</string>
     <string name="time">시간</string>
     <string name="usb">USB</string>

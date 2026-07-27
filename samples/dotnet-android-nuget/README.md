@@ -12,7 +12,13 @@ dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -p:M3SdkVe
 ```
 
 Replace `RELEASED_VERSION` with the released package being verified. Restore fails with an explicit message
-when `M3SdkVersion` is omitted. There is no project reference to `dotnet/M3Mobile.M3Sdk.Xamarin`.
+when `M3SdkVersion` is omitted.
+
+For local SDK verification before the NuGet package is published, build with the local project reference:
+
+```powershell
+dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -p:UseLocalM3Sdk=true -p:TargetFramework=net9.0-android --source https://api.nuget.org/v3/index.json
+```
 
 `EmbedAssembliesIntoApk` is enabled so that the generated Debug APK is standalone and can be
 installed with `adb install` without the .NET Fast Deployment directory.

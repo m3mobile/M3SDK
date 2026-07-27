@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using M3Sdk.Xamarin;
+using M3Sdk.Xamarin.ScanEmul;
 using M3Sdk.Xamarin.Startup;
 
 namespace M3SdkPublishedSample;
@@ -18,21 +19,24 @@ namespace M3SdkPublishedSample;
 [Activity(Label = "@string/app_name", Exported = false)]
 public sealed class CategoryActivity : Activity
 {
+    private const int ImageReadPermissionRequest = 2401;
     internal const string CategoryExtra = "sample_category";
     private const string StartUpPackage = "com.m3.startup";
     private const string ScanEmulPackage = "net.m3mobile.app.scanemul";
     private const string KeyToolSl20Package = "com.m3.keytoolsl20";
     private const string KeyToolWakeUpPackage = "net.m3.keytool";
+    private const string DefaultScannerButtonImagePath =
+        "/sdcard/Download/ScanEmul_Floating_Button_Images/target.png";
 
     private IM3Sdk? _sdk;
     private LinearLayout? _content;
     private ScrollView? _scroll;
-    private IDisposable? _scanRegistration;
     private readonly ExecutionTrace _executionTrace = new();
 
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
+        RequestScannerImageReadPermission();
         Window?.SetSoftInputMode(SoftInput.AdjustResize);
         var categoryValue = Intent?.GetIntExtra(CategoryExtra, -1) ?? -1;
         if (!Enum.IsDefined(typeof(SampleCategory), categoryValue))
@@ -65,9 +69,24 @@ public sealed class CategoryActivity : Activity
         }
     }
 
+    private void RequestScannerImageReadPermission()
+    {
+        var missingPermissions = ScannerImageReadPermissions()
+            .Where(permission => CheckSelfPermission(permission) != Permission.Granted)
+            .ToArray();
+        if (missingPermissions.Length > 0)
+            RequestPermissions(missingPermissions, ImageReadPermissionRequest);
+    }
+
+    private static string[] ScannerImageReadPermissions()
+    {
+        return Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu
+            ? new[] { "android.permission.READ_MEDIA_IMAGES" }
+            : new[] { Manifest.Permission.ReadExternalStorage };
+    }
+
     protected override void OnDestroy()
     {
-        _scanRegistration?.Dispose();
         _sdk?.Dispose();
         base.OnDestroy();
     }
@@ -273,16 +292,49 @@ public sealed class CategoryActivity : Activity
     private void ScannerSample()
     {
         var section = Section(Resource.String.scanner);
-        try
+        var imagePath = TextField(Resource.String.floating_button_image_path, DefaultScannerButtonImagePath);
+        imagePath.InputType = InputTypes.ClassText | InputTypes.TextVariationUri;
+        section.Add(imagePath);
+        AddAsyncButton(section, Resource.String.set_floating_button_image, "SetAndVerifyScannerButtonUi(imagePath)", async () =>
         {
-            _scanRegistration = _sdk!.RegisterOnScanResultListener(result =>
-                RunOnUiThread(() => section.Result.Text = _executionTrace.Message("scanResult", "SUCCESS\nbarcode=" + result.Barcode + "\ntype=" + result.Type)));
-            section.Result.Text = _executionTrace.Message("registerOnScanResultListener", "LISTENING");
-        }
-        catch (Exception error)
+            var result = await _sdk!.SetAndVerifyScannerButtonUiAsync(
+                ScannerButtonUiOptions.ForImagePath((imagePath.Text ?? string.Empty).Trim()));
+            return ScannerButtonUiText(result.SetResult) + "\nverified=" + result.IsVerified;
+        });
+        AddAsyncButton(section, Resource.String.default_floating_button_image, "SetAndVerifyScannerButtonUi(defaultImage)", async () =>
         {
-            section.Result.Text = _executionTrace.Message("registerOnScanResultListener", Failure(error));
-        }
+            var result = await _sdk!.SetAndVerifyScannerButtonUiAsync(
+                ScannerButtonUiOptions.ForImagePath(string.Empty));
+            return ScannerButtonUiText(result.SetResult) + "\nverified=" + result.IsVerified;
+        });
+        AddAsyncButton(section, Resource.String.get_floating_button, "GetScannerButtonUi", async () =>
+            ScannerButtonUiText(await _sdk!.GetScannerButtonUiAsync()));
+        AddAsyncButton(section, Resource.String.reset_floating_button, "SetAndVerifyScannerButtonUi(default)", async () =>
+        {
+            var result = await _sdk!.SetAndVerifyScannerButtonUiAsync(new ScannerButtonUiOptions(
+                imagePath: string.Empty,
+                opacityPercent: 100,
+                size: ScannerButtonUiSize.Medium));
+            return ScannerButtonUiText(result.SetResult) + "\nverified=" + result.IsVerified;
+        });
+        AddAsyncButton(section, Resource.String.floating_button_small_20, "SetAndVerifyScannerButtonUi(small,20)", async () =>
+        {
+            var result = await _sdk!.SetAndVerifyScannerButtonUiAsync(new ScannerButtonUiOptions(
+                opacityPercent: 20,
+                size: ScannerButtonUiSize.Small));
+            return ScannerButtonUiText(result.SetResult) + "\nverified=" + result.IsVerified;
+        });
+        AddAsyncButton(section, Resource.String.floating_button_large_100, "SetAndVerifyScannerButtonUi(large,100)", async () =>
+        {
+            var result = await _sdk!.SetAndVerifyScannerButtonUiAsync(new ScannerButtonUiOptions(
+                opacityPercent: 100,
+                size: ScannerButtonUiSize.Large));
+            return ScannerButtonUiText(result.SetResult) + "\nverified=" + result.IsVerified;
+        });
+        AddAsyncButton(section, Resource.String.floating_button_invalid_image, "SetScannerButtonUi(invalidImage)", async () =>
+            ScannerButtonUiText(await _sdk!.SetScannerButtonUiAsync(
+                ScannerButtonUiOptions.ForImagePath("/sdcard/Download/m3sdk_missing_button_image.png"))));
+
     }
 
     private void StartUpSettingSample()
@@ -528,6 +580,21 @@ public sealed class CategoryActivity : Activity
             "\nScanEmul=" + PackageVersion(ScanEmulPackage) +
             "\nKeyTool SL20=" + PackageVersion(KeyToolSl20Package) +
             "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage);
+    }
+
+    private static string ScannerButtonUiText(ScannerButtonUiResult result)
+    {
+        var settings = result.Settings;
+        return
+            "transport=" + result.TransportStatus +
+            "\nsuccess=" + result.Success +
+            "\nstatus=" + result.Status +
+            "\nrawStatus=" + result.RawStatus +
+            "\nruntimeApplied=" + result.RuntimeApplied +
+            "\nsaved=" + result.IsSaved +
+            "\nimagePath=" + (settings == null ? string.Empty : settings.ImagePath) +
+            "\nopacity=" + (settings == null ? string.Empty : settings.OpacityPercent.ToString()) +
+            "\nsize=" + (settings == null ? string.Empty : settings.Size.ToString());
     }
 
     private static string SdkVersion()

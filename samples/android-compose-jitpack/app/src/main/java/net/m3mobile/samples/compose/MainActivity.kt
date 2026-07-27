@@ -28,7 +28,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +45,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.launch
-import net.m3mobile.feature.scanemul.listener.OnScanResultListener
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiOptions
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiResult
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiSize
 import net.m3mobile.feature.startup.params.QuickTile
 import net.m3mobile.feature.startup.params.QuickTileId
 import net.m3mobile.sdk.M3Mobile
@@ -55,10 +56,12 @@ private const val STARTUP_PACKAGE = "com.m3.startup"
 private const val SCANEMUL_PACKAGE = "net.m3mobile.app.scanemul"
 private const val KEYTOOL_SL20_PACKAGE = "com.m3.keytoolsl20"
 private const val KEYTOOL_WAKE_UP_PACKAGE = "net.m3.keytool"
+private const val IMAGE_READ_PERMISSION_REQUEST = 2401
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
+        requestScannerImageReadPermission()
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
@@ -69,7 +72,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun requestScannerImageReadPermission() {
+        val missingPermissions = scannerImageReadPermissions().filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (missingPermissions.isNotEmpty()) {
+            requestPermissions(missingPermissions.toTypedArray(), IMAGE_READ_PERMISSION_REQUEST)
+        }
+    }
 }
+
+private fun scannerImageReadPermissions(): Array<String> =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
+    } else {
+        arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
 
 @Composable
 internal fun CategoryScreen(category: SampleCategory) {
@@ -84,38 +103,14 @@ internal fun CategoryScreen(category: SampleCategory) {
     var launchAfterInstall by remember { mutableStateOf(false) }
     var keyTitle by remember { mutableStateOf("Left Scan") }
     var functionTitle by remember { mutableStateOf("Volume Up") }
+    var scannerButtonImagePath by remember {
+        mutableStateOf("/sdcard/Download/ScanEmul_Floating_Button_Images/target.png")
+    }
     val requestSentUnverified = stringResource(R.string.request_sent_unverified)
     val executionTrace = remember { ExecutionTrace() }
 
     fun record(key: String, operation: String, body: String) {
         results[key] = executionTrace.message(operation, body)
-    }
-
-    val scanListener = remember {
-        OnScanResultListener { result ->
-            scope.launch {
-                record(
-                    "scanner",
-                    "scanResult",
-                    "SUCCESS\nbarcode=${result.barcode}\ntype=${result.type}"
-                )
-            }
-        }
-    }
-
-    DisposableEffect(category, sdk) {
-        if (category == SampleCategory.SCANNER) {
-            val body = try {
-                sdk.registerOnScanResultListener(scanListener)
-                "LISTENING"
-            } catch (error: Throwable) {
-                failure(context, error)
-            }
-            record("scanner", "registerOnScanResultListener", body)
-            onDispose { runCatching { sdk.unregisterOnScanResultListener(scanListener) } }
-        } else {
-            onDispose {}
-        }
     }
 
     fun oneWay(
@@ -330,7 +325,133 @@ internal fun CategoryScreen(category: SampleCategory) {
             }) { Text(stringResource(R.string.set_quick_tile)) }
         }
 
-        SampleCard(SampleCategory.SCANNER, category, stringResource(R.string.scanner), results["scanner"])
+        SampleCard(SampleCategory.SCANNER, category, stringResource(R.string.scanner), results["scanner"]) {
+            OutlinedTextField(
+                value = scannerButtonImagePath,
+                onValueChange = { scannerButtonImagePath = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.floating_button_image_path)) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Uri
+                ),
+                singleLine = true
+            )
+            ActionRow(
+                first = stringResource(R.string.set_floating_button_image) to {
+                    scope.launch {
+                        val body = try {
+                            scannerButtonUiResult(
+                                sdk.setAndVerifyScannerButtonUi(
+                                    ScannerButtonUiOptions.imagePath(scannerButtonImagePath.trim())
+                                ).setResult()
+                            )
+                        } catch (error: Throwable) {
+                            failure(context, error)
+                        }
+                        record("scanner", "setAndVerifyScannerButtonUi(imagePath)", body)
+                    }
+                },
+                second = stringResource(R.string.default_floating_button_image) to {
+                    scope.launch {
+                        val body = try {
+                            scannerButtonUiResult(
+                                sdk.setAndVerifyScannerButtonUi(
+                                    ScannerButtonUiOptions.imagePath("")
+                                ).setResult()
+                            )
+                        } catch (error: Throwable) {
+                            failure(context, error)
+                        }
+                        record("scanner", "setAndVerifyScannerButtonUi(defaultImage)", body)
+                    }
+                }
+            )
+            ActionRow(
+                first = stringResource(R.string.get_floating_button) to {
+                    scope.launch {
+                        val body = try {
+                            scannerButtonUiResult(sdk.getScannerButtonUi())
+                        } catch (error: Throwable) {
+                            failure(context, error)
+                        }
+                        record("scanner", "getScannerButtonUi", body)
+                    }
+                },
+                second = stringResource(R.string.reset_floating_button) to {
+                    scope.launch {
+                        val body = try {
+                            scannerButtonUiResult(
+                                sdk.setAndVerifyScannerButtonUi(
+                                    ScannerButtonUiOptions(
+                                        imagePath = "",
+                                        opacityPercent = 100,
+                                        size = ScannerButtonUiSize.MEDIUM
+                                    )
+                                ).setResult()
+                            )
+                        } catch (error: Throwable) {
+                            failure(context, error)
+                        }
+                        record("scanner", "setAndVerifyScannerButtonUi(default)", body)
+                    }
+                }
+            )
+            ActionRow(
+                first = stringResource(R.string.floating_button_small_20) to {
+                    scope.launch {
+                        val body = try {
+                            scannerButtonUiResult(
+                                sdk.setAndVerifyScannerButtonUi(
+                                    ScannerButtonUiOptions(
+                                        opacityPercent = 20,
+                                        size = ScannerButtonUiSize.SMALL
+                                    )
+                                ).setResult()
+                            )
+                        } catch (error: Throwable) {
+                            failure(context, error)
+                        }
+                        record("scanner", "setAndVerifyScannerButtonUi(small,20)", body)
+                    }
+                },
+                second = stringResource(R.string.floating_button_large_100) to {
+                    scope.launch {
+                        val body = try {
+                            scannerButtonUiResult(
+                                sdk.setAndVerifyScannerButtonUi(
+                                    ScannerButtonUiOptions(
+                                        opacityPercent = 100,
+                                        size = ScannerButtonUiSize.LARGE
+                                    )
+                                ).setResult()
+                            )
+                        } catch (error: Throwable) {
+                            failure(context, error)
+                        }
+                        record("scanner", "setAndVerifyScannerButtonUi(large,100)", body)
+                    }
+                }
+            )
+            SdkActionButton(onClick = {
+                scope.launch {
+                    val body = try {
+                        scannerButtonUiResult(
+                            sdk.setScannerButtonUi(
+                                ScannerButtonUiOptions.imagePath(
+                                    "/sdcard/Download/m3sdk_missing_button_image.png"
+                                )
+                            )
+                        )
+                    } catch (error: Throwable) {
+                        failure(context, error)
+                    }
+                    record("scanner", "setScannerButtonUi(invalidImage)", body)
+                }
+            }) {
+                Text(stringResource(R.string.floating_button_invalid_image))
+            }
+        }
 
         SampleCard(SampleCategory.STARTUP_SETTING, category, stringResource(R.string.startup_setting), results["startupSetting"]) {
             SdkActionButton(onClick = { oneWay("startupSetting", "resetStartUpSetting") { sdk.resetStartUpSetting() } }) {
@@ -532,6 +653,19 @@ private fun failure(context: Context, error: Throwable): String = buildString {
     appendLine("ScanEmul=${packageVersion(context, SCANEMUL_PACKAGE)}")
     appendLine("KeyTool SL20=${packageVersion(context, KEYTOOL_SL20_PACKAGE)}")
     append("KeyTool Wake-Up=${packageVersion(context, KEYTOOL_WAKE_UP_PACKAGE)}")
+}
+
+private fun scannerButtonUiResult(result: ScannerButtonUiResult): String = buildString {
+    appendLine("transport=${result.transportStatus()}")
+    appendLine("success=${result.success()}")
+    appendLine("status=${result.status()}")
+    appendLine("rawStatus=${result.rawStatus()}")
+    appendLine("runtimeApplied=${result.runtimeApplied()}")
+    appendLine("saved=${result.saved()}")
+    val settings = result.settings()
+    appendLine("imagePath=${settings?.imagePath()}")
+    appendLine("opacity=${settings?.opacityPercent()}")
+    append("size=${settings?.size()}")
 }
 
 private fun packageVersion(context: Context, packageName: String): String = try {
