@@ -42,6 +42,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.launch
@@ -56,6 +57,7 @@ private const val STARTUP_PACKAGE = "com.m3.startup"
 private const val SCANEMUL_PACKAGE = "net.m3mobile.app.scanemul"
 private const val KEYTOOL_SL20_PACKAGE = "com.m3.keytoolsl20"
 private const val KEYTOOL_WAKE_UP_PACKAGE = "net.m3.keytool"
+private const val APPCENTER_PACKAGE = "com.m3.appcenter"
 private const val IMAGE_READ_PERMISSION_REQUEST = 2401
 
 class MainActivity : ComponentActivity() {
@@ -101,6 +103,8 @@ internal fun CategoryScreen(category: SampleCategory) {
     var remoteApkUrl by remember { mutableStateOf("") }
     var allowSameVersionUpdate by remember { mutableStateOf(false) }
     var launchAfterInstall by remember { mutableStateOf(false) }
+    var appCenterCurrentPassword by remember { mutableStateOf("") }
+    var appCenterNewPassword by remember { mutableStateOf("") }
     var keyTitle by remember { mutableStateOf("Left Scan") }
     var functionTitle by remember { mutableStateOf("Volume Up") }
     var scannerButtonImagePath by remember {
@@ -505,6 +509,69 @@ internal fun CategoryScreen(category: SampleCategory) {
             }) { Text(stringResource(R.string.get_factory_wifi_mac)) }
         }
 
+        SampleCard(SampleCategory.APPCENTER, category, stringResource(R.string.appcenter), results["appcenter"]) {
+            Text(stringResource(R.string.appcenter_warning))
+            OutlinedTextField(
+                value = appCenterCurrentPassword,
+                onValueChange = { appCenterCurrentPassword = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.current_admin_password)) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Password
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = appCenterNewPassword,
+                onValueChange = { appCenterNewPassword = it },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.new_admin_password)) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrectEnabled = false,
+                    keyboardType = KeyboardType.Password
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true
+            )
+            SdkActionButton(onClick = {
+                oneWay(
+                    "appcenter",
+                    "changeKioskAdminPassword",
+                    "$requestSentUnverified\nAppCenter=${packageVersion(context, APPCENTER_PACKAGE)}"
+                ) {
+                    sdk.changeKioskAdminPassword(appCenterCurrentPassword, appCenterNewPassword)
+                }
+            }) {
+                Text(stringResource(R.string.change_admin_password))
+            }
+            Text(
+                stringResource(R.string.keep_admin_mode_on_sleep),
+                style = MaterialTheme.typography.titleMedium
+            )
+            ActionRow(
+                first = stringResource(R.string.enable) to {
+                    oneWay(
+                        "appcenter",
+                        "setKeepAdminModeOnSleep(true)",
+                        "$requestSentUnverified\nAppCenter=${packageVersion(context, APPCENTER_PACKAGE)}"
+                    ) {
+                        sdk.setKeepAdminModeOnSleep(true)
+                    }
+                },
+                second = stringResource(R.string.disable) to {
+                    oneWay(
+                        "appcenter",
+                        "setKeepAdminModeOnSleep(false)",
+                        "$requestSentUnverified\nAppCenter=${packageVersion(context, APPCENTER_PACKAGE)}"
+                    ) {
+                        sdk.setKeepAdminModeOnSleep(false)
+                    }
+                }
+            )
+        }
+
         SampleCard(SampleCategory.KEYTOOL, category, stringResource(R.string.keytool), results["keytool"]) {
             Text(stringResource(R.string.keytool_warning))
             Text(
@@ -645,7 +712,8 @@ private fun environment(context: Context): String = buildString {
     appendLine("StartUp=${packageVersion(context, STARTUP_PACKAGE)}")
     appendLine("ScanEmul=${packageVersion(context, SCANEMUL_PACKAGE)}")
     appendLine("KeyTool SL20=${packageVersion(context, KEYTOOL_SL20_PACKAGE)}")
-    append("KeyTool Wake-Up=${packageVersion(context, KEYTOOL_WAKE_UP_PACKAGE)}")
+    appendLine("KeyTool Wake-Up=${packageVersion(context, KEYTOOL_WAKE_UP_PACKAGE)}")
+    append("AppCenter=${packageVersion(context, APPCENTER_PACKAGE)}")
 }
 
 private fun failure(context: Context, error: Throwable): String = buildString {
@@ -658,7 +726,8 @@ private fun failure(context: Context, error: Throwable): String = buildString {
     appendLine("StartUp=${packageVersion(context, STARTUP_PACKAGE)}")
     appendLine("ScanEmul=${packageVersion(context, SCANEMUL_PACKAGE)}")
     appendLine("KeyTool SL20=${packageVersion(context, KEYTOOL_SL20_PACKAGE)}")
-    append("KeyTool Wake-Up=${packageVersion(context, KEYTOOL_WAKE_UP_PACKAGE)}")
+    appendLine("KeyTool Wake-Up=${packageVersion(context, KEYTOOL_WAKE_UP_PACKAGE)}")
+    append("AppCenter=${packageVersion(context, APPCENTER_PACKAGE)}")
 }
 
 private fun scannerButtonUiResult(result: ScannerButtonUiResult): String = buildString {

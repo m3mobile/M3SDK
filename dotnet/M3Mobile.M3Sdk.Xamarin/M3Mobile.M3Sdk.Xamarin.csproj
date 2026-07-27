@@ -14,7 +14,7 @@
     <LangVersion>7.3</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>M3 Mobile</Authors>
-    <Description>Native C# Xamarin.Android SDK wrapper for M3 Mobile StartUp, ScanEmul, KeyTool, Time, Wifi, and Usb APIs.</Description>
+    <Description>Native C# Xamarin.Android SDK wrapper for M3 Mobile StartUp, ScanEmul, KeyTool, AppCenter, Time, Wifi, and Usb APIs.</Description>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -54,6 +54,10 @@
     <Compile Include="Internal\DeviceModelDetector.cs" />
     <Compile Include="Internal\FinishRequiredBroadcastRequester.cs" />
     <Compile Include="Internal\M3SdkGuard.cs" />
+    <Compile Include="AppCenter\AppCenterApi.cs" />
+    <Compile Include="AppCenter\AppCenterBroadcastRequest.cs" />
+    <Compile Include="AppCenter\AppCenterPasswordPolicy.cs" />
+    <Compile Include="AppCenter\IAppCenterApi.cs" />
     <Compile Include="KeyTool\IKeyToolApi.cs" />
     <Compile Include="KeyTool\KeyToolApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

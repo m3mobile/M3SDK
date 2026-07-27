@@ -189,6 +189,27 @@ namespace M3Sdk.Xamarin.Internal
             internal const int LockFn = 2;
         }
 
+        internal static class AppCenter
+        {
+            internal const string AppName = "AppCenter";
+            internal const string PackageName = "com.m3.appcenter";
+            internal const string RequiredVersion = "2.2.0";
+
+            internal const string ChangePassword = "com.m3.appcenter.ACTION_CHANGE_PASSWORD";
+            internal const string SetKeepAdminModeOnSleep =
+                "com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP";
+
+            internal const string ExtraCurrentPassword = "com.m3.appcenter.EXTRA_CURRENT_PASSWORD";
+            internal const string ExtraNewPassword = "com.m3.appcenter.EXTRA_NEW_PASSWORD";
+            internal const string ExtraEncryptionEnabled =
+                "com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED";
+            internal const string ExtraKeepAdminModeOnSleep =
+                "com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP";
+
+            internal const int EnableKeepAdminModeOnSleep = 1;
+            internal const int DisableKeepAdminModeOnSleep = 0;
+        }
+
         internal static class ScanEmul
         {
             internal const string AppName = "ScanEmul";

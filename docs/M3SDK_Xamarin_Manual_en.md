@@ -64,6 +64,9 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Control Function-key Mode](#control-function-key-mode)
     - [Set Key Function](#set-key-function)
     - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
+  - [AppCenter Kiosk API](#appcenter-kiosk-api)
+    - [Change Kiosk Admin Password](#change-kiosk-admin-password)
+    - [Keep Admin Mode While Screen Is Off](#keep-admin-mode-while-screen-is-off)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [Time API](#time-api)
@@ -191,13 +194,14 @@ using M3Sdk.Xamarin.ScanEmul;
 
 m3.StartUp.SetWifiCountry("KR");
 m3.ScanEmul.SetScannerReadMode(ReadMode.Multiple);
+m3.AppCenter.SetKeepAdminModeOnSleep(true);
 
 string ntpServer = m3.Time.GetNtpServer();
 IList<string> usbModes = m3.Usb.GetCurrentUsbModes();
 int roamingDelta = m3.Wifi.GetRoamingDelta();
 ```
 
-`IM3Sdk` exposes `StartUp`, `ScanEmul`, `Time`, `Wifi`, and `Usb` groups. Their types are `IStartUpApi`, `IScanEmulApi`, `ITimeApi`, `IWifiApi`, and `IUsbApi`. `M3Mobile.Create(...)` returns the public root implementation `M3Sdk` as `IM3Sdk`, and the group implementations are `StartUpApi`, `ScanEmulApi`, `TimeApi`, `WifiApi`, and `UsbApi`. The `ScanEmul` group implements `IDisposable` to clean up internal scan connections. Calling `IM3Sdk.Dispose()` cleans it up together.
+`IM3Sdk` exposes `StartUp`, `ScanEmul`, `KeyTool`, `AppCenter`, `Time`, `Wifi`, and `Usb` groups. Their types are `IStartUpApi`, `IScanEmulApi`, `IKeyToolApi`, `IAppCenterApi`, `ITimeApi`, `IWifiApi`, and `IUsbApi`. `M3Mobile.Create(...)` returns the public root implementation `M3Sdk` as `IM3Sdk`, and the group implementations are `StartUpApi`, `ScanEmulApi`, `KeyToolApi`, `AppCenterApi`, `TimeApi`, `WifiApi`, and `UsbApi`. The `ScanEmul` group implements `IDisposable` to clean up internal scan connections. Calling `IM3Sdk.Dispose()` cleans it up together.
 
 ### Strict Mode and Exception Handling
 
@@ -213,7 +217,7 @@ The M3 SDK provides a **Strict Mode** that affects how API calls behave when req
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on an unsupported device model.
-    *   `UnsatisfiedVersionException`: Thrown if the installed StartUp or ScanEmul app version is lower than the API requirement.
+    *   `UnsatisfiedVersionException`: Thrown if the installed StartUp, ScanEmul, or AppCenter app version is lower than the API requirement. AppCenter kiosk API version checks always run, regardless of Strict Mode.
     *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This check always runs because KeyTool requests are one-way broadcasts.
 
 
@@ -1150,6 +1154,72 @@ m3.DisableRightScanWakeUp();
 
 The published-package sample displays installed KeyTool package versions and reports one-way calls
 as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+---
+
+### AppCenter Kiosk API
+
+Controls AppCenter kiosk administrator features through one-way explicit broadcasts. Methods are
+available both from the flat SDK facade and from the `AppCenter` API group.
+
+> **One-way request:** AppCenter broadcasts do not return an acknowledgement. A normal return means
+> only that Android accepted the request. It does not prove that AppCenter applied the setting.
+> AppCenter `2.2.0` or later must be installed and able to receive broadcasts. The SDK verifies
+> AppCenter availability and version regardless of Strict Mode.
+
+#### Change Kiosk Admin Password
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `currentPassword`: Current administrator password. Empty strings are rejected.
+    *   `newPassword`: New administrator password. Length must be 4 to 20 characters.
+
+The SDK does not trim either password. If the current password is wrong, AppCenter may ignore the
+request and the SDK cannot confirm the result.
+
+```csharp
+m3.ChangeKioskAdminPassword(currentPassword, newPassword);
+
+// The grouped form is also available.
+m3.AppCenter.ChangeKioskAdminPassword(currentPassword, newPassword);
+```
+
+Direct AppCenter broadcast request:
+
+```csharp
+Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
+request.SetPackage("com.m3.appcenter");
+request.PutExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
+request.PutExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
+request.PutExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
+context.SendBroadcast(request);
+```
+
+#### Keep Admin Mode While Screen Is Off
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `enabled`: `true` keeps administrator mode after screen off. `false` restores the normal
+        user-mode behavior and may require administrator login again.
+
+Administrator mode is not preserved after reboot.
+
+```csharp
+m3.SetKeepAdminModeOnSleep(true);
+m3.SetKeepAdminModeOnSleep(false);
+
+// The grouped form is also available.
+m3.AppCenter.SetKeepAdminModeOnSleep(true);
+```
+
+Direct AppCenter broadcast request:
+
+```csharp
+Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
+request.SetPackage("com.m3.appcenter");
+request.PutExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
+context.SendBroadcast(request);
+```
 
 ---
 

@@ -26,7 +26,9 @@
     <string name="time">Time</string>
     <string name="usb">USB</string>
     <string name="wifi">Wi-Fi</string>
+    <string name="appcenter">AppCenter</string>
     <string name="keytool">KeyTool</string>
+    <string name="appcenter_warning">One-way kiosk configuration. Verify AppCenter behavior after the request.</string>
     <string name="keytool_warning">One-way device configuration. Verify the physical key after the request.</string>
     <string name="request_sent_unverified">REQUEST_SENT_UNVERIFIED\nThe target app did not return an acknowledgement.</string>
     <string name="refresh">Refresh</string>
@@ -56,6 +58,10 @@
     <string name="enable_wifi">Enable Wi-Fi</string>
     <string name="disable_wifi">Disable Wi-Fi</string>
     <string name="get_factory_wifi_mac">Get factory Wi-Fi MAC</string>
+    <string name="current_admin_password">Current admin password</string>
+    <string name="new_admin_password">New admin password</string>
+    <string name="change_admin_password">Change admin password</string>
+    <string name="keep_admin_mode_on_sleep">Keep admin mode while screen is off</string>
     <string name="set_key_function">Set key function</string>
     <string name="package_name">Package name</string>
     <string name="key_title">Key title</string>

@@ -6,5 +6,6 @@
     <package android:name="net.m3mobile.app.scanemul" />
     <package android:name="com.m3.keytoolsl20" />
     <package android:name="net.m3.keytool" />
+    <package android:name="com.m3.appcenter" />
   </queries>
 </manifest>

@@ -28,6 +28,7 @@
 | Time | Get Timezone | 응답값 |
 | USB | Get Current USB Modes | 응답값 |
 | Wi-Fi | Get Factory Wi-Fi MAC, Set Wi-Fi Enabled true/false | MAC 응답값 또는 StartUp 오류, Wi-Fi 활성화/비활성화 실제 확인 |
+| AppCenter | Change Admin Password, Keep Admin Mode On Sleep true/false | `REQUEST_SENT_UNVERIFIED` + AppCenter 2.2.0 이상에서 실제 동작 확인 |
 | KeyTool | Set Key Function, Home/Recent 활성화·비활성화 | `REQUEST_SENT_UNVERIFIED` + 실제 버튼 확인 |
 
 기본 UI 리소스는 영어이며 한국어(`values-ko`)만 추가한다.
@@ -80,6 +81,8 @@ Alpha는 기본 필수 단계가 아니다. 다음 중 하나에 해당할 때 �
 - 실패 시 예외 타입, 메시지, 모델, Android 및 대상 앱 버전을 한 화면에서 확인할 수 있는가.
 - SM24에서 Wi-Fi를 끈 상태로 `setWifiEnabled(true)` 호출 후 실제 Wi-Fi가 켜지는가. StartUp 6.8.3 이상 조건으로 확인한다.
 - SM24에서 Wi-Fi를 켠 상태로 `setWifiEnabled(false)` 호출 후 실제 Wi-Fi가 꺼지는가. StartUp 6.8.3 이상 조건으로 확인한다.
+- AppCenter 2.2.0 이상에서 관리자 비밀번호 변경 요청이 `REQUEST_SENT_UNVERIFIED`로 표시되고, 비밀번호 값이 결과 화면에 표시되지 않는가.
+- AppCenter 2.2.0 이상에서 화면 OFF 관리자 모드 유지/해제 요청 후 실제 화면 OFF 동작이 기대와 일치하는가.
 - KeyTool `Set Key Function` 호출 후 지정한 물리 키가 실제로 변경되었는가.
 - SM24/SM25에서 KeyTool 1.4.1 이상의 Home/Recent 활성화·비활성화가 실제 버튼에 적용되는가.
 - 입력 필드에 소프트 키보드를 연 상태에서 SDK 버튼을 눌렀을 때 키보드가 닫히고 결과가 보이는가.

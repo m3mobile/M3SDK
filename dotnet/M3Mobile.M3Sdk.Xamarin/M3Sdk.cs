@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Content;
+using M3Sdk.Xamarin.AppCenter;
 using M3Sdk.Xamarin.Internal;
 using M3Sdk.Xamarin.KeyTool;
 using M3Sdk.Xamarin.ScanEmul;
@@ -12,13 +13,14 @@ using M3Sdk.Xamarin.Startup;
 namespace M3Sdk.Xamarin
 {
     /// <summary>
-    /// Native C# facade over the M3 Mobile StartUp, ScanEmul, KeyTool, Time, Wifi, and Usb APIs.
+    /// Native C# facade over the M3 Mobile StartUp, ScanEmul, KeyTool, AppCenter, Time, Wifi, and Usb APIs.
     /// </summary>
     public sealed class M3Sdk : IM3Sdk
     {
         private readonly StartUpApi _startUp;
         private readonly ScanEmulApi _scanEmul;
         private readonly KeyToolApi _keyTool;
+        private readonly AppCenterApi _appCenter;
         private readonly TimeApi _time;
         private readonly WifiApi _wifi;
         private readonly UsbApi _usb;
@@ -32,6 +34,7 @@ namespace M3Sdk.Xamarin
             _startUp = new StartUpApi(appContext, guard);
             _scanEmul = new ScanEmulApi(appContext, guard);
             _keyTool = new KeyToolApi(appContext, guard);
+            _appCenter = new AppCenterApi(appContext, guard);
             _time = new TimeApi(appContext, guard);
             _wifi = new WifiApi(appContext, guard);
             _usb = new UsbApi(appContext);
@@ -53,6 +56,12 @@ namespace M3Sdk.Xamarin
         public IKeyToolApi KeyTool
         {
             get { return _keyTool; }
+        }
+
+        /// <inheritdoc />
+        public IAppCenterApi AppCenter
+        {
+            get { return _appCenter; }
         }
 
         /// <inheritdoc />
@@ -127,6 +136,20 @@ namespace M3Sdk.Xamarin
         {
             ThrowIfDisposed();
             _keyTool.DisableRecentButton();
+        }
+
+        /// <inheritdoc />
+        public void ChangeKioskAdminPassword(string currentPassword, string newPassword)
+        {
+            ThrowIfDisposed();
+            _appCenter.ChangeKioskAdminPassword(currentPassword, newPassword);
+        }
+
+        /// <inheritdoc />
+        public void SetKeepAdminModeOnSleep(bool enabled)
+        {
+            ThrowIfDisposed();
+            _appCenter.SetKeepAdminModeOnSleep(enabled);
         }
 
         /// <inheritdoc />

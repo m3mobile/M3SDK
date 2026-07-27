@@ -65,6 +65,9 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [키 기능 설정](#키-기능-설정)
     - [스캔 키 Wake-Up 제어](#스캔-키-wake-up-제어)
     - [스캐너 설정 (Scanner Settings)](#스캐너-설정-scanner-settings)
+  - [AppCenter Kiosk API](#appcenter-kiosk-api)
+    - [키오스크 관리자 비밀번호 변경](#키오스크-관리자-비밀번호-변경)
+    - [화면 OFF 시 관리자 모드 유지](#화면-off-시-관리자-모드-유지)
   - [StartUp Setting API](#startup-setting-api)
     - [StartUp 설정 초기화](#startup-설정-초기화)
   - [Time API](#time-api)
@@ -193,13 +196,14 @@ using M3Sdk.Xamarin.ScanEmul;
 
 m3.StartUp.SetWifiCountry("KR");
 m3.ScanEmul.SetScannerReadMode(ReadMode.Multiple);
+m3.AppCenter.SetKeepAdminModeOnSleep(true);
 
 string ntpServer = m3.Time.GetNtpServer();
 IList<string> usbModes = m3.Usb.GetCurrentUsbModes();
 int roamingDelta = m3.Wifi.GetRoamingDelta();
 ```
 
-`IM3Sdk`는 `StartUp`, `ScanEmul`, `Time`, `Wifi`, `Usb` 그룹을 제공합니다. 각 그룹의 타입은 `IStartUpApi`, `IScanEmulApi`, `ITimeApi`, `IWifiApi`, `IUsbApi`입니다. `M3Mobile.Create(...)`는 공개 루트 구현체 `M3Sdk`를 `IM3Sdk`로 반환하며, 그룹 구현체는 `StartUpApi`, `ScanEmulApi`, `TimeApi`, `WifiApi`, `UsbApi`입니다. `ScanEmul` 그룹은 내부 스캔 연결을 정리하기 위해 `IDisposable`을 구현합니다. 루트 `IM3Sdk.Dispose()`를 호출하면 함께 정리됩니다.
+`IM3Sdk`는 `StartUp`, `ScanEmul`, `KeyTool`, `AppCenter`, `Time`, `Wifi`, `Usb` 그룹을 제공합니다. 각 그룹의 타입은 `IStartUpApi`, `IScanEmulApi`, `IKeyToolApi`, `IAppCenterApi`, `ITimeApi`, `IWifiApi`, `IUsbApi`입니다. `M3Mobile.Create(...)`는 공개 루트 구현체 `M3Sdk`를 `IM3Sdk`로 반환하며, 그룹 구현체는 `StartUpApi`, `ScanEmulApi`, `KeyToolApi`, `AppCenterApi`, `TimeApi`, `WifiApi`, `UsbApi`입니다. `ScanEmul` 그룹은 내부 스캔 연결을 정리하기 위해 `IDisposable`을 구현합니다. 루트 `IM3Sdk.Dispose()`를 호출하면 함께 정리됩니다.
 
 ### Strict Mode 및 예외 처리
 
@@ -217,7 +221,7 @@ M3 SDK는 특정 API 호출이 (장치 지원 또는 앱 버전과 같은) 조�
     *   `UnsupportedDeviceModelException`: 지원되지 않는 장치 모델에서 API가 호출될 경우 발생합니다.
     *   `KeyToolAppUnavailableException`: API에 필요한 KeyTool 앱이 설치되어 있지 않거나 앱에서 확인할 수 없을 때 발생합니다. KeyTool 호출은 단방향 broadcast이므로 이 검사는 Strict Mode 설정과 관계없이 수행됩니다.
 
-    *   `UnsatisfiedVersionException`: API가 설치된 장치의 StartUp 또는 ScanEmul 애플리케이션 버전보다 더 높은 버전을 요구할 경우 발생합니다.
+    *   `UnsatisfiedVersionException`: 설치된 StartUp, ScanEmul 또는 AppCenter 앱 버전이 API 요구 버전보다 낮을 때 발생합니다. AppCenter Kiosk API의 버전 검사는 Strict Mode 설정과 관계없이 항상 수행됩니다.
 
 *   **비활성화된 경우**: 이 모드에서는 필요한 조건을 충족하지 못하는 API 호출은 **자동으로 무시**됩니다. 예외가 발생하지 않으므로 애플리케이션은 중단 없이 계속 실행됩니다.
 
@@ -1149,6 +1153,72 @@ m3.DisableRightScanWakeUp();
 
 배포 패키지 샘플은 설치된 KeyTool 패키지 버전을 표시하며, 단방향 호출을 성공이 아닌
 `REQUEST_SENT_UNVERIFIED` 상태로 표시합니다.
+
+---
+
+### AppCenter Kiosk API
+
+AppCenter 키오스크 관리자 기능을 단방향 explicit broadcast로 제어합니다.
+평면 SDK facade와 `AppCenter` API 그룹에서 동일한 메서드를 사용할 수 있습니다.
+
+> **단방향 요청:** AppCenter broadcast는 처리 결과를 응답하지 않습니다. 정상 반환은
+> Android가 요청을 받았다는 의미일 뿐 AppCenter 적용 성공을 보장하지 않습니다.
+> AppCenter `2.2.0` 이상이 설치되어 있고 broadcast를 수신 가능한 상태여야 합니다.
+> SDK는 Strict Mode 설정과 관계없이 AppCenter 설치 여부와 버전을 검증합니다.
+
+#### 키오스크 관리자 비밀번호 변경
+
+*   **필요 AppCenter 버전**: `2.2.0` 이상
+*   **매개변수**:
+    *   `currentPassword`: 현재 관리자 비밀번호입니다. 빈 문자열은 거부됩니다.
+    *   `newPassword`: 새 관리자 비밀번호입니다. 길이는 4~20자만 허용됩니다.
+
+SDK는 두 비밀번호 값을 trim하지 않습니다. 현재 비밀번호가 잘못되면 AppCenter가 요청을
+무시할 수 있으며, SDK는 실제 적용 결과를 확인할 수 없습니다.
+
+```csharp
+m3.ChangeKioskAdminPassword(currentPassword, newPassword);
+
+// 그룹 형태도 사용할 수 있습니다.
+m3.AppCenter.ChangeKioskAdminPassword(currentPassword, newPassword);
+```
+
+AppCenter에 직접 broadcast를 보내는 경우:
+
+```csharp
+Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
+request.SetPackage("com.m3.appcenter");
+request.PutExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
+request.PutExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
+request.PutExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
+context.SendBroadcast(request);
+```
+
+#### 화면 OFF 시 관리자 모드 유지
+
+*   **필요 AppCenter 버전**: `2.2.0` 이상
+*   **매개변수**:
+    *   `enabled`: `true`이면 화면 OFF 후 관리자 모드를 유지합니다. `false`이면 기존처럼
+        사용자 모드로 돌아가며 관리자 로그인이 다시 필요할 수 있습니다.
+
+재부팅 후 관리자 모드는 유지되지 않습니다.
+
+```csharp
+m3.SetKeepAdminModeOnSleep(true);
+m3.SetKeepAdminModeOnSleep(false);
+
+// 그룹 형태도 사용할 수 있습니다.
+m3.AppCenter.SetKeepAdminModeOnSleep(true);
+```
+
+AppCenter에 직접 broadcast를 보내는 경우:
+
+```csharp
+Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
+request.SetPackage("com.m3.appcenter");
+request.PutExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
+context.SendBroadcast(request);
+```
 
 ---
 

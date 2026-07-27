@@ -67,6 +67,20 @@ namespace M3Sdk.Xamarin.Internal
         }
 
         /// <summary>
+        /// Verifies that the installed AppCenter app satisfies the required kiosk API version.
+        /// </summary>
+        /// <param name="methodName">The public SDK method being guarded.</param>
+        internal void AssertAppCenterVersion(string methodName)
+        {
+            AssertAppVersion(
+                methodName,
+                Constants.AppCenter.AppName,
+                Constants.AppCenter.PackageName,
+                Constants.AppCenter.RequiredVersion,
+                true);
+        }
+
+        /// <summary>
         /// Verifies that a companion app required by a one-way API is installed and visible.
         /// </summary>
         /// <param name="methodName">The public SDK method being guarded.</param>
@@ -125,7 +139,17 @@ namespace M3Sdk.Xamarin.Internal
 
         private void AssertAppVersion(string methodName, string appName, string packageName, string requiredVersion)
         {
-            if (!ShouldInspect())
+            AssertAppVersion(methodName, appName, packageName, requiredVersion, false);
+        }
+
+        private void AssertAppVersion(
+            string methodName,
+            string appName,
+            string packageName,
+            string requiredVersion,
+            bool alwaysInspect)
+        {
+            if (!alwaysInspect && !ShouldInspect())
                 return;
 
             var currentVersion = GetAppVersionName(packageName);

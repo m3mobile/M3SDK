@@ -25,6 +25,7 @@ public sealed class CategoryActivity : Activity
     private const string ScanEmulPackage = "net.m3mobile.app.scanemul";
     private const string KeyToolSl20Package = "com.m3.keytoolsl20";
     private const string KeyToolWakeUpPackage = "net.m3.keytool";
+    private const string AppCenterPackage = "com.m3.appcenter";
     private const string DefaultScannerButtonImagePath =
         "/sdcard/Download/ScanEmul_Floating_Button_Images/target.png";
 
@@ -126,6 +127,7 @@ public sealed class CategoryActivity : Activity
             case SampleCategory.Time: TimeSample(); break;
             case SampleCategory.Usb: UsbSample(); break;
             case SampleCategory.Wifi: WifiSample(); break;
+            case SampleCategory.AppCenter: AppCenterSample(); break;
             case SampleCategory.KeyTool: KeyToolSample(); break;
             default: throw new ArgumentOutOfRangeException(nameof(category), category, null);
         }
@@ -413,6 +415,45 @@ public sealed class CategoryActivity : Activity
             RunOneWay(section, "DisableRecentButton", () => _sdk!.DisableRecentButton()));
     }
 
+    private void AppCenterSample()
+    {
+        var section = Section(Resource.String.appcenter);
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.appcenter_warning)
+        });
+
+        var currentPassword = TextField(Resource.String.current_admin_password, string.Empty);
+        var newPassword = TextField(Resource.String.new_admin_password, string.Empty);
+        currentPassword.InputType = InputTypes.ClassText | InputTypes.TextVariationPassword;
+        newPassword.InputType = InputTypes.ClassText | InputTypes.TextVariationPassword;
+        section.Add(currentPassword);
+        section.Add(newPassword);
+
+        AddButton(section, Resource.String.change_admin_password, () =>
+            RunOneWay(
+                section,
+                "ChangeKioskAdminPassword",
+                () => _sdk!.ChangeKioskAdminPassword(
+                    currentPassword.Text ?? string.Empty,
+                    newPassword.Text ?? string.Empty),
+                "AppCenter=" + PackageVersion(AppCenterPackage)));
+
+        section.Add(SectionTitle(Resource.String.keep_admin_mode_on_sleep));
+        AddButton(section, Resource.String.enable, () =>
+            RunOneWay(
+                section,
+                "SetKeepAdminModeOnSleep(true)",
+                () => _sdk!.SetKeepAdminModeOnSleep(true),
+                "AppCenter=" + PackageVersion(AppCenterPackage)));
+        AddButton(section, Resource.String.disable, () =>
+            RunOneWay(
+                section,
+                "SetKeepAdminModeOnSleep(false)",
+                () => _sdk!.SetKeepAdminModeOnSleep(false),
+                "AppCenter=" + PackageVersion(AppCenterPackage)));
+    }
+
     private SectionView Section(int titleId)
     {
         var layout = new LinearLayout(this)
@@ -568,7 +609,8 @@ public sealed class CategoryActivity : Activity
             "\nStartUp=" + PackageVersion(StartUpPackage) +
             "\nScanEmul=" + PackageVersion(ScanEmulPackage) +
             "\nKeyTool SL20=" + PackageVersion(KeyToolSl20Package) +
-            "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage);
+            "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage) +
+            "\nAppCenter=" + PackageVersion(AppCenterPackage);
     }
 
     private string Failure(Exception error)
@@ -583,7 +625,8 @@ public sealed class CategoryActivity : Activity
             "\nStartUp=" + PackageVersion(StartUpPackage) +
             "\nScanEmul=" + PackageVersion(ScanEmulPackage) +
             "\nKeyTool SL20=" + PackageVersion(KeyToolSl20Package) +
-            "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage);
+            "\nKeyTool Wake-Up=" + PackageVersion(KeyToolWakeUpPackage) +
+            "\nAppCenter=" + PackageVersion(AppCenterPackage);
     }
 
     private static string ScannerButtonUiText(ScannerButtonUiResult result)

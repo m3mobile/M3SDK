@@ -19,6 +19,7 @@ internal fun Project.loadDependencies() {
             api(project(":feature:startup"))
             api(project(":feature:keytool"))
             api(project(":feature:scanemul"))
+            api(project(":feature:appcenter"))
         }
 
         implementation(catalog.findLibrary("startup-runtime").get())

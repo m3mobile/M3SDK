@@ -24,7 +24,7 @@ public abstract class MethodInspector<T: MethodMapSource, V: Any>: Inspector {
         
         val methodName = method.name.substringBefore('-')
         val methodKey =
-            method.declaringClass.name + "." + methodName + method.parameters.map { it.type }
+            method.declaringClass.name + "." + methodName + method.parameterTypes
                 .joinToString(prefix = "(", postfix = ")")
 
         assert(methodKey, methodName)

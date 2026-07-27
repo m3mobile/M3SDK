@@ -63,6 +63,9 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Control Function-key Mode](#control-function-key-mode)
     - [Set Key Function](#set-key-function)
     - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
+  - [AppCenter Kiosk API](#appcenter-kiosk-api)
+    - [Change Kiosk Admin Password](#change-kiosk-admin-password)
+    - [Keep Admin Mode While Screen Is Off](#keep-admin-mode-while-screen-is-off)
   - [Time API](#time-api)
     - [Set Date and Time](#set-date-and-time)
     - [Set NTP Server](#set-ntp-server)
@@ -174,7 +177,7 @@ The M3 SDK provides a "Strict Mode" that influences how certain API calls behave
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on a device model not listed as supported.
-    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp or ScanEmul application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed.
+    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp, ScanEmul, or AppCenter application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed. AppCenter kiosk API version checks always run, regardless of Strict Mode.
     *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This availability check always runs because KeyTool requests are one-way broadcasts.
 
 *   **Disabled**: In this mode, API calls that do not meet the required conditions (e.g., unsupported device, insufficient StartUp version) will **fail silently** and simply do nothing. No exceptions will be thrown, allowing your application to continue execution without interruption.
@@ -894,6 +897,70 @@ M3Mobile.instance.disableRightScanWakeUp()
 
 The published-package sample displays the installed KeyTool package version and reports one-way
 calls as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+---
+
+### AppCenter Kiosk API
+
+Controls AppCenter kiosk administrator features through one-way explicit broadcasts. Methods are
+exposed directly from `M3Mobile.instance`.
+
+> **One-way request:** AppCenter broadcasts do not return an acknowledgement. A normal return means
+> only that Android accepted the request. It does not prove that AppCenter applied the setting.
+> AppCenter `2.2.0` or later must be installed and able to receive broadcasts. The SDK verifies
+> AppCenter availability and version regardless of Strict Mode.
+
+#### Change Kiosk Admin Password
+
+Requests an AppCenter kiosk administrator password change.
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `currentPassword`: Current administrator password. Empty strings are rejected.
+    *   `newPassword`: New administrator password. Length must be 4 to 20 characters.
+
+The SDK does not trim either password. If the current password is wrong, AppCenter may ignore the
+request and the SDK cannot confirm the result.
+
+```kotlin
+M3Mobile.instance.changeKioskAdminPassword(currentPassword, newPassword)
+```
+
+Direct AppCenter broadcast request:
+
+```java
+Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
+request.setPackage("com.m3.appcenter");
+request.putExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
+request.putExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
+request.putExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
+context.sendBroadcast(request);
+```
+
+#### Keep Admin Mode While Screen Is Off
+
+Sets whether AppCenter keeps administrator mode when the screen turns off.
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `enabled`: `true` keeps administrator mode after screen off. `false` restores the normal
+        user-mode behavior and may require administrator login again.
+
+Administrator mode is not preserved after reboot.
+
+```kotlin
+M3Mobile.instance.setKeepAdminModeOnSleep(true)
+M3Mobile.instance.setKeepAdminModeOnSleep(false)
+```
+
+Direct AppCenter broadcast request:
+
+```java
+Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
+request.setPackage("com.m3.appcenter");
+request.putExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
+context.sendBroadcast(request);
+```
 
 ---
 

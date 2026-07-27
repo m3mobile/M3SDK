@@ -26,7 +26,9 @@
     <string name="time">시간</string>
     <string name="usb">USB</string>
     <string name="wifi">Wi-Fi</string>
+    <string name="appcenter">AppCenter</string>
     <string name="keytool">KeyTool</string>
+    <string name="appcenter_warning">단방향 키오스크 설정입니다. 요청 후 AppCenter 동작을 직접 확인하세요.</string>
     <string name="keytool_warning">단방향 장치 설정입니다. 요청 후 실제 물리 키를 확인하세요.</string>
     <string name="request_sent_unverified">REQUEST_SENT_UNVERIFIED\n대상 앱에서 처리 응답을 반환하지 않습니다.</string>
     <string name="refresh">새로고침</string>
@@ -56,6 +58,10 @@
     <string name="enable_wifi">Wi-Fi 활성화</string>
     <string name="disable_wifi">Wi-Fi 비활성화</string>
     <string name="get_factory_wifi_mac">공장 Wi-Fi MAC 조회</string>
+    <string name="current_admin_password">현재 관리자 비밀번호</string>
+    <string name="new_admin_password">새 관리자 비밀번호</string>
+    <string name="change_admin_password">관리자 비밀번호 변경</string>
+    <string name="keep_admin_mode_on_sleep">화면 OFF 시 관리자 모드 유지</string>
     <string name="set_key_function">키 기능 설정</string>
     <string name="package_name">패키지명</string>
     <string name="key_title">키 이름</string>
