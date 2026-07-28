@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Android.Content;
 using Android.Content.PM;
+using M3Sdk.Xamarin.KeyTool;
 
 namespace M3Sdk.Xamarin.Internal
 {
@@ -95,6 +96,33 @@ namespace M3Sdk.Xamarin.Internal
             throw new KeyToolAppUnavailableException(
                 "\"" + methodName + "\" is unavailable because " + appName + " (" + packageName + ") " +
                 "is not installed or is not visible to the SDK.");
+        }
+
+        /// <summary>
+        /// Verifies that a KeyTool companion app is installed and satisfies an always-on version contract.
+        /// </summary>
+        internal void AssertKeyToolAppVersion(
+            string methodName,
+            string appName,
+            string packageName,
+            DeviceModel model,
+            string requiredVersion)
+        {
+            var currentVersion = GetAppVersionName(packageName);
+            if (string.IsNullOrEmpty(currentVersion))
+            {
+                throw new KeyToolAppUnavailableException(
+                    "\"" + methodName + "\" is unavailable because " + appName + " (" + packageName + ") " +
+                    "is not installed or is not visible to the SDK.");
+            }
+
+            if (!KeyToolVersionPolicy.VersionSatisfied(currentVersion, requiredVersion))
+            {
+                throw new UnsatisfiedVersionException(
+                    "\"" + methodName + "\" is not available on " + model + " because " +
+                    appName + " (" + packageName + ") version '" + currentVersion + "' is installed. " +
+                    "Required version is '" + requiredVersion + "'.");
+            }
         }
 
         /// <summary>

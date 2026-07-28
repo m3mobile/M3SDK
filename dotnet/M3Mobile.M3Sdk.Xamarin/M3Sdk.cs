@@ -111,6 +111,13 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void SetKeyFunction(string key, string function, bool wakeUpEnabled)
+        {
+            ThrowIfDisposed();
+            _keyTool.SetKeyFunction(key, function, wakeUpEnabled);
+        }
+
+        /// <inheritdoc />
         public void EnableHomeButton()
         {
             ThrowIfDisposed();

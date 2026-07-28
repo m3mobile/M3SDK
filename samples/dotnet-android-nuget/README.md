@@ -49,7 +49,10 @@ The application enables M3 SDK strict mode and shows:
 - `REQUEST_SENT_UNVERIFIED` for one-way broadcasts with no acknowledgement.
 - `FAILED` with exception, device, Android, SDK package, and companion-app version details.
 
-The KeyTool screen defaults to `Left Scan` and `Volume Up`, and separately exposes Home and Recent
-enable/disable controls for SM24 and SM25. Restore the required device state after verification.
+The KeyTool screen defaults to `Left Scan` and `Volume Up`, demonstrates the SM24 three-argument
+`SetKeyFunction` overload that sends mapping and Wake-Up together, exposes left/right Scan Key
+Wake-Up controls for SL20P and SM24, and exposes Home and Recent controls for SM24 and SM25. SM24
+Wake-Up requires KeyTool 1.3.8 or later; 1.3.9 or later is recommended. Confirm changes with the
+physical buttons and restore the required device state after verification.
 
 Default UI resources are English. Only Korean localization is included under `Resources/values-ko`.

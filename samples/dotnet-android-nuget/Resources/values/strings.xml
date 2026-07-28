@@ -67,6 +67,14 @@
   <string name="function_title">Function title</string>
   <string name="key_mapping">Physical key mapping</string>
   <string name="key_mapping_description">Uses the exact KeyTool titles. The default example maps Left Scan to Volume Up.</string>
+  <string name="set_key_function_and_wake_up">Mapping and Wake-Up (SM24)</string>
+  <string name="set_key_function_and_wake_up_description">Sends key_function and key_wakeup together in one KeyTool request.</string>
+  <string name="set_and_enable_wake_up">Set + Wake-Up On</string>
+  <string name="set_and_disable_wake_up">Set + Wake-Up Off</string>
+  <string name="scan_key_wake_up">Scan Key Wake-Up</string>
+  <string name="scan_key_wake_up_description">Supported on SL20P and SM24. Requests are one-way; verify wake-up with the physical side scan key.</string>
+  <string name="left_scan_key">Left scan key</string>
+  <string name="right_scan_key">Right scan key</string>
   <string name="navigation_buttons">Navigation buttons (SM24 / SM25)</string>
   <string name="navigation_buttons_description">KeyTool 1.4.1 or later is required. Requests are one-way; verify the actual Home or Recent button after each call.</string>
   <string name="home_button">Home button</string>

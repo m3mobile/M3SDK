@@ -398,6 +398,32 @@ public sealed class CategoryActivity : Activity
         AddButton(section, Resource.String.set_key_function, () =>
             RunOneWay(section, "setKeyFunction(key=" + (key.Text ?? string.Empty) + ", function=" + (function.Text ?? string.Empty) + ")", () => _sdk!.SetKeyFunction(key.Text ?? string.Empty, function.Text ?? string.Empty)));
 
+        section.Add(SectionTitle(Resource.String.set_key_function_and_wake_up));
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.set_key_function_and_wake_up_description)
+        });
+        AddButton(section, Resource.String.set_and_enable_wake_up, () =>
+            RunOneWay(section, "SetKeyFunction(key=" + (key.Text ?? string.Empty) + ", function=" + (function.Text ?? string.Empty) + ", wakeUpEnabled=true)", () => _sdk!.SetKeyFunction(key.Text ?? string.Empty, function.Text ?? string.Empty, true)));
+        AddButton(section, Resource.String.set_and_disable_wake_up, () =>
+            RunOneWay(section, "SetKeyFunction(key=" + (key.Text ?? string.Empty) + ", function=" + (function.Text ?? string.Empty) + ", wakeUpEnabled=false)", () => _sdk!.SetKeyFunction(key.Text ?? string.Empty, function.Text ?? string.Empty, false)));
+
+        section.Add(SectionTitle(Resource.String.scan_key_wake_up));
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.scan_key_wake_up_description)
+        });
+        section.Add(SectionTitle(Resource.String.left_scan_key));
+        AddButton(section, Resource.String.enable, () =>
+            RunOneWay(section, "EnableLeftScanWakeUp", () => _sdk!.EnableLeftScanWakeUp()));
+        AddButton(section, Resource.String.disable, () =>
+            RunOneWay(section, "DisableLeftScanWakeUp", () => _sdk!.DisableLeftScanWakeUp()));
+        section.Add(SectionTitle(Resource.String.right_scan_key));
+        AddButton(section, Resource.String.enable, () =>
+            RunOneWay(section, "EnableRightScanWakeUp", () => _sdk!.EnableRightScanWakeUp()));
+        AddButton(section, Resource.String.disable, () =>
+            RunOneWay(section, "DisableRightScanWakeUp", () => _sdk!.DisableRightScanWakeUp()));
+
         section.Add(SectionTitle(Resource.String.navigation_buttons));
         section.Add(new TextView(this)
         {

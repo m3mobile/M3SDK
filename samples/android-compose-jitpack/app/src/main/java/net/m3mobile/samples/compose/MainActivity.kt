@@ -600,6 +600,53 @@ internal fun CategoryScreen(category: SampleCategory) {
             }) {
                 Text(stringResource(R.string.set_key_function))
             }
+            Text(
+                stringResource(R.string.set_key_function_and_wake_up),
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(stringResource(R.string.set_key_function_and_wake_up_description))
+            ActionRow(
+                first = stringResource(R.string.set_and_enable_wake_up) to {
+                    oneWay(
+                        "keytool",
+                        "setKeyFunction(key=$keyTitle, function=$functionTitle, wakeUpEnabled=true)"
+                    ) {
+                        sdk.setKeyFunction(keyTitle, functionTitle, true)
+                    }
+                },
+                second = stringResource(R.string.set_and_disable_wake_up) to {
+                    oneWay(
+                        "keytool",
+                        "setKeyFunction(key=$keyTitle, function=$functionTitle, wakeUpEnabled=false)"
+                    ) {
+                        sdk.setKeyFunction(keyTitle, functionTitle, false)
+                    }
+                }
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                stringResource(R.string.scan_key_wake_up),
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(stringResource(R.string.scan_key_wake_up_description))
+            Text(stringResource(R.string.left_scan_key), style = MaterialTheme.typography.titleSmall)
+            ActionRow(
+                first = stringResource(R.string.enable) to {
+                    oneWay("keytool", "enableLeftScanWakeUp") { sdk.enableLeftScanWakeUp() }
+                },
+                second = stringResource(R.string.disable) to {
+                    oneWay("keytool", "disableLeftScanWakeUp") { sdk.disableLeftScanWakeUp() }
+                }
+            )
+            Text(stringResource(R.string.right_scan_key), style = MaterialTheme.typography.titleSmall)
+            ActionRow(
+                first = stringResource(R.string.enable) to {
+                    oneWay("keytool", "enableRightScanWakeUp") { sdk.enableRightScanWakeUp() }
+                },
+                second = stringResource(R.string.disable) to {
+                    oneWay("keytool", "disableRightScanWakeUp") { sdk.disableRightScanWakeUp() }
+                }
+            )
             Spacer(Modifier.height(8.dp))
             Text(
                 stringResource(R.string.navigation_buttons),

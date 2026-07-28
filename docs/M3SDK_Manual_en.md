@@ -177,7 +177,7 @@ The M3 SDK provides a "Strict Mode" that influences how certain API calls behave
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on a device model not listed as supported.
-    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp, ScanEmul, or AppCenter application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed. AppCenter kiosk API version checks always run, regardless of Strict Mode.
+    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp, ScanEmul, AppCenter, or KeyTool application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed. AppCenter kiosk and `com.m3.keytoolsl20`-based KeyTool API version checks always run, regardless of Strict Mode.
     *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This availability check always runs because KeyTool requests are one-way broadcasts.
 
 *   **Disabled**: In this mode, API calls that do not meet the required conditions (e.g., unsupported device, insufficient StartUp version) will **fail silently** and simply do nothing. No exceptions will be thrown, allowing your application to continue execution without interruption.
@@ -824,14 +824,31 @@ directly from `M3Mobile.instance`, like the StartUp and ScanEmul methods.
 > **One-way request:** KeyTool broadcasts do not return an acknowledgement. A method returning
 > normally means only that Android accepted the request. It does not prove that the device setting
 > changed. Verify the physical key after the call. If the required package is unavailable, the SDK
-> throws `KeyToolAppUnavailableException` with the method and package details.
+> throws `KeyToolAppUnavailableException` with the method and package details. APIs based on
+> `com.m3.keytoolsl20` also verify the minimum version regardless of Strict Mode. An older version
+> causes `UnsatisfiedVersionException` with method, model, package, current, and required versions.
+
+| SDK feature | Models | Package | Minimum version |
+|---|---|---|---|
+| Function-key mode | `SL20K` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Set key function | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
+| Set key function + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Home/Recent control | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| Scan-key Wake-Up | `SL20P` | `net.m3.keytool` | Unverified; package check only |
+| Scan-key Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+
+The SM24 Scan Wake-Up minimum is `1.3.8`; `1.3.9` or later is recommended for field deployment
+because it includes service-connection stabilization. Product suffixes such as `1.4.1_alpha`,
+`1.3.4F`, and `1.4.0AD` are compared using the leading number of each version segment.
 
 #### Control Function-key Mode
 
 Enables, disables, or locks Function-key mode.
 
 *   **Supported model**: `SL20K`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` version `1.2.6` or later
 
 ```kotlin
 M3Mobile.instance.enableFN()
@@ -844,7 +861,8 @@ M3Mobile.instance.lockFN()
 Assigns a KeyTool function title to a physical key title.
 
 *   **Supported models**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` (`1.2.6` for `SL20`/`SL20K`/`SL20P`/`SL25`/`WD10`,
+    `1.3.8` for `SM24`, and `1.3.16` for `SM25`)
 *   **Parameters**:
     *   `key`: KeyTool key title.
     *   `function`: KeyTool function title.
@@ -863,6 +881,21 @@ try {
 
 Use the current KeyTool title spelling, including `Volume Up` and `Volume Down`. KeyTool 1.4.1
 also normalizes settings saved by older releases as `Volume up` or `Volume down`.
+
+On SM24, the three-argument overload includes the key mapping and Wake-Up state in one
+`ACTION_SET_KEY` request.
+
+```kotlin
+M3Mobile.instance.setKeyFunction(
+    key = "Left Scan",
+    function = "Scan",
+    wakeUpEnabled = true,
+)
+```
+
+The request sends `key_title`, `key_function`, and `key_wakeup` together. KeyTool applies the
+mapping and then the Wake-Up state sequentially; it does not roll both changes back as one
+transaction. A normal return therefore does not prove that both settings were applied.
 
 #### Control Home and Recent Buttons
 
@@ -883,10 +916,17 @@ These are one-way requests. Verify the actual navigation button after each call.
 
 #### Control Scan-key Wake-Up
 
-Controls whether the left or right scan key wakes an `SL20P` device.
+Controls whether the left or right scan key wakes an `SL20P` or `SM24` device.
 
-*   **Supported model**: `SL20P`
-*   **Required package**: `net.m3.keytool`
+*   **Supported models**: `SL20P`, `SM24`
+*   **SL20P protocol**: explicit `WAKEUP_CONTROL_LEFT` or `WAKEUP_CONTROL_RIGHT` broadcast to
+    `net.m3.keytool`
+*   **SM24 protocol**: explicit `ACTION_SET_KEY` broadcast to `com.m3.keytoolsl20` version `1.3.8`
+    or later (`1.3.9` or later recommended)
+
+The current model, rather than installed-package priority, selects the protocol. SM24 never uses
+the deprecated `WAKEUP_CONTROL_*` actions even when `net.m3.keytool` is installed. SL20P keeps the
+Legacy protocol even when `com.m3.keytoolsl20` is installed.
 
 ```kotlin
 M3Mobile.instance.enableLeftScanWakeUp()

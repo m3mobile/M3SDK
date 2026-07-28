@@ -29,7 +29,7 @@
 | USB | Get Current USB Modes | 응답값 |
 | Wi-Fi | Get Factory Wi-Fi MAC, Set Wi-Fi Enabled true/false | MAC 응답값 또는 StartUp 오류, Wi-Fi 활성화/비활성화 실제 확인 |
 | AppCenter | Change Admin Password, Keep Admin Mode On Sleep true/false | `REQUEST_SENT_UNVERIFIED` + AppCenter 2.2.0 이상에서 실제 동작 확인 |
-| KeyTool | Set Key Function, Home/Recent 활성화·비활성화 | `REQUEST_SENT_UNVERIFIED` + 실제 버튼 확인 |
+| KeyTool | Set Key Function, 매핑+Wake-Up 오버로드, Scan Key Wake-Up, Home/Recent 활성화·비활성화 | `REQUEST_SENT_UNVERIFIED` + 실제 버튼/Wake-Up 확인 |
 
 기본 UI 리소스는 영어이며 한국어(`values-ko`)만 추가한다.
 
@@ -84,6 +84,18 @@ Alpha는 기본 필수 단계가 아니다. 다음 중 하나에 해당할 때 �
 - AppCenter 2.2.0 이상에서 관리자 비밀번호 변경 요청이 `REQUEST_SENT_UNVERIFIED`로 표시되고, 비밀번호 값이 결과 화면에 표시되지 않는가.
 - AppCenter 2.2.0 이상에서 화면 OFF 관리자 모드 유지/해제 요청 후 실제 화면 OFF 동작이 기대와 일치하는가.
 - KeyTool `Set Key Function` 호출 후 지정한 물리 키가 실제로 변경되었는가.
+- SM24에서 3인자 `Set Key Function` 호출 후 `key_function`과 `key_wakeup`이 하나의
+  `ACTION_SET_KEY` 요청으로 전달되고, 매핑과 Wake-Up 상태가 모두 적용되는가.
+- SM24에서 KeyTool `1.3.8` 이상(`1.3.9` 이상 권장)으로 왼쪽/오른쪽 Scan Wake-Up을
+  Enable/Disable 했을 때 `persist.sys.key_scan_left.wakeup` 및
+  `persist.sys.key_scan_right.wakeup` 값이 각각 `1`/`0`으로 변경되는가.
+- 화면 OFF 상태에서 실제 측면 스캔 버튼을 눌러 Enable 시 Wake-Up되고 Disable 시
+  Wake-Up되지 않는가. `adb keyevent`는 물리 버튼 검증을 대체하지 않는다.
+- Scan Wake-Up Enable 상태로 재부팅한 뒤 property, 실제 Wake-Up, KeyTool JSON 설정이
+  유지되는가.
+- 검증 로그에 `KeySettingReceiver`, `WakeUp updated`가 있고 `SecurityException`, crash,
+  ANR이 없는가.
+- 검증 종료 후 SDK API로 왼쪽/오른쪽 Wake-Up 설정을 시작 전 값으로 복원했는가.
 - SM24/SM25에서 KeyTool 1.4.1 이상의 Home/Recent 활성화·비활성화가 실제 버튼에 적용되는가.
 - 입력 필드에 소프트 키보드를 연 상태에서 SDK 버튼을 눌렀을 때 키보드가 닫히고 결과가 보이는가.
 - 기본 영어 UI와 한국어 UI가 모두 표시되는가.

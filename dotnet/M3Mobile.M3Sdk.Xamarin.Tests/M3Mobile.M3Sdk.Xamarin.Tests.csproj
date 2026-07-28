@@ -16,7 +16,10 @@
   <ItemGroup>
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\AppCenter\AppCenterBroadcastRequest.cs" Link="Sdk\AppCenterBroadcastRequest.cs" />
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\AppCenter\AppCenterPasswordPolicy.cs" Link="Sdk\AppCenterPasswordPolicy.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Internal\DeviceModel.cs" Link="Sdk\DeviceModel.cs" />
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Internal\Constants.cs" Link="Sdk\Constants.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\KeyTool\KeyToolVersionPolicy.cs" Link="Sdk\KeyToolVersionPolicy.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\KeyTool\KeySettingRequest.cs" Link="Sdk\KeySettingRequest.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -178,7 +178,10 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraFnState = "fn_state";
             internal const string ExtraKeyTitle = "key_title";
             internal const string ExtraKeyFunction = "key_function";
+            internal const string ExtraKeyWakeUp = "key_wakeup";
 
+            internal const string LeftScan = "Left Scan";
+            internal const string RightScan = "Right Scan";
             internal const string Home = "Home";
             internal const string Recent = "Recent";
             internal const string Default = "Default";

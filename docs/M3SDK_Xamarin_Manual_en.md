@@ -217,7 +217,7 @@ The M3 SDK provides a **Strict Mode** that affects how API calls behave when req
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on an unsupported device model.
-    *   `UnsatisfiedVersionException`: Thrown if the installed StartUp, ScanEmul, or AppCenter app version is lower than the API requirement. AppCenter kiosk API version checks always run, regardless of Strict Mode.
+    *   `UnsatisfiedVersionException`: Thrown if the installed StartUp, ScanEmul, AppCenter, or KeyTool app version is lower than the API requirement. AppCenter kiosk and `com.m3.keytoolsl20`-based KeyTool API version checks always run, regardless of Strict Mode.
     *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This check always runs because KeyTool requests are one-way broadcasts.
 
 
@@ -1082,11 +1082,29 @@ from the flat SDK facade and from the `KeyTool` API group.
 > **One-way request:** KeyTool broadcasts do not return an acknowledgement. A normal return means
 > only that Android accepted the request. Verify the physical key or wake-up behavior after the call.
 > If the required package is unavailable, the SDK throws `KeyToolAppUnavailableException`.
+> APIs based on `com.m3.keytoolsl20` also verify the minimum version regardless of Strict Mode.
+> An older version causes `UnsatisfiedVersionException` with method, model, package, current, and
+> required versions.
+
+| SDK feature | Models | Package | Minimum version |
+|---|---|---|---|
+| Function-key mode | `SL20K` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Set key function | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
+| Set key function + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Home/Recent control | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| Scan-key Wake-Up | `SL20P` | `net.m3.keytool` | Unverified; package check only |
+| Scan-key Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+
+The SM24 Scan Wake-Up minimum is `1.3.8`; `1.3.9` or later is recommended for field deployment
+because it includes service-connection stabilization. Product suffixes such as `1.4.1_alpha`,
+`1.3.4F`, and `1.4.0AD` are compared using the leading number of each version segment.
 
 #### Control Function-key Mode
 
 *   **Supported model**: `SL20K`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` version `1.2.6` or later
 
 ```csharp
 using IM3Sdk m3 = M3Mobile.Create(Application.Context);
@@ -1104,7 +1122,8 @@ m3.KeyTool.EnableFn();
 Assigns a KeyTool function title to a physical key title.
 
 *   **Supported models**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` (`1.2.6` for `SL20`/`SL20K`/`SL20P`/`SL25`/`WD10`,
+    `1.3.8` for `SM24`, and `1.3.16` for `SM25`)
 
 ```csharp
 try
@@ -1120,6 +1139,20 @@ catch (Exception error)
 
 Use the current KeyTool title spelling, including `Volume Up` and `Volume Down`. KeyTool 1.4.1
 also normalizes settings saved by older releases as `Volume up` or `Volume down`.
+
+On SM24, the three-argument overload includes the key mapping and Wake-Up state in one
+`ACTION_SET_KEY` request.
+
+```csharp
+m3.SetKeyFunction(
+    "Left Scan",
+    "Scan",
+    true);
+```
+
+The request sends `key_title`, `key_function`, and `key_wakeup` together. KeyTool applies the
+mapping and then the Wake-Up state sequentially; it does not roll both changes back as one
+transaction. A normal return therefore does not prove that both settings were applied.
 
 #### Control Home and Recent Buttons
 
@@ -1140,10 +1173,17 @@ These are one-way requests. Verify the actual navigation button after each call.
 
 #### Control Scan-key Wake-Up
 
-Controls whether the left or right scan key wakes an `SL20P` device.
+Controls whether the left or right scan key wakes an `SL20P` or `SM24` device.
 
-*   **Supported model**: `SL20P`
-*   **Required package**: `net.m3.keytool`
+*   **Supported models**: `SL20P`, `SM24`
+*   **SL20P protocol**: explicit `WAKEUP_CONTROL_LEFT` or `WAKEUP_CONTROL_RIGHT` broadcast to
+    `net.m3.keytool`
+*   **SM24 protocol**: explicit `ACTION_SET_KEY` broadcast to `com.m3.keytoolsl20` version `1.3.8`
+    or later (`1.3.9` or later recommended)
+
+The current model, rather than installed-package priority, selects the protocol. SM24 never uses
+the deprecated `WAKEUP_CONTROL_*` actions even when `net.m3.keytool` is installed. SL20P keeps the
+Legacy protocol even when `com.m3.keytoolsl20` is installed.
 
 ```csharp
 m3.EnableLeftScanWakeUp();
