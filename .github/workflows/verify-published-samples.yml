@@ -115,8 +115,16 @@ jobs:
       - name: Assert no local SDK dependency
         shell: powershell
         run: |
-          $content = Get-Content samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -Raw
-          if ($content -match "ProjectReference") {
+          $project = "samples\dotnet-android-nuget\M3SdkPublishedSample.csproj"
+          $output = & dotnet msbuild $project `
+            "-getItem:ProjectReference" `
+            "-p:M3SdkVersion=$env:M3_SDK_VERSION" `
+            "-p:UseLocalM3Sdk=false"
+          if ($LASTEXITCODE -ne 0) {
+            throw "Failed to evaluate the published-package sample dependencies."
+          }
+          $evaluated = ($output -join "`n") | ConvertFrom-Json
+          if (@($evaluated.Items.ProjectReference).Count -ne 0) {
             throw ".NET published-package sample must not reference a local SDK project."
           }
 
@@ -125,7 +133,10 @@ jobs:
         run: |
           $project = "samples\dotnet-android-nuget\M3SdkPublishedSample.csproj"
           foreach ($attempt in 1..12) {
-            dotnet restore $project -p:M3SdkVersion="$env:M3_SDK_VERSION" --no-cache
+            dotnet restore $project `
+              -p:M3SdkVersion="$env:M3_SDK_VERSION" `
+              -p:UseLocalM3Sdk=false `
+              --no-cache
             if ($LASTEXITCODE -eq 0) { exit 0 }
             if ($attempt -eq 12) { throw "NuGet restore failed after $attempt attempts." }
             Start-Sleep -Seconds 30
@@ -136,6 +147,7 @@ jobs:
         run: |
           dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj `
             -p:M3SdkVersion="$env:M3_SDK_VERSION" `
+            -p:UseLocalM3Sdk=false `
             --no-restore `
             --configuration Release
 
