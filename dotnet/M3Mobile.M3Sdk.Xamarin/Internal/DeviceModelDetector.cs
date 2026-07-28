@@ -3,39 +3,6 @@ using Android.OS;
 
 namespace M3Sdk.Xamarin.Internal
 {
-    internal enum DeviceModel
-    {
-        Unknown,
-        SM10,
-        SM10LTE,
-        SM15,
-        SM20,
-        SM20_U,
-        SM30,
-        SM24,
-        SM25,
-        TN15,
-        TN15_OREO,
-        TX15,
-        UL20_OREO,
-        UL20_PIE,
-        UX20_Q,
-        UL20_A10,
-        UL20F,
-        UL30,
-        TL20,
-        US20,
-        US30,
-        SL10,
-        SL10K,
-        SL20,
-        SL20P,
-        SL20K,
-        SL25,
-        PC10,
-        WD10
-    }
-
     internal static class DeviceModelDetector
     {
         internal static DeviceModel Current

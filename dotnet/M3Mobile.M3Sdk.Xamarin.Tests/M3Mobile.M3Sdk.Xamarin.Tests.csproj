@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>M3Sdk.Xamarin.Tests</RootNamespace>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\AppCenter\AppCenterBroadcastRequest.cs" Link="Sdk\AppCenterBroadcastRequest.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\AppCenter\AppCenterPasswordPolicy.cs" Link="Sdk\AppCenterPasswordPolicy.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Internal\DeviceModel.cs" Link="Sdk\DeviceModel.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Internal\Constants.cs" Link="Sdk\Constants.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\KeyTool\KeyToolVersionPolicy.cs" Link="Sdk\KeyToolVersionPolicy.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\KeyTool\KeySettingRequest.cs" Link="Sdk\KeySettingRequest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

@@ -76,6 +76,7 @@ internal enum SampleCategory
     Time,
     Usb,
     Wifi,
+    AppCenter,
     KeyTool
 }
 
@@ -96,6 +97,7 @@ internal static class SampleCategoryCatalog
         SampleCategory.Time => Resource.String.time,
         SampleCategory.Usb => Resource.String.usb,
         SampleCategory.Wifi => Resource.String.wifi,
+        SampleCategory.AppCenter => Resource.String.appcenter,
         SampleCategory.KeyTool => Resource.String.keytool,
         _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
     };

@@ -63,6 +63,9 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Control Function-key Mode](#control-function-key-mode)
     - [Set Key Function](#set-key-function)
     - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
+  - [AppCenter Kiosk API](#appcenter-kiosk-api)
+    - [Change Kiosk Admin Password](#change-kiosk-admin-password)
+    - [Keep Admin Mode While Screen Is Off](#keep-admin-mode-while-screen-is-off)
   - [Time API](#time-api)
     - [Set Date and Time](#set-date-and-time)
     - [Set NTP Server](#set-ntp-server)
@@ -80,6 +83,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
     - [Get Factory Wi-Fi MAC Address](#get-factory-wi-fi-mac-address)
+    - [Set Wi-Fi Enabled](#set-wi-fi-enabled)
     - [Captive Portal Detection](#captive-portal-detection)
     - [Frequency Band Control](#frequency-band-control)
     - [Set Wi-Fi Country](#set-wi-fi-country)
@@ -173,7 +177,7 @@ The M3 SDK provides a "Strict Mode" that influences how certain API calls behave
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on a device model not listed as supported.
-    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp or ScanEmul application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed.
+    *   `UnsatisfiedVersionException`: Thrown if an API requires a newer StartUp, ScanEmul, AppCenter, or KeyTool application version than what is installed on the device. For example, this occurs when a method requiring @RequiresStartUp(“2.0.0”) is called on a device with StartUp app 1.0.0 installed. AppCenter kiosk and `com.m3.keytoolsl20`-based KeyTool API version checks always run, regardless of Strict Mode.
     *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This availability check always runs because KeyTool requests are one-way broadcasts.
 
 *   **Disabled**: In this mode, API calls that do not meet the required conditions (e.g., unsupported device, insufficient StartUp version) will **fail silently** and simply do nothing. No exceptions will be thrown, allowing your application to continue execution without interruption.
@@ -820,14 +824,31 @@ directly from `M3Mobile.instance`, like the StartUp and ScanEmul methods.
 > **One-way request:** KeyTool broadcasts do not return an acknowledgement. A method returning
 > normally means only that Android accepted the request. It does not prove that the device setting
 > changed. Verify the physical key after the call. If the required package is unavailable, the SDK
-> throws `KeyToolAppUnavailableException` with the method and package details.
+> throws `KeyToolAppUnavailableException` with the method and package details. APIs based on
+> `com.m3.keytoolsl20` also verify the minimum version regardless of Strict Mode. An older version
+> causes `UnsatisfiedVersionException` with method, model, package, current, and required versions.
+
+| SDK feature | Models | Package | Minimum version |
+|---|---|---|---|
+| Function-key mode | `SL20K` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Set key function | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
+| Set key function + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Home/Recent control | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| Scan-key Wake-Up | `SL20P` | `net.m3.keytool` | Unverified; package check only |
+| Scan-key Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+
+The SM24 Scan Wake-Up minimum is `1.3.8`; `1.3.9` or later is recommended for field deployment
+because it includes service-connection stabilization. Product suffixes such as `1.4.1_alpha`,
+`1.3.4F`, and `1.4.0AD` are compared using the leading number of each version segment.
 
 #### Control Function-key Mode
 
 Enables, disables, or locks Function-key mode.
 
 *   **Supported model**: `SL20K`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` version `1.2.6` or later
 
 ```kotlin
 M3Mobile.instance.enableFN()
@@ -840,7 +861,8 @@ M3Mobile.instance.lockFN()
 Assigns a KeyTool function title to a physical key title.
 
 *   **Supported models**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` (`1.2.6` for `SL20`/`SL20K`/`SL20P`/`SL25`/`WD10`,
+    `1.3.8` for `SM24`, and `1.3.16` for `SM25`)
 *   **Parameters**:
     *   `key`: KeyTool key title.
     *   `function`: KeyTool function title.
@@ -859,6 +881,21 @@ try {
 
 Use the current KeyTool title spelling, including `Volume Up` and `Volume Down`. KeyTool 1.4.1
 also normalizes settings saved by older releases as `Volume up` or `Volume down`.
+
+On SM24, the three-argument overload includes the key mapping and Wake-Up state in one
+`ACTION_SET_KEY` request.
+
+```kotlin
+M3Mobile.instance.setKeyFunction(
+    key = "Left Scan",
+    function = "Scan",
+    wakeUpEnabled = true,
+)
+```
+
+The request sends `key_title`, `key_function`, and `key_wakeup` together. KeyTool applies the
+mapping and then the Wake-Up state sequentially; it does not roll both changes back as one
+transaction. A normal return therefore does not prove that both settings were applied.
 
 #### Control Home and Recent Buttons
 
@@ -879,10 +916,17 @@ These are one-way requests. Verify the actual navigation button after each call.
 
 #### Control Scan-key Wake-Up
 
-Controls whether the left or right scan key wakes an `SL20P` device.
+Controls whether the left or right scan key wakes an `SL20P` or `SM24` device.
 
-*   **Supported model**: `SL20P`
-*   **Required package**: `net.m3.keytool`
+*   **Supported models**: `SL20P`, `SM24`
+*   **SL20P protocol**: explicit `WAKEUP_CONTROL_LEFT` or `WAKEUP_CONTROL_RIGHT` broadcast to
+    `net.m3.keytool`
+*   **SM24 protocol**: explicit `ACTION_SET_KEY` broadcast to `com.m3.keytoolsl20` version `1.3.8`
+    or later (`1.3.9` or later recommended)
+
+The current model, rather than installed-package priority, selects the protocol. SM24 never uses
+the deprecated `WAKEUP_CONTROL_*` actions even when `net.m3.keytool` is installed. SL20P keeps the
+Legacy protocol even when `com.m3.keytoolsl20` is installed.
 
 ```kotlin
 M3Mobile.instance.enableLeftScanWakeUp()
@@ -893,6 +937,70 @@ M3Mobile.instance.disableRightScanWakeUp()
 
 The published-package sample displays the installed KeyTool package version and reports one-way
 calls as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+---
+
+### AppCenter Kiosk API
+
+Controls AppCenter kiosk administrator features through one-way explicit broadcasts. Methods are
+exposed directly from `M3Mobile.instance`.
+
+> **One-way request:** AppCenter broadcasts do not return an acknowledgement. A normal return means
+> only that Android accepted the request. It does not prove that AppCenter applied the setting.
+> AppCenter `2.2.0` or later must be installed and able to receive broadcasts. The SDK verifies
+> AppCenter availability and version regardless of Strict Mode.
+
+#### Change Kiosk Admin Password
+
+Requests an AppCenter kiosk administrator password change.
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `currentPassword`: Current administrator password. Empty strings are rejected.
+    *   `newPassword`: New administrator password. Length must be 4 to 20 characters.
+
+The SDK does not trim either password. If the current password is wrong, AppCenter may ignore the
+request and the SDK cannot confirm the result.
+
+```kotlin
+M3Mobile.instance.changeKioskAdminPassword(currentPassword, newPassword)
+```
+
+Direct AppCenter broadcast request:
+
+```java
+Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
+request.setPackage("com.m3.appcenter");
+request.putExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
+request.putExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
+request.putExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
+context.sendBroadcast(request);
+```
+
+#### Keep Admin Mode While Screen Is Off
+
+Sets whether AppCenter keeps administrator mode when the screen turns off.
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `enabled`: `true` keeps administrator mode after screen off. `false` restores the normal
+        user-mode behavior and may require administrator login again.
+
+Administrator mode is not preserved after reboot.
+
+```kotlin
+M3Mobile.instance.setKeepAdminModeOnSleep(true)
+M3Mobile.instance.setKeepAdminModeOnSleep(false)
+```
+
+Direct AppCenter broadcast request:
+
+```java
+Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
+request.setPackage("com.m3.appcenter");
+request.putExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
+context.sendBroadcast(request);
+```
 
 ---
 
@@ -1114,6 +1222,31 @@ BroadcastReceiver receiver = new BroadcastReceiver() {
         String error = intent.getStringExtra("get_factory_wifi_mac_error_message");
     }
 };
+```
+
+#### Set Wi-Fi Enabled
+
+Enables or disables Wi-Fi on the device.
+
+This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
+
+*   **Requires StartUp Version**: `6.8.3` or later
+*   **Supported Models**: `SM24`
+*   **Parameters**:
+    *   `enabled` (Boolean): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
+
+```kotlin
+M3Mobile.instance.setWifiEnabled(true)
+M3Mobile.instance.setWifiEnabled(false)
+```
+
+Direct StartUp broadcast request:
+
+```java
+Intent request = new Intent("com.android.server.startupservice.system");
+request.putExtra("setting", "wifi_enabled");
+request.putExtra("enabled", true);
+context.sendBroadcast(request);
 ```
 
 #### Captive Portal Detection

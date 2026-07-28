@@ -359,5 +359,70 @@ namespace M3Sdk.Xamarin.ScanEmul
         /// <returns>A cancellable request handle.</returns>
         /// <remarks>Requires ScanEmul version <c>2.11.0</c> or later.</remarks>
         IM3Cancelable GetScannerReadMode(M3RequestCallback<ReadMode> callback);
+
+        Task<ScannerButtonUiResult> SetScannerButtonUiAsync(ScannerButtonUiOptions options);
+
+        Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken);
+
+        Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId);
+
+        Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken);
+
+        IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiResult> callback);
+
+        IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback);
+
+        Task<ScannerButtonUiResult> GetScannerButtonUiAsync();
+
+        Task<ScannerButtonUiResult> GetScannerButtonUiAsync(CancellationToken cancellationToken);
+
+        Task<ScannerButtonUiResult> GetScannerButtonUiAsync(string requestId);
+
+        Task<ScannerButtonUiResult> GetScannerButtonUiAsync(
+            string requestId,
+            CancellationToken cancellationToken);
+
+        IM3Cancelable GetScannerButtonUi(M3RequestCallback<ScannerButtonUiResult> callback);
+
+        IM3Cancelable GetScannerButtonUi(
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback);
+
+        Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options);
+
+        Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken);
+
+        Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId);
+
+        Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken);
+
+        IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback);
+
+        IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback);
     }
 }

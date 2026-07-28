@@ -64,6 +64,9 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Control Function-key Mode](#control-function-key-mode)
     - [Set Key Function](#set-key-function)
     - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
+  - [AppCenter Kiosk API](#appcenter-kiosk-api)
+    - [Change Kiosk Admin Password](#change-kiosk-admin-password)
+    - [Keep Admin Mode While Screen Is Off](#keep-admin-mode-while-screen-is-off)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [Time API](#time-api)
@@ -83,6 +86,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
     - [Get Factory Wi-Fi MAC Address](#get-factory-wi-fi-mac-address)
+    - [Set Wi-Fi Enabled](#set-wi-fi-enabled)
     - [Captive Portal Detection](#captive-portal-detection)
     - [Frequency Band Control](#frequency-band-control)
     - [Set Wi-Fi Country](#set-wi-fi-country)
@@ -190,13 +194,14 @@ using M3Sdk.Xamarin.ScanEmul;
 
 m3.StartUp.SetWifiCountry("KR");
 m3.ScanEmul.SetScannerReadMode(ReadMode.Multiple);
+m3.AppCenter.SetKeepAdminModeOnSleep(true);
 
 string ntpServer = m3.Time.GetNtpServer();
 IList<string> usbModes = m3.Usb.GetCurrentUsbModes();
 int roamingDelta = m3.Wifi.GetRoamingDelta();
 ```
 
-`IM3Sdk` exposes `StartUp`, `ScanEmul`, `Time`, `Wifi`, and `Usb` groups. Their types are `IStartUpApi`, `IScanEmulApi`, `ITimeApi`, `IWifiApi`, and `IUsbApi`. `M3Mobile.Create(...)` returns the public root implementation `M3Sdk` as `IM3Sdk`, and the group implementations are `StartUpApi`, `ScanEmulApi`, `TimeApi`, `WifiApi`, and `UsbApi`. The `ScanEmul` group implements `IDisposable` to clean up internal scan connections. Calling `IM3Sdk.Dispose()` cleans it up together.
+`IM3Sdk` exposes `StartUp`, `ScanEmul`, `KeyTool`, `AppCenter`, `Time`, `Wifi`, and `Usb` groups. Their types are `IStartUpApi`, `IScanEmulApi`, `IKeyToolApi`, `IAppCenterApi`, `ITimeApi`, `IWifiApi`, and `IUsbApi`. `M3Mobile.Create(...)` returns the public root implementation `M3Sdk` as `IM3Sdk`, and the group implementations are `StartUpApi`, `ScanEmulApi`, `KeyToolApi`, `AppCenterApi`, `TimeApi`, `WifiApi`, and `UsbApi`. The `ScanEmul` group implements `IDisposable` to clean up internal scan connections. Calling `IM3Sdk.Dispose()` cleans it up together.
 
 ### Strict Mode and Exception Handling
 
@@ -212,7 +217,7 @@ The M3 SDK provides a **Strict Mode** that affects how API calls behave when req
 
     The following exceptions may occur:
     *   `UnsupportedDeviceModelException`: Thrown if an API is called on an unsupported device model.
-    *   `UnsatisfiedVersionException`: Thrown if the installed StartUp or ScanEmul app version is lower than the API requirement.
+    *   `UnsatisfiedVersionException`: Thrown if the installed StartUp, ScanEmul, AppCenter, or KeyTool app version is lower than the API requirement. AppCenter kiosk and `com.m3.keytoolsl20`-based KeyTool API version checks always run, regardless of Strict Mode.
     *   `KeyToolAppUnavailableException`: Thrown when the KeyTool companion app required by an API is not installed or is not visible. This check always runs because KeyTool requests are one-way broadcasts.
 
 
@@ -1077,11 +1082,29 @@ from the flat SDK facade and from the `KeyTool` API group.
 > **One-way request:** KeyTool broadcasts do not return an acknowledgement. A normal return means
 > only that Android accepted the request. Verify the physical key or wake-up behavior after the call.
 > If the required package is unavailable, the SDK throws `KeyToolAppUnavailableException`.
+> APIs based on `com.m3.keytoolsl20` also verify the minimum version regardless of Strict Mode.
+> An older version causes `UnsatisfiedVersionException` with method, model, package, current, and
+> required versions.
+
+| SDK feature | Models | Package | Minimum version |
+|---|---|---|---|
+| Function-key mode | `SL20K` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10` | `com.m3.keytoolsl20` | `1.2.6` |
+| Set key function | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Set key function | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
+| Set key function + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Home/Recent control | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| Scan-key Wake-Up | `SL20P` | `net.m3.keytool` | Unverified; package check only |
+| Scan-key Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+
+The SM24 Scan Wake-Up minimum is `1.3.8`; `1.3.9` or later is recommended for field deployment
+because it includes service-connection stabilization. Product suffixes such as `1.4.1_alpha`,
+`1.3.4F`, and `1.4.0AD` are compared using the leading number of each version segment.
 
 #### Control Function-key Mode
 
 *   **Supported model**: `SL20K`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` version `1.2.6` or later
 
 ```csharp
 using IM3Sdk m3 = M3Mobile.Create(Application.Context);
@@ -1099,7 +1122,8 @@ m3.KeyTool.EnableFn();
 Assigns a KeyTool function title to a physical key title.
 
 *   **Supported models**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
-*   **Required package**: `com.m3.keytoolsl20`
+*   **Required package**: `com.m3.keytoolsl20` (`1.2.6` for `SL20`/`SL20K`/`SL20P`/`SL25`/`WD10`,
+    `1.3.8` for `SM24`, and `1.3.16` for `SM25`)
 
 ```csharp
 try
@@ -1115,6 +1139,20 @@ catch (Exception error)
 
 Use the current KeyTool title spelling, including `Volume Up` and `Volume Down`. KeyTool 1.4.1
 also normalizes settings saved by older releases as `Volume up` or `Volume down`.
+
+On SM24, the three-argument overload includes the key mapping and Wake-Up state in one
+`ACTION_SET_KEY` request.
+
+```csharp
+m3.SetKeyFunction(
+    "Left Scan",
+    "Scan",
+    true);
+```
+
+The request sends `key_title`, `key_function`, and `key_wakeup` together. KeyTool applies the
+mapping and then the Wake-Up state sequentially; it does not roll both changes back as one
+transaction. A normal return therefore does not prove that both settings were applied.
 
 #### Control Home and Recent Buttons
 
@@ -1135,10 +1173,17 @@ These are one-way requests. Verify the actual navigation button after each call.
 
 #### Control Scan-key Wake-Up
 
-Controls whether the left or right scan key wakes an `SL20P` device.
+Controls whether the left or right scan key wakes an `SL20P` or `SM24` device.
 
-*   **Supported model**: `SL20P`
-*   **Required package**: `net.m3.keytool`
+*   **Supported models**: `SL20P`, `SM24`
+*   **SL20P protocol**: explicit `WAKEUP_CONTROL_LEFT` or `WAKEUP_CONTROL_RIGHT` broadcast to
+    `net.m3.keytool`
+*   **SM24 protocol**: explicit `ACTION_SET_KEY` broadcast to `com.m3.keytoolsl20` version `1.3.8`
+    or later (`1.3.9` or later recommended)
+
+The current model, rather than installed-package priority, selects the protocol. SM24 never uses
+the deprecated `WAKEUP_CONTROL_*` actions even when `net.m3.keytool` is installed. SL20P keeps the
+Legacy protocol even when `com.m3.keytoolsl20` is installed.
 
 ```csharp
 m3.EnableLeftScanWakeUp();
@@ -1149,6 +1194,72 @@ m3.DisableRightScanWakeUp();
 
 The published-package sample displays installed KeyTool package versions and reports one-way calls
 as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+---
+
+### AppCenter Kiosk API
+
+Controls AppCenter kiosk administrator features through one-way explicit broadcasts. Methods are
+available both from the flat SDK facade and from the `AppCenter` API group.
+
+> **One-way request:** AppCenter broadcasts do not return an acknowledgement. A normal return means
+> only that Android accepted the request. It does not prove that AppCenter applied the setting.
+> AppCenter `2.2.0` or later must be installed and able to receive broadcasts. The SDK verifies
+> AppCenter availability and version regardless of Strict Mode.
+
+#### Change Kiosk Admin Password
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `currentPassword`: Current administrator password. Empty strings are rejected.
+    *   `newPassword`: New administrator password. Length must be 4 to 20 characters.
+
+The SDK does not trim either password. If the current password is wrong, AppCenter may ignore the
+request and the SDK cannot confirm the result.
+
+```csharp
+m3.ChangeKioskAdminPassword(currentPassword, newPassword);
+
+// The grouped form is also available.
+m3.AppCenter.ChangeKioskAdminPassword(currentPassword, newPassword);
+```
+
+Direct AppCenter broadcast request:
+
+```csharp
+Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
+request.SetPackage("com.m3.appcenter");
+request.PutExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
+request.PutExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
+request.PutExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
+context.SendBroadcast(request);
+```
+
+#### Keep Admin Mode While Screen Is Off
+
+*   **Requires AppCenter Version**: `2.2.0` or later
+*   **Parameters**:
+    *   `enabled`: `true` keeps administrator mode after screen off. `false` restores the normal
+        user-mode behavior and may require administrator login again.
+
+Administrator mode is not preserved after reboot.
+
+```csharp
+m3.SetKeepAdminModeOnSleep(true);
+m3.SetKeepAdminModeOnSleep(false);
+
+// The grouped form is also available.
+m3.AppCenter.SetKeepAdminModeOnSleep(true);
+```
+
+Direct AppCenter broadcast request:
+
+```csharp
+Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
+request.SetPackage("com.m3.appcenter");
+request.PutExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
+context.SendBroadcast(request);
+```
 
 ---
 
@@ -1414,6 +1525,31 @@ public sealed class FactoryWifiMacReceiver : BroadcastReceiver
         string error = intent.GetStringExtra("get_factory_wifi_mac_error_message") ?? string.Empty;
     }
 }
+```
+
+#### Set Wi-Fi Enabled
+
+Enables or disables Wi-Fi on the device.
+
+This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
+
+*   **Requires StartUp Version**: `6.8.3` or later
+*   **Supported Models**: `SM24`
+*   **Parameters**:
+    *   `enabled` (bool): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
+
+```csharp
+m3.SetWifiEnabled(true);
+m3.SetWifiEnabled(false);
+```
+
+Direct StartUp broadcast request:
+
+```csharp
+Intent request = new Intent("com.android.server.startupservice.system");
+request.PutExtra("setting", "wifi_enabled");
+request.PutExtra("enabled", true);
+context.SendBroadcast(request);
 ```
 
 #### Captive Portal Detection

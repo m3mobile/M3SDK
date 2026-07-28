@@ -65,6 +65,9 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
     - [키 기능 설정](#키-기능-설정)
     - [스캔 키 Wake-Up 제어](#스캔-키-wake-up-제어)
     - [StartUp 설정 초기화](#startup-설정-초기화)
+  - [AppCenter Kiosk API](#appcenter-kiosk-api)
+    - [키오스크 관리자 비밀번호 변경](#키오스크-관리자-비밀번호-변경)
+    - [화면 OFF 시 관리자 모드 유지](#화면-off-시-관리자-모드-유지)
   - [Time API](#time-api)
     - [날짜 및 시간 설정](#날짜-및-시간-설정)
     - [NTP 서버 설정](#ntp-서버-설정)
@@ -82,6 +85,7 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
   - [Wifi API](#wifi-api)
     - [Wi-Fi MAC 주소 조회](#wi-fi-mac-주소-조회)
     - [Factory Wi-Fi MAC 주소 조회](#factory-wi-fi-mac-주소-조회)
+    - [Wi-Fi 활성화 상태 설정](#wi-fi-활성화-상태-설정)
     - [캡티브 포털 감지 (Captive Portal Detection)](#캡티브-포털-감지-captive-portal-detection)
     - [주파수 대역 제어 (Frequency Band Control)](#주파수-대역-제어-frequency-band-control)
     - [Wi-Fi 국가 코드 설정](#wi-fi-국가-코드-설정)
@@ -178,7 +182,7 @@ M3 SDK는 특정 API 호출이 (장치 지원 또는 앱 버전과 같은) 조�
     *   `KeyToolAppUnavailableException`: API에 필요한 KeyTool 앱이 설치되어 있지 않거나 앱에서 확인할 수 없을 때 발생합니다. KeyTool 호출은 단방향 broadcast이므로 이 검사는 Strict Mode 설정과 관계없이 수행됩니다.
 
     *   `UnsupportedDeviceModelException`: 지원되지 않는 장치 모델에서 API가 호출될 경우 발생합니다.
-    *   `UnsatisfiedVersionException`: API가 설치된 장치의 StartUp 또는 ScanEmul 애플리케이션 버전보다 더 높은 버전을 요구할 경우 발생합니다. 예를 들어, StartUp 앱 1.0.0이 설치된 장치에서 @RequiresStartUp("2.0.0")인 메서드를 호출할 경우 발생합니다.
+    *   `UnsatisfiedVersionException`: API가 설치된 장치의 StartUp, ScanEmul, AppCenter 또는 KeyTool 애플리케이션 버전보다 더 높은 버전을 요구할 경우 발생합니다. 예를 들어, StartUp 앱 1.0.0이 설치된 장치에서 @RequiresStartUp("2.0.0")인 메서드를 호출할 경우 발생합니다. AppCenter Kiosk 및 `com.m3.keytoolsl20` 기반 KeyTool API의 버전 검사는 Strict Mode 설정과 관계없이 항상 수행됩니다.
     
 *   **비활성화된 경우**: 이 모드에서는 필요한 조건을 충족하지 못하는 API 호출은 **자동으로 무시**됩니다. 예외가 발생하지 않으므로 애플리케이션은 중단 없이 계속 실행됩니다.
 
@@ -822,14 +826,31 @@ KeyTool 앱을 통해 물리 키 설정을 제어합니다. StartUp 및 ScanEmul
 > **단방향 요청:** KeyTool broadcast는 처리 결과를 응답하지 않습니다. 메서드가 예외 없이
 > 반환되었다는 것은 Android가 요청을 받았다는 의미이며, 실제 설정 변경을 보장하지 않습니다.
 > 호출 후 물리 키 동작을 직접 확인해야 합니다. 필요한 패키지가 없으면 SDK가 메서드명과
-> 패키지 정보를 포함한 `KeyToolAppUnavailableException`을 발생시킵니다.
+> 패키지 정보를 포함한 `KeyToolAppUnavailableException`을 발생시킵니다. `com.m3.keytoolsl20`
+> 기반 API는 Strict Mode와 관계없이 최소 버전도 검사하며, 버전 미달이면 메서드명, 모델,
+> 패키지, 현재 버전, 필요 버전을 포함한 `UnsatisfiedVersionException`을 발생시킵니다.
+
+| SDK 기능 | 모델 | 패키지 | 최소 버전 |
+|---|---|---|---|
+| Function 키 모드 | `SL20K` | `com.m3.keytoolsl20` | `1.2.6` |
+| 키 기능 설정 | `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10` | `com.m3.keytoolsl20` | `1.2.6` |
+| 키 기능 설정 | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| 키 기능 설정 | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
+| 키 기능 설정 + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+| Home/Recent 제어 | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| 스캔 키 Wake-Up | `SL20P` | `net.m3.keytool` | 버전 미확정, 패키지만 검사 |
+| 스캔 키 Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
+
+SM24의 스캔 키 Wake-Up 최소 버전은 `1.3.8`이며, 서비스 연결 안정화가 포함된 `1.3.9`
+이상을 현장 배포 버전으로 권장합니다. `1.4.1_alpha`, `1.3.4F`, `1.4.0AD` 같은 제품별
+suffix는 각 숫자 구간 앞쪽의 숫자만 비교합니다.
 
 #### Function 키 모드 제어
 
 Function 키 모드를 활성화, 비활성화 또는 잠금 상태로 변경합니다.
 
 *   **지원 모델**: `SL20K`
-*   **필요 패키지**: `com.m3.keytoolsl20`
+*   **필요 패키지**: `com.m3.keytoolsl20` 버전 `1.2.6` 이상
 
 ```kotlin
 M3Mobile.instance.enableFN()
@@ -842,7 +863,8 @@ M3Mobile.instance.lockFN()
 물리 키 이름에 KeyTool 기능 이름을 할당합니다.
 
 *   **지원 모델**: `SL20`, `SL20K`, `SL20P`, `SL25`, `WD10`, `SM24`, `SM25`
-*   **필요 패키지**: `com.m3.keytoolsl20`
+*   **필요 패키지**: `com.m3.keytoolsl20` (`SL20`/`SL20K`/`SL20P`/`SL25`/`WD10`은
+    `1.2.6`, `SM24`는 `1.3.8`, `SM25`는 `1.3.16` 이상)
 *   **매개변수**:
     *   `key`: KeyTool 키 이름입니다.
     *   `function`: KeyTool 기능 이름입니다.
@@ -861,6 +883,21 @@ try {
 
 현재 KeyTool 표기인 `Volume Up`, `Volume Down`을 사용합니다. KeyTool 1.4.1은 이전 버전이
 저장한 `Volume up`, `Volume down` 값도 읽을 때 현재 표기로 정규화합니다.
+
+SM24에서는 3인자 오버로드로 키 매핑과 Wake-Up 상태를 하나의 `ACTION_SET_KEY` 요청에
+포함할 수 있습니다.
+
+```kotlin
+M3Mobile.instance.setKeyFunction(
+    key = "Left Scan",
+    function = "Scan",
+    wakeUpEnabled = true,
+)
+```
+
+이 요청은 `key_title`, `key_function`, `key_wakeup`을 함께 전송합니다. KeyTool은 매핑을
+적용한 뒤 Wake-Up을 순서대로 적용하며, 두 작업을 하나의 트랜잭션으로 롤백하지 않습니다.
+따라서 정상 반환은 두 설정의 실제 적용 성공을 보장하지 않습니다.
 
 #### Home 및 Recent 버튼 제어
 
@@ -881,10 +918,17 @@ M3Mobile.instance.disableRecentButton()
 
 #### 스캔 키 Wake-Up 제어
 
-`SL20P`의 왼쪽 또는 오른쪽 스캔 키로 장치를 깨울 수 있는지 제어합니다.
+`SL20P` 또는 `SM24`의 왼쪽/오른쪽 스캔 키로 장치를 깨울 수 있는지 제어합니다.
 
-*   **지원 모델**: `SL20P`
-*   **필요 패키지**: `net.m3.keytool`
+*   **지원 모델**: `SL20P`, `SM24`
+*   **SL20P 프로토콜**: `net.m3.keytool`의 기존 `WAKEUP_CONTROL_LEFT` 또는
+    `WAKEUP_CONTROL_RIGHT` explicit broadcast
+*   **SM24 프로토콜**: `com.m3.keytoolsl20` 버전 `1.3.8` 이상의 `ACTION_SET_KEY`
+    explicit broadcast (`1.3.9` 이상 권장)
+
+프로토콜은 설치된 패키지의 우선순위가 아니라 현재 모델로 결정됩니다. SM24는
+`net.m3.keytool`이 설치되어 있어도 deprecated `WAKEUP_CONTROL_*`를 사용하지 않으며,
+SL20P는 `com.m3.keytoolsl20`이 설치되어 있어도 기존 Legacy 동작을 유지합니다.
 
 ```kotlin
 M3Mobile.instance.enableLeftScanWakeUp()
@@ -895,6 +939,70 @@ M3Mobile.instance.disableRightScanWakeUp()
 
 배포 패키지 샘플은 설치된 KeyTool 패키지 버전을 표시하며, 단방향 호출을 성공이 아닌
 `REQUEST_SENT_UNVERIFIED` 상태로 표시합니다.
+
+---
+
+### AppCenter Kiosk API
+
+AppCenter 키오스크 관리자 기능을 단방향 explicit broadcast로 제어합니다.
+메서드는 `M3Mobile.instance`에서 직접 호출할 수 있습니다.
+
+> **단방향 요청:** AppCenter broadcast는 처리 결과를 응답하지 않습니다. 정상 반환은
+> Android가 요청을 받았다는 의미일 뿐 AppCenter 적용 성공을 보장하지 않습니다.
+> AppCenter `2.2.0` 이상이 설치되어 있고 broadcast를 수신 가능한 상태여야 합니다.
+> SDK는 Strict Mode 설정과 관계없이 AppCenter 설치 여부와 버전을 검증합니다.
+
+#### 키오스크 관리자 비밀번호 변경
+
+AppCenter 키오스크 관리자 비밀번호 변경을 요청합니다.
+
+*   **필요 AppCenter 버전**: `2.2.0` 이상
+*   **매개변수**:
+    *   `currentPassword`: 현재 관리자 비밀번호입니다. 빈 문자열은 거부됩니다.
+    *   `newPassword`: 새 관리자 비밀번호입니다. 길이는 4~20자만 허용됩니다.
+
+SDK는 두 비밀번호 값을 trim하지 않습니다. 현재 비밀번호가 잘못되면 AppCenter가 요청을
+무시할 수 있으며, SDK는 실제 적용 결과를 확인할 수 없습니다.
+
+```kotlin
+M3Mobile.instance.changeKioskAdminPassword(currentPassword, newPassword)
+```
+
+AppCenter에 직접 broadcast를 보내는 경우:
+
+```java
+Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
+request.setPackage("com.m3.appcenter");
+request.putExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
+request.putExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
+request.putExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
+context.sendBroadcast(request);
+```
+
+#### 화면 OFF 시 관리자 모드 유지
+
+화면이 꺼질 때 AppCenter 관리자 모드를 유지할지 설정합니다.
+
+*   **필요 AppCenter 버전**: `2.2.0` 이상
+*   **매개변수**:
+    *   `enabled`: `true`이면 화면 OFF 후 관리자 모드를 유지합니다. `false`이면 기존처럼
+        사용자 모드로 돌아가며 관리자 로그인이 다시 필요할 수 있습니다.
+
+재부팅 후 관리자 모드는 유지되지 않습니다.
+
+```kotlin
+M3Mobile.instance.setKeepAdminModeOnSleep(true)
+M3Mobile.instance.setKeepAdminModeOnSleep(false)
+```
+
+AppCenter에 직접 broadcast를 보내는 경우:
+
+```java
+Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
+request.setPackage("com.m3.appcenter");
+request.putExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
+context.sendBroadcast(request);
+```
 
 ---
 
@@ -1115,6 +1223,31 @@ BroadcastReceiver receiver = new BroadcastReceiver() {
         String error = intent.getStringExtra("get_factory_wifi_mac_error_message");
     }
 };
+```
+
+#### Wi-Fi 활성화 상태 설정
+
+장치의 Wi-Fi를 활성화하거나 비활성화합니다.
+
+이 API는 StartUp에서 처리합니다. Android 10 이상에서는 일반 Android 앱이 Wi-Fi를 직접 제어할 수 없으므로, StartUp이 system 또는 privileged app으로 배포되어 있어야 합니다.
+
+*   **필요 StartUp 버전**: `6.8.3` 이상
+*   **지원 모델**: `SM24`
+*   **매개변수**:
+    *   `enabled` (Boolean): `true`이면 Wi-Fi 활성화, `false`이면 Wi-Fi 비활성화
+
+```kotlin
+M3Mobile.instance.setWifiEnabled(true)
+M3Mobile.instance.setWifiEnabled(false)
+```
+
+StartUp에 직접 broadcast를 보내는 경우:
+
+```java
+Intent request = new Intent("com.android.server.startupservice.system");
+request.putExtra("setting", "wifi_enabled");
+request.putExtra("enabled", true);
+context.sendBroadcast(request);
 ```
 
 #### 캡티브 포털 감지 (Captive Portal Detection)

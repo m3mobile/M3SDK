@@ -2,6 +2,8 @@
 package net.m3mobile.sdk
 
 import android.content.Context
+import net.m3mobile.feature.appcenter.M3AppCenterSdk
+import net.m3mobile.feature.appcenter.M3AppCenterSdkImpl
 import net.m3mobile.feature.keytool.M3KeyToolSdk
 import net.m3mobile.feature.keytool.M3KeyToolSdkImpl
 import net.m3mobile.feature.scanemul.M3ScanEmulSdk
@@ -23,6 +25,7 @@ public interface M3Sdk :
     M3StartUpSdk,
     M3ScanEmulSdk,
     M3KeyToolSdk,
+    M3AppCenterSdk,
     TimeApi,
     WifiApi,
     UsbApi
@@ -30,6 +33,7 @@ public interface M3Sdk :
 internal class M3SdkImpl(context: Context) : M3Sdk,
         M3StartUpSdk by M3StartUpSdkImpl(context),
         M3KeyToolSdk by M3KeyToolSdkImpl(context),
+        M3AppCenterSdk by M3AppCenterSdkImpl(context),
         M3ScanEmulSdk by M3ScanEmulSdkImpl(context),
         TimeApi by TimeApiImpl(context),
         WifiApi by WifiApiImpl(context),

@@ -45,6 +45,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeWifiChannel = "wifi_channel";
             internal const string TypeApn = "apn";
             internal const string TypeAccessPoint = "access_point";
+            internal const string TypeWifiEnabled = "wifi_enabled";
             internal const string TypeClearWifi = "remove_all_wifi";
             internal const string TypeRemoveWifi = "remove_wifi_by_ssid";
             internal const string TypeDisplay = "display";
@@ -126,6 +127,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraRoamingThreshold = "value";
             internal const string ExtraWifiChannels = "value";
             internal const string ExtraWifiCountry = "value";
+            internal const string ExtraWifiEnabled = "enabled";
             internal const string ExtraWifiSleepPolicy = "value";
             internal const string ExtraWifiStability = "value";
             internal const string ExtraLanguageTag = "language_value";
@@ -176,7 +178,10 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraFnState = "fn_state";
             internal const string ExtraKeyTitle = "key_title";
             internal const string ExtraKeyFunction = "key_function";
+            internal const string ExtraKeyWakeUp = "key_wakeup";
 
+            internal const string LeftScan = "Left Scan";
+            internal const string RightScan = "Right Scan";
             internal const string Home = "Home";
             internal const string Recent = "Recent";
             internal const string Default = "Default";
@@ -185,6 +190,27 @@ namespace M3Sdk.Xamarin.Internal
             internal const int DisableFn = 0;
             internal const int EnableFn = 1;
             internal const int LockFn = 2;
+        }
+
+        internal static class AppCenter
+        {
+            internal const string AppName = "AppCenter";
+            internal const string PackageName = "com.m3.appcenter";
+            internal const string RequiredVersion = "2.2.0";
+
+            internal const string ChangePassword = "com.m3.appcenter.ACTION_CHANGE_PASSWORD";
+            internal const string SetKeepAdminModeOnSleep =
+                "com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP";
+
+            internal const string ExtraCurrentPassword = "com.m3.appcenter.EXTRA_CURRENT_PASSWORD";
+            internal const string ExtraNewPassword = "com.m3.appcenter.EXTRA_NEW_PASSWORD";
+            internal const string ExtraEncryptionEnabled =
+                "com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED";
+            internal const string ExtraKeepAdminModeOnSleep =
+                "com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP";
+
+            internal const int EnableKeepAdminModeOnSleep = 1;
+            internal const int DisableKeepAdminModeOnSleep = 0;
         }
 
         internal static class ScanEmul
@@ -211,6 +237,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeEndCharacter = "end_char";
             internal const string TypePrefix = "prefix";
             internal const string TypePostfix = "postfix";
+            internal const string TypeScannerButtonUi = "scanner_button_ui";
 
             internal const string ExtraSound = "sound_mode";
             internal const string ExtraVibration = "vibration_value";
@@ -221,6 +248,13 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraEndCharacter = "end_char_value";
             internal const string ExtraPrefix = "prefix_value";
             internal const string ExtraPostfix = "postfix_value";
+            internal const string ExtraRequestId = "request_id";
+            internal const string ExtraSuccess = "success";
+            internal const string ExtraStatus = "status";
+            internal const string ExtraRuntimeApplied = "runtime_applied";
+            internal const string ExtraScannerButtonImagePath = "scanner_button_image_path";
+            internal const string ExtraScannerButtonOpacityPercent = "scanner_button_opacity_percent";
+            internal const string ExtraScannerButtonSize = "scanner_button_size";
 
             internal const string ResponsePrefix = "m3scanner_prefix";
             internal const string ResponsePostfix = "m3scanner_postfix";

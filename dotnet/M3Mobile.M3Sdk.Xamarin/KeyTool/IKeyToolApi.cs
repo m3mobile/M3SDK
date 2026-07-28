@@ -31,6 +31,17 @@ namespace M3Sdk.Xamarin.KeyTool
         /// <remarks>A normal return confirms only that the broadcast was sent, not that the mapping was applied.</remarks>
         void SetKeyFunction(string key, string function);
 
+        /// <summary>
+        /// Sets the function and Wake-Up state for a key in one KeyTool request on SM24.
+        /// </summary>
+        /// <param name="key">The KeyTool key title.</param>
+        /// <param name="function">The KeyTool function title.</param>
+        /// <param name="wakeUpEnabled">Whether the key wakes the device.</param>
+        /// <remarks>
+        /// KeyTool processes the two updates sequentially. The request is not transactional.
+        /// </remarks>
+        void SetKeyFunction(string key, string function, bool wakeUpEnabled);
+
         /// <summary>Enables the Home navigation button on SM24 or SM25.</summary>
         /// <remarks>A normal return confirms only that the broadcast was sent, not that SystemUI applied it.</remarks>
         void EnableHomeButton();
@@ -48,25 +59,25 @@ namespace M3Sdk.Xamarin.KeyTool
         void DisableRecentButton();
 
         /// <summary>
-        /// Enables wake-up by the left scan key on SL20P.
+        /// Enables wake-up by the left scan key on SL20P or SM24.
         /// </summary>
         /// <remarks>A normal return confirms only that the broadcast was sent, not that the setting was applied.</remarks>
         void EnableLeftScanWakeUp();
 
         /// <summary>
-        /// Disables wake-up by the left scan key on SL20P.
+        /// Disables wake-up by the left scan key on SL20P or SM24.
         /// </summary>
         /// <remarks>A normal return confirms only that the broadcast was sent, not that the setting was applied.</remarks>
         void DisableLeftScanWakeUp();
 
         /// <summary>
-        /// Enables wake-up by the right scan key on SL20P.
+        /// Enables wake-up by the right scan key on SL20P or SM24.
         /// </summary>
         /// <remarks>A normal return confirms only that the broadcast was sent, not that the setting was applied.</remarks>
         void EnableRightScanWakeUp();
 
         /// <summary>
-        /// Disables wake-up by the right scan key on SL20P.
+        /// Disables wake-up by the right scan key on SL20P or SM24.
         /// </summary>
         /// <remarks>A normal return confirms only that the broadcast was sent, not that the setting was applied.</remarks>
         void DisableRightScanWakeUp();

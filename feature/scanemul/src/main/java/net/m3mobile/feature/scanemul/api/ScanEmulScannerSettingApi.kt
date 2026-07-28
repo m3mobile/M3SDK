@@ -8,6 +8,9 @@ import net.m3mobile.feature.scanemul.params.EndCharacter
 import net.m3mobile.feature.scanemul.params.OutputMode
 import net.m3mobile.feature.scanemul.params.ReadMode
 import net.m3mobile.feature.scanemul.params.ScanSound
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiOptions
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiResult
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiVerificationResult
 
 public interface ScanEmulScannerSettingApi {
 
@@ -220,4 +223,101 @@ public interface ScanEmulScannerSettingApi {
      */
     @RequiresScanEmul("2.11.0")
     public fun getScannerReadMode(callback: RequestCallback<ReadMode>): Job
+
+    /**
+     * Sets SM24 floating scanner button UI settings.
+     *
+     * Missing values are not sent to ScanEmul and keep their current values.
+     * Empty image path means the default ScanEmul button image.
+     */
+    @JvmSynthetic
+    public suspend fun setScannerButtonUi(options: ScannerButtonUiOptions): ScannerButtonUiResult
+
+    /**
+     * Sets SM24 floating scanner button UI settings with a caller-provided request id.
+     */
+    @JvmSynthetic
+    public suspend fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+    ): ScannerButtonUiResult
+
+    /**
+     * Sets SM24 floating scanner button UI settings by callback.
+     */
+    public fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job
+
+    /**
+     * Sets SM24 floating scanner button UI settings by callback with a caller-provided request id.
+     */
+    public fun setScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job
+
+    /**
+     * Gets SM24 floating scanner button UI settings.
+     */
+    @JvmSynthetic
+    public suspend fun getScannerButtonUi(): ScannerButtonUiResult
+
+    /**
+     * Gets SM24 floating scanner button UI settings with a caller-provided request id.
+     */
+    @JvmSynthetic
+    public suspend fun getScannerButtonUi(requestId: String): ScannerButtonUiResult
+
+    /**
+     * Gets SM24 floating scanner button UI settings by callback.
+     */
+    public fun getScannerButtonUi(callback: RequestCallback<ScannerButtonUiResult>): Job
+
+    /**
+     * Gets SM24 floating scanner button UI settings by callback with a caller-provided request id.
+     */
+    public fun getScannerButtonUi(
+        requestId: String,
+        callback: RequestCallback<ScannerButtonUiResult>,
+    ): Job
+
+    /**
+     * Sets SM24 floating scanner button UI settings and verifies saved values with a GET request
+     * after the SET result reports a saved state.
+     */
+    @JvmSynthetic
+    public suspend fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+    ): ScannerButtonUiVerificationResult
+
+    /**
+     * Sets SM24 floating scanner button UI settings with a caller-provided SET request id and
+     * verifies saved values with a GET request after the SET result reports a saved state.
+     */
+    @JvmSynthetic
+    public suspend fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+    ): ScannerButtonUiVerificationResult
+
+    /**
+     * Sets SM24 floating scanner button UI settings and verifies saved values by callback.
+     */
+    public fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        callback: RequestCallback<ScannerButtonUiVerificationResult>,
+    ): Job
+
+    /**
+     * Sets SM24 floating scanner button UI settings with a caller-provided SET request id and
+     * verifies saved values by callback.
+     */
+    public fun setAndVerifyScannerButtonUi(
+        options: ScannerButtonUiOptions,
+        requestId: String,
+        callback: RequestCallback<ScannerButtonUiVerificationResult>,
+    ): Job
 }

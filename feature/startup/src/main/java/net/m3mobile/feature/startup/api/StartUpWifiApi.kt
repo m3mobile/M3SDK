@@ -4,6 +4,7 @@ import kotlinx.coroutines.Job
 import net.m3mobile.core.InternalM3Api
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
+import net.m3mobile.core.SupportedModels
 import net.m3mobile.core.UnsupportedModels
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.startup.params.AccessPoint
@@ -58,6 +59,20 @@ public interface StartUpWifiApi {
      */
     @RequiresStartUp("6.7.3")
     public fun getFactoryWifiMac(callback: RequestCallback<FactoryWifiMacResult>): Job
+
+    /**
+     * Sets whether Wi-Fi is enabled on the device.
+     *
+     * This request is handled by StartUp and requires StartUp to be installed as a system or
+     * privileged app. General Android apps cannot control Wi-Fi directly on Android 10 or later.
+     *
+     * StartUp version `6.8.3` or later is required.
+     *
+     * @param enabled `true` to enable Wi-Fi, `false` to disable Wi-Fi.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    @RequiresStartUp("6.8.3")
+    public fun setWifiEnabled(enabled: Boolean)
 
     /**
      * Enables captive portal detection for Wi-Fi.

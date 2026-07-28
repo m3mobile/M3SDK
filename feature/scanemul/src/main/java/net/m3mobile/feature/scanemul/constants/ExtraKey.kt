@@ -11,4 +11,11 @@ internal object ExtraKey {
     const val END_CHARACTER = "end_char_value"
     const val PREFIX = "prefix_value"
     const val POSTFIX = "postfix_value"
+    const val REQUEST_ID = "request_id"
+    const val SUCCESS = "success"
+    const val STATUS = "status"
+    const val RUNTIME_APPLIED = "runtime_applied"
+    const val SCANNER_BUTTON_IMAGE_PATH = "scanner_button_image_path"
+    const val SCANNER_BUTTON_OPACITY_PERCENT = "scanner_button_opacity_percent"
+    const val SCANNER_BUTTON_SIZE = "scanner_button_size"
 }

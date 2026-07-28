@@ -22,6 +22,7 @@ import net.m3mobile.feature.startup.requester.wifi.SetRoamingDeltaRequester
 import net.m3mobile.feature.startup.requester.wifi.SetRoamingTriggerRequester
 import net.m3mobile.feature.startup.requester.wifi.SetWifiChannelRequester
 import net.m3mobile.feature.startup.requester.wifi.SetWifiCountryRequester
+import net.m3mobile.feature.startup.requester.wifi.SetWifiEnabledRequester
 import net.m3mobile.feature.startup.requester.wifi.SetWifiSleepPolicyAlwaysRequester
 import net.m3mobile.feature.startup.requester.wifi.SetWifiSleepPolicyNeverRequester
 import net.m3mobile.feature.startup.requester.wifi.SetWifiSleepPolicyPluggedOnlyRequester
@@ -58,6 +59,10 @@ internal class StartUpWifiApiImpl(private val context: Context): StartUpWifiApi 
                 callback.onComplete(null, e)
             }
         }
+    }
+
+    override fun setWifiEnabled(enabled: Boolean) {
+        SetWifiEnabledRequester(context, enabled).request()
     }
 
     override fun enableCaptivePortalDetection() {

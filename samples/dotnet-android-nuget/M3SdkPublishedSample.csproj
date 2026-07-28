@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0-android</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == '' and '$(UseLocalM3Sdk)' == 'true'">net9.0-android</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net10.0-android</TargetFramework>
     <OutputType>Exe</OutputType>
     <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
     <ApplicationId>net.m3mobile.samples.dotnet</ApplicationId>
@@ -10,16 +11,20 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
-    <M3SdkVersion Condition="'$(M3SdkVersion)' == ''">RELEASE_VERSION_REQUIRED</M3SdkVersion>
+    <M3SdkVersion Condition="'$(M3SdkVersion)' == '' and '$(UseLocalM3Sdk)' != 'true'">RELEASE_VERSION_REQUIRED</M3SdkVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(UseLocalM3Sdk)' != 'true'">
     <PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="$(M3SdkVersion)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseLocalM3Sdk)' == 'true'">
+    <ProjectReference Include="..\..\dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.NetAndroid.csproj" />
   </ItemGroup>
 
   <Target Name="RequirePublishedM3SdkVersion" BeforeTargets="CollectPackageReferences">
     <Error
-      Condition="'$(M3SdkVersion)' == 'RELEASE_VERSION_REQUIRED'"
+      Condition="'$(UseLocalM3Sdk)' != 'true' and '$(M3SdkVersion)' == 'RELEASE_VERSION_REQUIRED'"
       Text="Provide -p:M3SdkVersion=&lt;released NuGet Gallery version&gt;. Local project references are intentionally unsupported." />
   </Target>
 </Project>

@@ -387,6 +387,17 @@ namespace M3Sdk.Xamarin.Startup
         IM3Cancelable GetFactoryWifiMac(M3RequestCallback<FactoryWifiMacResult> callback);
 
         /// <summary>
+        /// Sets whether Wi-Fi is enabled on the device.
+        /// </summary>
+        /// <param name="enabled"><c>true</c> to enable Wi-Fi, <c>false</c> to disable Wi-Fi.</param>
+        /// <remarks>
+        /// Supported on SM24. Requires StartUp version <c>6.8.3</c> or later. The request must be
+        /// handled by StartUp running as a system or privileged app; general Android apps cannot
+        /// control Wi-Fi directly on Android 10 or later.
+        /// </remarks>
+        void SetWifiEnabled(bool enabled);
+
+        /// <summary>
         /// Enables captive portal detection for Wi-Fi.
         /// </summary>
         /// <remarks>Unsupported on SL20. Requires StartUp version <c>6.2.14</c> or later.</remarks>

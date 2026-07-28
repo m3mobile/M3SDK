@@ -53,6 +53,18 @@ public interface KeyToolKeyApi {
     public fun setKeyFunction(key: String, function: String)
 
     /**
+     * Sets the function and Wake-Up state for a key in one KeyTool request.
+     *
+     * The request is processed sequentially by KeyTool and is not transactional.
+     *
+     * @param key Key code to configure.
+     * @param function Function name to be assigned.
+     * @param wakeUpEnabled Whether the key wakes the device.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    public fun setKeyFunction(key: String, function: String, wakeUpEnabled: Boolean)
+
+    /**
      * Enables the Home navigation button.
      *
      * This sends a one-way request to KeyTool. A normal return only confirms that

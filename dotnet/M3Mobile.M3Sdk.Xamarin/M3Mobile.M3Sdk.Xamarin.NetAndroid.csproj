@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net9.0-android</TargetFramework>
+    <OutputType>Library</OutputType>
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+    <RootNamespace>M3Sdk.Xamarin</RootNamespace>
+    <AssemblyName>M3Mobile.M3Sdk.Xamarin</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;CA1416;CA1422</NoWarn>
+  </PropertyGroup>
+</Project>
