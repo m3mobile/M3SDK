@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.Content;
+using M3Sdk.Xamarin.AppCenter;
 using M3Sdk.Xamarin.Internal;
 using M3Sdk.Xamarin.KeyTool;
 using M3Sdk.Xamarin.ScanEmul;
@@ -12,13 +13,14 @@ using M3Sdk.Xamarin.Startup;
 namespace M3Sdk.Xamarin
 {
     /// <summary>
-    /// Native C# facade over the M3 Mobile StartUp, ScanEmul, KeyTool, Time, Wifi, and Usb APIs.
+    /// Native C# facade over the M3 Mobile StartUp, ScanEmul, KeyTool, AppCenter, Time, Wifi, and Usb APIs.
     /// </summary>
     public sealed class M3Sdk : IM3Sdk
     {
         private readonly StartUpApi _startUp;
         private readonly ScanEmulApi _scanEmul;
         private readonly KeyToolApi _keyTool;
+        private readonly AppCenterApi _appCenter;
         private readonly TimeApi _time;
         private readonly WifiApi _wifi;
         private readonly UsbApi _usb;
@@ -32,6 +34,7 @@ namespace M3Sdk.Xamarin
             _startUp = new StartUpApi(appContext, guard);
             _scanEmul = new ScanEmulApi(appContext, guard);
             _keyTool = new KeyToolApi(appContext, guard);
+            _appCenter = new AppCenterApi(appContext, guard);
             _time = new TimeApi(appContext, guard);
             _wifi = new WifiApi(appContext, guard);
             _usb = new UsbApi(appContext);
@@ -53,6 +56,12 @@ namespace M3Sdk.Xamarin
         public IKeyToolApi KeyTool
         {
             get { return _keyTool; }
+        }
+
+        /// <inheritdoc />
+        public IAppCenterApi AppCenter
+        {
+            get { return _appCenter; }
         }
 
         /// <inheritdoc />
@@ -102,6 +111,13 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void SetKeyFunction(string key, string function, bool wakeUpEnabled)
+        {
+            ThrowIfDisposed();
+            _keyTool.SetKeyFunction(key, function, wakeUpEnabled);
+        }
+
+        /// <inheritdoc />
         public void EnableHomeButton()
         {
             ThrowIfDisposed();
@@ -127,6 +143,20 @@ namespace M3Sdk.Xamarin
         {
             ThrowIfDisposed();
             _keyTool.DisableRecentButton();
+        }
+
+        /// <inheritdoc />
+        public void ChangeKioskAdminPassword(string currentPassword, string newPassword)
+        {
+            ThrowIfDisposed();
+            _appCenter.ChangeKioskAdminPassword(currentPassword, newPassword);
+        }
+
+        /// <inheritdoc />
+        public void SetKeepAdminModeOnSleep(bool enabled)
+        {
+            ThrowIfDisposed();
+            _appCenter.SetKeepAdminModeOnSleep(enabled);
         }
 
         /// <inheritdoc />
@@ -563,6 +593,13 @@ namespace M3Sdk.Xamarin
         {
             ThrowIfDisposed();
             return _startUp.GetFactoryWifiMac(callback);
+        }
+
+        /// <inheritdoc />
+        public void SetWifiEnabled(bool enabled)
+        {
+            ThrowIfDisposed();
+            _startUp.SetWifiEnabled(enabled);
         }
 
         /// <inheritdoc />
@@ -1013,6 +1050,161 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(ScannerButtonUiOptions options)
+        {
+            return SetScannerButtonUiAsync(options, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUiAsync(
+                options,
+                ScannerButtonUiRequesterId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId)
+        {
+            return SetScannerButtonUiAsync(options, requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> SetScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUiAsync(options, requestId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUi(options, callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetScannerButtonUi(options, requestId, callback);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync()
+        {
+            return GetScannerButtonUiAsync(CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUiAsync(ScannerButtonUiRequesterId(), cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(string requestId)
+        {
+            return GetScannerButtonUiAsync(requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiResult> GetScannerButtonUiAsync(
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUiAsync(requestId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetScannerButtonUi(M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUi(callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable GetScannerButtonUi(
+            string requestId,
+            M3RequestCallback<ScannerButtonUiResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.GetScannerButtonUi(requestId, callback);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options)
+        {
+            return SetAndVerifyScannerButtonUiAsync(options, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUiAsync(
+                options,
+                ScannerButtonUiRequesterId(),
+                cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId)
+        {
+            return SetAndVerifyScannerButtonUiAsync(options, requestId, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ScannerButtonUiVerificationResult> SetAndVerifyScannerButtonUiAsync(
+            ScannerButtonUiOptions options,
+            string requestId,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUiAsync(options, requestId, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUi(options, callback);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable SetAndVerifyScannerButtonUi(
+            ScannerButtonUiOptions options,
+            string requestId,
+            M3RequestCallback<ScannerButtonUiVerificationResult> callback)
+        {
+            ThrowIfDisposed();
+            return _scanEmul.SetAndVerifyScannerButtonUi(options, requestId, callback);
+        }
+
+        /// <inheritdoc />
         public string GetNtpServer()
         {
             ThrowIfDisposed();
@@ -1082,6 +1274,11 @@ namespace M3Sdk.Xamarin
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().FullName);
+        }
+
+        private static string ScannerButtonUiRequesterId()
+        {
+            return Guid.NewGuid().ToString();
         }
     }
 }

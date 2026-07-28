@@ -12,7 +12,13 @@ dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -p:M3SdkVe
 ```
 
 Replace `RELEASED_VERSION` with the released package being verified. Restore fails with an explicit message
-when `M3SdkVersion` is omitted. There is no project reference to `dotnet/M3Mobile.M3Sdk.Xamarin`.
+when `M3SdkVersion` is omitted.
+
+For local SDK verification before the NuGet package is published, build with the local project reference:
+
+```powershell
+dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -p:UseLocalM3Sdk=true -p:TargetFramework=net9.0-android --source https://api.nuget.org/v3/index.json
+```
 
 `EmbedAssembliesIntoApk` is enabled so that the generated Debug APK is standalone and can be
 installed with `adb install` without the .NET Fast Deployment directory.
@@ -33,13 +39,20 @@ install. The result records only option values, not the full file path or URL. S
 request asynchronously, so the screen reports `REQUEST_SENT_UNVERIFIED`; verify the StartUp
 notification and logs, installed package, and launched screen.
 
+The Wi-Fi screen exposes `Enable Wi-Fi` and `Disable Wi-Fi` buttons that call
+`SetWifiEnabled(true)` and `SetWifiEnabled(false)`. Verify the device Wi-Fi state after calling
+them on SM24 with StartUp 6.8.3 or later.
+
 The application enables M3 SDK strict mode and shows:
 
 - `SUCCESS` for APIs with a response or observable value.
 - `REQUEST_SENT_UNVERIFIED` for one-way broadcasts with no acknowledgement.
 - `FAILED` with exception, device, Android, SDK package, and companion-app version details.
 
-The KeyTool screen defaults to `Left Scan` and `Volume Up`, and separately exposes Home and Recent
-enable/disable controls for SM24 and SM25. Restore the required device state after verification.
+The KeyTool screen defaults to `Left Scan` and `Volume Up`, demonstrates the SM24 three-argument
+`SetKeyFunction` overload that sends mapping and Wake-Up together, exposes left/right Scan Key
+Wake-Up controls for SL20P and SM24, and exposes Home and Recent controls for SM24 and SM25. SM24
+Wake-Up requires KeyTool 1.3.8 or later; 1.3.9 or later is recommended. Confirm changes with the
+physical buttons and restore the required device state after verification.
 
 Default UI resources are English. Only Korean localization is included under `Resources/values-ko`.

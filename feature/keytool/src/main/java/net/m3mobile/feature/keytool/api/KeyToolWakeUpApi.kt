@@ -6,26 +6,26 @@ import net.m3mobile.core.SupportedModels
 public interface KeyToolWakeUpApi {
 
     /**
-     * Enables the device wake-up feature when the left scan key is pressed.
+     * Enables the device wake-up feature when the left scan key is pressed on SL20P or SM24.
      */
-    @SupportedModels(DeviceModel.SL20P)
+    @SupportedModels(DeviceModel.SL20P, DeviceModel.SM24)
     public fun enableLeftScanWakeUp()
 
     /**
-     * Disables the device wake-up feature when the left scan key is pressed.
+     * Disables the device wake-up feature when the left scan key is pressed on SL20P or SM24.
      */
-    @SupportedModels(DeviceModel.SL20P)
+    @SupportedModels(DeviceModel.SL20P, DeviceModel.SM24)
     public fun disableLeftScanWakeUp()
 
     /**
-     * Enables the device wake-up feature when the right scan key is pressed.
+     * Enables the device wake-up feature when the right scan key is pressed on SL20P or SM24.
      */
-    @SupportedModels(DeviceModel.SL20P)
+    @SupportedModels(DeviceModel.SL20P, DeviceModel.SM24)
     public fun enableRightScanWakeUp()
 
     /**
-     * Disables the device wake-up feature when the right scan key is pressed.
+     * Disables the device wake-up feature when the right scan key is pressed on SL20P or SM24.
      */
-    @SupportedModels(DeviceModel.SL20P)
+    @SupportedModels(DeviceModel.SL20P, DeviceModel.SM24)
     public fun disableRightScanWakeUp()
 }

@@ -98,6 +98,12 @@ jobs:
             --version "${{ inputs.tag_name }}" \
             --repo-root .
 
+      - name: Validate manual structure and Broadcast contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run validate:manuals --prefix tools/MdToPdf
+
       - name: Generate manuals
         shell: bash
         run: |

@@ -16,5 +16,6 @@ internal enum class SampleCategory(@StringRes val titleRes: Int) {
     TIME(R.string.time),
     USB(R.string.usb),
     WIFI(R.string.wifi),
+    APPCENTER(R.string.appcenter),
     KEYTOOL(R.string.keytool)
 }

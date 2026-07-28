@@ -30,6 +30,9 @@ namespace M3Sdk.Xamarin.Startup
         private static readonly IDictionary<DeviceModel, string> BluetoothMacVersionOverrides =
             new Dictionary<DeviceModel, string> { { DeviceModel.UL30, "6.5.31" } };
 
+        private static readonly ISet<DeviceModel> WifiEnabledSupportedModels =
+            new HashSet<DeviceModel> { DeviceModel.SM24 };
+
         private readonly Context _context;
         private readonly M3SdkGuard _guard;
 
@@ -458,6 +461,15 @@ namespace M3Sdk.Xamarin.Startup
         public IM3Cancelable GetFactoryWifiMac(M3RequestCallback<FactoryWifiMacResult> callback)
         {
             return CallbackRunner.Run(GetFactoryWifiMacAsync, callback);
+        }
+
+        /// <inheritdoc />
+        public void SetWifiEnabled(bool enabled)
+        {
+            GuardStartUp("SetWifiEnabled", "6.8.3", WifiEnabledSupportedModels, null, null);
+            SendSystem(
+                Constants.StartUp.TypeWifiEnabled,
+                BooleanExtra(Constants.StartUp.ExtraWifiEnabled, enabled));
         }
 
         /// <inheritdoc />

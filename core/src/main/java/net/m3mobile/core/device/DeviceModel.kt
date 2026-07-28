@@ -5,7 +5,8 @@ import android.os.Build
 import androidx.annotation.Keep
 import net.m3mobile.core.InternalM3Api
 
-internal val currentDeviceModel by lazy {
+@InternalM3Api
+public val currentDeviceModel: DeviceModel by lazy {
     initCurrentDeviceModel()
 }
 
