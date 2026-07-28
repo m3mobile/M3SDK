@@ -19,3 +19,40 @@ jobs:
 
       - name: Run Binary Compatibility Validator
         run: ./gradlew apiCheck
+
+  check-dotnet-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Run .NET contract tests
+        run: dotnet test dotnet/M3Mobile.M3Sdk.Xamarin.Tests/M3Mobile.M3Sdk.Xamarin.Tests.csproj
+
+      - name: Verify legacy Xamarin source inclusion
+        shell: pwsh
+        run: |
+          $root = Resolve-Path "dotnet/M3Mobile.M3Sdk.Xamarin"
+          [xml] $project = Get-Content "$root/M3Mobile.M3Sdk.Xamarin.csproj"
+          $namespace = New-Object System.Xml.XmlNamespaceManager($project.NameTable)
+          $namespace.AddNamespace("m", "http://schemas.microsoft.com/developer/msbuild/2003")
+          $included = $project.SelectNodes("//m:Compile", $namespace) |
+            ForEach-Object { $_.Include.Replace("\", "/") }
+          $missing = Get-ChildItem $root -Recurse -Filter "*.cs" |
+            Where-Object {
+              $_.FullName -notmatch "[\\/](bin|obj)[\\/]"
+            } |
+            ForEach-Object {
+              $relative = $_.FullName.Substring($root.Path.Length + 1).Replace("\", "/")
+              if (
+                $relative -notin $included -and
+                $relative -ne "Properties/GeneratedVersionInfo.cs"
+              ) {
+                $relative
+              }
+            }
+          if ($missing) {
+            throw "Legacy Xamarin project omits C# sources: $($missing -join ', ')"
+          }

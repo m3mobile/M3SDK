@@ -563,6 +563,9 @@ namespace M3Sdk.Xamarin.ScanEmul
             CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
             return new ScannerButtonUiRequester(_context, requestId, options)
                 .FetchAsync(cancellationToken);
         }
@@ -1010,6 +1013,8 @@ namespace M3Sdk.Xamarin.ScanEmul
 
             internal Task<ScannerButtonUiResult> FetchAsync(CancellationToken cancellationToken)
             {
+                if (cancellationToken.IsCancellationRequested)
+                    return Task.FromCanceled<ScannerButtonUiResult>(cancellationToken);
                 if (_options != null && !_options.IsValid)
                     return Task.FromResult(TransportResult(ScannerButtonUiTransportStatus.InvalidSdkRequest));
                 if (!IsScanEmulInstalled())
@@ -1101,9 +1106,15 @@ namespace M3Sdk.Xamarin.ScanEmul
 
                 try
                 {
-                    RegisterDynamicReceiver(dynamicReceiver);
-                    dynamicRegistered = true;
-                    handler.PostDelayed(timeout, TimeoutMillis);
+                    lock (gate)
+                    {
+                        if (finished)
+                            return taskSource.Task;
+
+                        RegisterDynamicReceiver(dynamicReceiver);
+                        dynamicRegistered = true;
+                        handler.PostDelayed(timeout, TimeoutMillis);
+                    }
                     _context.SendOrderedBroadcast(
                         RequestIntent(),
                         null,

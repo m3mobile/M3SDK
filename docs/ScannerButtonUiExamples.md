@@ -3,6 +3,10 @@
 These APIs wrap the ScanEmul broadcast contract for `scanner_button_ui`.
 They do not store settings in M3SDK. ScanEmul is the source of truth.
 
+- Supported device: SM24
+- Required ScanEmul version: 4.14.10 or later
+- Older ScanEmul versions return `FEATURE_NOT_AVAILABLE` / `FeatureNotAvailable`.
+
 ## Kotlin
 
 ```kotlin
