@@ -23,7 +23,6 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Disable Application](#disable-application)
     - [Run Application](#run-application)
     - [Run and Pin Application](#run-and-pin-application)
-    - [Direct Broadcast Usage](#direct-broadcast-usage)
   - [Device API](#device-api)
     - [Set Media Volume](#set-media-volume)
     - [Set Ringtone Volume](#set-ringtone-volume)
@@ -57,11 +56,13 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [GS1 Parsed Listener](#gs1-parsed-listener)
     - [Digital Link Parsed Listener](#digital-link-parsed-listener)
     - [Scanner Settings](#scanner-settings)
+    - [Floating Scanner Button UI](#floating-scanner-button-ui)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [KeyTool API](#keytool-api)
     - [Control Function-key Mode](#control-function-key-mode)
     - [Set Key Function](#set-key-function)
+    - [Control Home and Recent Buttons](#control-home-and-recent-buttons)
     - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
   - [AppCenter Kiosk API](#appcenter-kiosk-api)
     - [Change Kiosk Admin Password](#change-kiosk-admin-password)
@@ -198,6 +199,23 @@ To enable Strict Mode, add the following `<meta-data>` tag to your application's
 
 It's recommended to enable Strict Mode during development and testing to catch potential issues early. For production environments, consider if silent failure or explicit exception handling is more suitable for your application's error strategy.
 
+
+**Common Direct Broadcast Examples**
+
+Use the action, target package, and typed extras shown in each API's `Direct Broadcast` table. In an MDM console such as AirWatch or SOTI, enter the same values in the corresponding broadcast fields.
+
+```kotlin
+// Implicit broadcast
+val implicitRequest = Intent("ACTION_FROM_THIS_MANUAL")
+    .putExtra("extra_key", "extra_value")
+context.sendBroadcast(implicitRequest)
+
+// Explicit broadcast
+val explicitRequest = Intent("ACTION_FROM_THIS_MANUAL")
+    .setPackage("TARGET_PACKAGE_FROM_THIS_MANUAL")
+    .putExtra("extra_key", true)
+context.sendBroadcast(explicitRequest)
+```
 ---
 
 ## API
@@ -216,6 +234,19 @@ Turns on airplane mode.
 M3Mobile.instance.turnOnAirplaneMode()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `airplane` |
+| `airplane` | `Boolean` | O | `true` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Turn off Airplane Mode
 
 Turns off airplane mode.
@@ -225,6 +256,19 @@ Turns off airplane mode.
 ```kotlin
 M3Mobile.instance.turnOffAirplaneMode()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `airplane` |
+| `airplane` | `Boolean` | O | `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 ---
 
@@ -260,6 +304,24 @@ M3Mobile.instance.installLocalApk(
 Use the two-parameter overload when only same-version reinstall support is needed on StartUp 6.8.1.
 The three-parameter overload always requires StartUp 6.8.2, even when `launchAfterInstall` is `false`.
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `apk_install` |
+| `type` | `Int` | O | `0` |
+| `path` | `String` | O | Absolute APK path |
+| `allow_same_version_update` | `Boolean` | X | Whether to reinstall the same versionCode |
+| `launch_after_install` | `Boolean` | X | Whether to launch after successful installation |
+
+Both optional extras default to `false` when omitted.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Install Remote APK
 
 Downloads and installs an APK from a remote URL. It provides the same reinstall and post-install
@@ -291,6 +353,24 @@ It does not launch when download or installation fails, the package name is unav
 same-version installation is skipped. Verify the StartUp notification and logs, the installed
 package, and the launched screen.
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `apk_install` |
+| `type` | `Int` | O | `1` |
+| `url` | `String` | O | APK download URL |
+| `allow_same_version_update` | `Boolean` | X | Whether to reinstall the same versionCode |
+| `launch_after_install` | `Boolean` | X | Whether to launch after successful installation |
+
+Both optional extras default to `false` when omitted.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Enable Application
 
 Enables a specified application package.
@@ -303,6 +383,20 @@ Enables a specified application package.
 M3Mobile.instance.enableApp(packageName: String)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `application` |
+| `package_name` | `String` | O | Target application package |
+| `enable` | `Boolean` | O | `true` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Disable Application
 
 Disables a specified application package.
@@ -314,6 +408,20 @@ Disables a specified application package.
 ```kotlin
 M3Mobile.instance.disableApp(packageName: String)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `application` |
+| `package_name` | `String` | O | Target application package |
+| `enable` | `Boolean` | O | `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Run Application
 
@@ -329,6 +437,22 @@ Enables and runs a specified application package.
 ```kotlin
 M3Mobile.instance.runApp(packageName: String)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `application` |
+| `package_name` | `String` | O | Target application package |
+| `enable` | `Boolean` | O | `true` |
+| `auto_run` | `Boolean` | O | `true` |
+| `pin_app` | `Boolean` | O | `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Run and Pin Application
 
@@ -347,22 +471,21 @@ Enables, runs, and pins a specified application package.
 M3Mobile.instance.runAndPinApp(packageName: String)
 ```
 
+**Direct Broadcast**
 
-#### Direct Broadcast Usage
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
 
-If you do not use M3SDK, you can send the StartUp broadcast directly.
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `application` |
+| `package_name` | `String` | O | Target application package |
+| `enable` | `Boolean` | O | `true` |
+| `auto_run` | `Boolean` | O | `true` |
+| `pin_app` | `Boolean` | O | `true` |
 
-Run and pin an app:
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
 
-```java
-Intent request = new Intent("com.android.server.startupservice.system");
-request.putExtra("setting", "application");
-request.putExtra("package_name", "com.example.app");
-request.putExtra("enable", true);
-request.putExtra("auto_run", true);
-request.putExtra("pin_app", true);
-context.sendBroadcast(request);
-```
 
 
 ---
@@ -384,6 +507,19 @@ Sets the media volume level.
 M3Mobile.instance.setMediaVolume(value: Int)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `volume` |
+| `volume_media` | `Int` | O | Volume value passed to the SDK |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set Ringtone Volume
 
 Sets the ringtone volume level.
@@ -399,6 +535,19 @@ Sets the ringtone volume level.
 M3Mobile.instance.setRingtoneVolume(value: Int)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `volume` |
+| `volume_ringtone` | `Int` | O | Volume value passed to the SDK |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set Notification Volume
 
 Sets the notification volume level.
@@ -412,6 +561,19 @@ Sets the notification volume level.
 ```kotlin
 M3Mobile.instance.setNotificationVolume(value: Int)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `volume` |
+| `volume_notification` | `Int` | O | Volume value passed to the SDK |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Set Alarm Volume
 
@@ -428,6 +590,19 @@ Sets the alarm volume level.
 M3Mobile.instance.setAlarmVolume(value: Int)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `volume` |
+| `volume_alarm` | `Int` | O | Volume value passed to the SDK |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Enable Vibration Mode
 
 Enables vibration mode. This sets ringtone and notification volumes to 0.
@@ -438,6 +613,19 @@ Enables vibration mode. This sets ringtone and notification volumes to 0.
 M3Mobile.instance.enableVibrationMode()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `volume` |
+| `volume_vibrator` | `Boolean` | O | `true` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Disable Vibration Mode
 
 Disables vibration mode.
@@ -447,6 +635,19 @@ Disables vibration mode.
 ```kotlin
 M3Mobile.instance.disableVibrationMode()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `volume` |
+| `volume_vibrator` | `Boolean` | O | `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Set Display Settings
 
@@ -459,6 +660,30 @@ Configures display settings.
 ```kotlin
 M3Mobile.instance.setDisplaySetting(displaySetting: DisplaySetting)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `display` |
+| `display_auto_brightness` | `Boolean` | X | Auto brightness |
+| `display_brightness_step` | `Int` | X | `1..255` |
+| `display_auto_rotate` | `Boolean` | X | Auto rotation |
+| `display_rotate_force` | `Int` | X | `0..7` |
+| `display_disable_screen_lock` | `Boolean` | X | Whether to disable screen lock |
+| `display_sleep` | `Int` | X | Screen timeout in ms or `2147483647` |
+| `display_policy_control` | `Int` | X | `1..4` |
+| `display_battery_percentage` | `Int` | X | Show `1`, hide `2` |
+| `display_screensaver_mode` | `Int` | X | `0..3` |
+| `display_screensaver_component` | `String` | X | Component name |
+
+Send only the extras to change in addition to `setting`. Omitted fields retain their current system values.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Get Serial Number
 
@@ -475,6 +700,24 @@ M3Mobile.instance.getSerialNumber(): String
 M3Mobile.instance.getSerialNumber(callback: RequestCallback<String>): Job
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `get_serial` |
+
+*   **Response action**: `com.android.server.startupservice.system.response`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `get_serial` | `String` | Serial number |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
+
 #### Lock Status Bar Expansion
 
 Locks the expansion of the status bar. When locked, the user cannot pull down the status bar.
@@ -485,6 +728,19 @@ Locks the expansion of the status bar. When locked, the user cannot pull down th
 M3Mobile.instance.lockStatusBarExpansion()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `status_bar` |
+| `prevent` | `Boolean` | O | `true` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Unlock Status Bar Expansion
 
 Unlocks the expansion of the status bar.
@@ -494,6 +750,19 @@ Unlocks the expansion of the status bar.
 ```kotlin
 M3Mobile.instance.unlockStatusBarExpansion()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `status_bar` |
+| `prevent` | `Boolean` | O | `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Get Bluetooth MAC Address
 
@@ -510,6 +779,24 @@ M3Mobile.instance.getBluetoothMac(): String
 // Callback (for java)
 M3Mobile.instance.getBluetoothMac(callback: RequestCallback<String>): Job
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `get_bluetooth_mac` |
+
+*   **Response action**: `com.android.server.startupservice.system.response`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `get_bluetooth_mac` | `String` | Bluetooth MAC address |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
 
 ---
 
@@ -530,6 +817,19 @@ Sets the device's system language and country.
 M3Mobile.instance.setLanguage(language: String, country: String)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `language` |
+| `language_value` | `String` | O | `language-country`, for example `ko-KR` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 ---
 
 ### Network API
@@ -548,6 +848,40 @@ Sets the Access Point Name (APN) configuration.
 M3Mobile.instance.setApn(apn: Apn)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `apn` |
+| `apn_name` | `String` | O | APN name |
+| `apn_url` | `String` | O | APN URL |
+| `apn_mcc` | `String` | O | MCC |
+| `apn_mnc` | `String` | O | MNC |
+| `apn_type` | `String` | O | APN type |
+| `apn_proxy` | `String` | X | Proxy |
+| `apn_port` | `String` | X | Port |
+| `apn_user` | `String` | X | User |
+| `apn_password` | `String` | X | Password |
+| `apn_server` | `String` | X | Server |
+| `apn_mmsc` | `String` | X | MMSC |
+| `apn_mms_proxy` | `String` | X | MMS proxy |
+| `apn_mms_port` | `String` | X | MMS port |
+| `apn_auth_type` | `Int` | X | Auth type |
+| `apn_protocol` | `Int` | X | Protocol |
+| `apn_roaming` | `Int` | X | Roaming protocol |
+| `apn_mvno` | `Int` | X | MVNO type |
+| `apn_mvno_value` | `String` | X | MVNO value |
+
+Omitted optional `String` extras are handled as `null`; omitted optional `Int` extras default to `0`.
+
+Immediately after the setting request, send an additional `com.android.server.startupservice.config.fin` broadcast.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Enable NFC
 
 Enables Near Field Communication (NFC).
@@ -559,6 +893,19 @@ Enables Near Field Communication (NFC).
 M3Mobile.instance.enableNfc()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `nfc` |
+| `nfc_on` | `Boolean` | O | `true` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Disable NFC
 
 Disables Near Field Communication (NFC).
@@ -569,6 +916,19 @@ Disables Near Field Communication (NFC).
 ```kotlin
 M3Mobile.instance.disableNfc()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `nfc` |
+| `nfc_on` | `Boolean` | O | `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 ---
 
@@ -589,6 +949,21 @@ Grants a specific runtime permission to a target application package.
 M3Mobile.instance.grantPermission(packageName: String, permission: String)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `permission` |
+| `package` | `String` | O | Target application package |
+| `permission` | `String` | O | Android permission |
+| `permission_mode` | `Int` | O | `1` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Revoke Permission
 
 Revokes a specific runtime permission from a target application package.
@@ -601,6 +976,21 @@ Revokes a specific runtime permission from a target application package.
 ```kotlin
 M3Mobile.instance.revokePermission(packageName: String, permission: String)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `permission` |
+| `package` | `String` | O | Target application package |
+| `permission` | `String` | O | Android permission |
+| `permission_mode` | `Int` | O | `2` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 ---
 
@@ -620,6 +1010,22 @@ Sets the Quick Tiles to be displayed.
 M3Mobile.instance.setQuickTiles(vararg quickTile: QuickTile)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `quick_tile` |
+| `quick_tile_action` | `String` | O | `add` |
+| `quick_tile_items` | `String` | O | JSON array string |
+
+Immediately after the setting request, send an additional `com.android.server.startupservice.config.fin` broadcast.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Reset Quick Tiles
 
 Resets the Quick Tiles configuration to the default state.
@@ -629,6 +1035,22 @@ Resets the Quick Tiles configuration to the default state.
 ```kotlin
 M3Mobile.instance.resetQuickTile()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `quick_tile` |
+| `quick_tile_action` | `String` | O | `reset` |
+| `quick_tile_items` | `String` | O | `[]` |
+
+Immediately after the setting request, send an additional `com.android.server.startupservice.config.fin` broadcast.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 ---
 
@@ -646,6 +1068,15 @@ Starts the scanning process.
 M3Mobile.instance.startScan()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `android.intent.action.M3SCANNER_BUTTON_DOWN`
+*   **Target package**: Not set (implicit broadcast)
+*   **Extra**: None
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Stop Scan
 
 Stops the scanning process.
@@ -655,6 +1086,15 @@ Stops the scanning process.
 ```kotlin
 M3Mobile.instance.stopScan()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `android.intent.action.M3SCANNER_BUTTON_UP`
+*   **Target package**: Not set (implicit broadcast)
+*   **Extra**: None
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Get Scanner Status
 
@@ -675,6 +1115,21 @@ M3Mobile.instance.getScannerStatus(): Int
 M3Mobile.instance.getScannerStatus(callback: RequestCallback<Int>): Job
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.m3onoff.ison`
+*   **Target package**: Not set (implicit broadcast)
+*   **Extra**: None
+
+*   **Response action**: `scanemul.action.status`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `scanemul.extra.status` | `Int` | `1`, `2`, `4`, `8` |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
+
 #### Get Scanner Type
 
 Retrieves the type of the scanner hardware.
@@ -689,6 +1144,21 @@ M3Mobile.instance.getScannerType(): String
 // Callback
 M3Mobile.instance.getScannerType(callback: RequestCallback<String>): Job
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.m3onoff.ison`
+*   **Target package**: Not set (implicit broadcast)
+*   **Extra**: None
+
+*   **Response action**: `scanemul.action.status`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `m3scanner_module_type` | `String` | Scanner module type |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
 
 #### Scan Result Listener
 
@@ -706,6 +1176,11 @@ M3Mobile.instance.registerOnScanResultListener(listener: OnScanResultListener)
 M3Mobile.instance.unregisterOnScanResultListener(listener: OnScanResultListener)
 ```
 
+**Direct Broadcast**
+
+No direct command broadcast is available. Results use the ScanEmul message connection, so the SDK or a receiving application is required.
+
+
 #### GS1 Parsed Listener
 
 Registers or unregisters a listener to receive GS1 parsed scan results.
@@ -722,6 +1197,11 @@ M3Mobile.instance.registerOnGS1ParsedListener(listener: OnGS1ParsedListener)
 M3Mobile.instance.unregisterOnGS1ParsedListener(listener: OnGS1ParsedListener)
 ```
 
+**Direct Broadcast**
+
+No direct command broadcast is available. Results use the ScanEmul message connection, so the SDK or a receiving application is required.
+
+
 #### Digital Link Parsed Listener
 
 Registers or unregisters a listener to receive Digital Link parsed scan results.
@@ -737,6 +1217,11 @@ M3Mobile.instance.registerOnDigitalLinkParsedListener(listener: OnDigitalLinkPar
 // Unregister
 M3Mobile.instance.unregisterOnDigitalLinkParsedListener(listener: OnDigitalLinkParsedListener)
 ```
+
+**Direct Broadcast**
+
+No direct command broadcast is available. Results use the ScanEmul message connection, so the SDK or a receiving application is required.
+
 
 #### Scanner Settings
 
@@ -761,6 +1246,21 @@ M3Mobile.instance.disableScanLed()
 M3Mobile.instance.setScanLedTime(timeMillis: Int) // Range: 1 to 1000
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.settingchange`
+*   **Target package**: Not set (implicit broadcast)
+
+| Operation | `setting` | Extra | Type | Value |
+|---|---|---|---|---|
+| Sound | `sound` | `sound_mode` | `Int` | None `0`, BEEP `1`, DING_DONG `2` |
+| Vibration | `vibration` | `vibration_value` | `Int` | Disable `0`, enable `1` |
+| LED | `led` | `led_value` | `Int` | Disable `0`, enable `1` |
+| LED time | `led_time` | `led_time_value` | `Int` | `1..1000` ms |
+
+> These are one-way requests. Sending a broadcast does not guarantee that a setting was applied. Verify the resulting state separately in the MDM.
+
+
 ##### Scanning Mode
 
 ```kotlin
@@ -770,6 +1270,26 @@ M3Mobile.instance.setScannerReadMode(ReadMode.MULTIPLE)
 // Getter
 M3Mobile.instance.getScannerReadMode()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.settingchange`
+*   **Target package**: Not set (implicit broadcast)
+
+| Operation | `setting` | Extra | Type | Value |
+|---|---|---|---|---|
+| Read mode SET | `read_mode` | `read_mode_value` | `Int` | ASYNC `0`, SYNC `1`, CONTINUE `2`, MULTIPLE `3`, PRESENTATION `4`, AIMING_AND_RELEASE `5` |
+
+*   **Response action**: `com.android.server.scannerservice.setting`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `m3scanner_read_mode` | `Int` | Current read mode `0..5` |
+
+> SET requests are one-way. GET results require an Android application that listens for the response action; a typical MDM web console may not receive them.
+
+GET sends action `com.android.server.scannerservice.getsetting` without extras.
+
 
 ##### Output Configuration
 
@@ -791,6 +1311,32 @@ M3Mobile.instance.getScanResultPostfix()
 M3Mobile.instance.getScanResultEndCharacter()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.settingchange`
+*   **Target package**: Not set (implicit broadcast)
+
+| Operation | `setting` | Extra | Type | Value |
+|---|---|---|---|---|
+| Output mode SET | `output_mode` | `output_mode_value` | `Int` | COPY_AND_PASTE `0`, KEY_EMULATION `1`, COPY_TO_CLIPBOARD `2`, COMMIT_TEXT `3` |
+| Prefix SET | `prefix` | `prefix_value` | `String` | Prefix string |
+| Postfix SET | `postfix` | `postfix_value` | `String` | Postfix string |
+| End character SET | `end_char` | `end_char_value` | `Int` | ENTER `0`, SPACE `1`, TAB `2`, KEYBOARD_ENTER `3`, KEYBOARD_SPACE `4`, KEYBOARD_TAB `5`, NONE `6` |
+
+*   **Response action**: `com.android.server.scannerservice.setting`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `m3scanner_output_mode` | `Int` | Current output mode |
+| `m3scanner_prefix` | `String` | Current prefix |
+| `m3scanner_postfix` | `String` | Current postfix |
+| `m3scanner_endchar` | `Int` | Current end character |
+
+> SET requests are one-way. GET results require an Android application that listens for the response action; a typical MDM web console may not receive them.
+
+GET sends action `com.android.server.scannerservice.getsetting` without extras.
+
+
 ##### Profile Status
 
 Checks if the current scanner profile is enabled.
@@ -798,6 +1344,110 @@ Checks if the current scanner profile is enabled.
 ```kotlin
 M3Mobile.instance.isScannerProfileEnabled()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.getsetting`
+*   **Target package**: Not set (implicit broadcast)
+*   **Extra**: None
+
+*   **Response action**: `com.android.server.scannerservice.setting`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `is_enable` | `Boolean` | Whether the current profile is enabled |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
+
+#### Floating Scanner Button UI
+
+Sets or retrieves the ScanEmul default scanner button image, opacity, and size on SM24.
+
+*   **Supported model**: `SM24`
+*   **Required ScanEmul version**: `4.14.10` or later
+
+```kotlin
+val options = ScannerButtonUiOptions(
+    imagePath = "/sdcard/Download/ScanEmul_Floating_Button_Images/target.png",
+    opacityPercent = 80,
+    size = ScannerButtonUiSize.LARGE,
+)
+
+val result = M3Mobile.instance.setAndVerifyScannerButtonUi(options)
+```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.scannerservice.settingchange`
+*   **Target package**: `net.m3mobile.app.scanemul`
+
+| Operation | `setting` | Extra | Type | Value |
+|---|---|---|---|---|
+| SET | `scanner_button_ui` | `request_id` | `String` | Response correlation ID; optional |
+| SET | `scanner_button_ui` | `scanner_button_image_path` | `String` | Absolute image path; empty string selects the default image; optional |
+| SET | `scanner_button_ui` | `scanner_button_opacity_percent` | `Int` | `20..100`; optional |
+| SET | `scanner_button_ui` | `scanner_button_size` | `String` | `extra_small`, `small`, `medium`, `large`, or `extra_large`; optional |
+
+*   **Response action**: `com.android.server.scannerservice.setting`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `setting` | `String` | `scanner_button_ui` |
+| `request_id` | `String` | Request ID |
+| `success` | `Boolean` | Whether the value was saved |
+| `status` | `String` | ScanEmul processing status |
+| `runtime_applied` | `Boolean` | Whether the running UI was updated |
+| `scanner_button_image_path` | `String` | Saved image path |
+| `scanner_button_opacity_percent` | `Int` | Saved opacity |
+| `scanner_button_size` | `String` | Saved size |
+
+ScanEmul sends a response broadcast for both SET and GET. A typical MDM web console may not receive it, so verify the actual UI state when only request delivery can be observed.
+
+GET uses the following contract.
+
+*   **Action**: `com.android.server.scannerservice.getsetting`
+*   **Target package**: `net.m3mobile.app.scanemul`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `scanner_button_ui` |
+| `request_id` | `String` | X | Response correlation ID |
+
+If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.14.10` or later is required.
+
+An application that handles the response directly must register a dynamic receiver for the response action and match `request_id`.
+
+```kotlin
+val requestId = UUID.randomUUID().toString()
+val receiver = object : BroadcastReceiver() {
+    override fun onReceive(receiverContext: Context, intent: Intent) {
+        if (intent.getStringExtra("setting") != "scanner_button_ui") return
+        if (intent.getStringExtra("request_id") != requestId) return
+
+        val success = intent.getBooleanExtra("success", false)
+        val status = intent.getStringExtra("status")
+        val runtimeApplied = intent.getBooleanExtra("runtime_applied", false)
+        receiverContext.unregisterReceiver(this)
+    }
+}
+
+val filter = IntentFilter("com.android.server.scannerservice.setting")
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    context.registerReceiver(receiver, filter, Context.RECEIVER_EXPORTED)
+} else {
+    context.registerReceiver(receiver, filter)
+}
+
+val request = Intent("com.android.server.scannerservice.getsetting")
+    .setPackage("net.m3mobile.app.scanemul")
+    .putExtra("setting", "scanner_button_ui")
+    .putExtra("request_id", requestId)
+context.sendOrderedBroadcast(request, null)
+
+// Unregister the receiver from timeout handling when no response arrives.
+```
+
 
 ---
 
@@ -814,6 +1464,21 @@ Resets the StartUp settings to their default values.
 ```kotlin
 M3Mobile.instance.resetStartUpSetting()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `option` |
+| `option_reset` | `Boolean` | O | `true` |
+
+Immediately after the setting request, send an additional `com.android.server.startupservice.config.fin` broadcast.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 ---
 ### KeyTool API
@@ -856,6 +1521,20 @@ M3Mobile.instance.disableFN()
 M3Mobile.instance.lockFN()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.m3.keytoolsl20.ACTION_CONTROL_FN_STATE`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `fn_state` | `Int` | O | Disable `0`, enable `1`, lock `2` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+Requires KeyTool SL20 `1.2.6` or later on SL20K.
+
+
 #### Set Key Function
 
 Assigns a KeyTool function title to a physical key title.
@@ -897,6 +1576,25 @@ The request sends `key_title`, `key_function`, and `key_wakeup` together. KeyToo
 mapping and then the Wake-Up state sequentially; it does not roll both changes back as one
 transaction. A normal return therefore does not prove that both settings were applied.
 
+**Direct Broadcast**
+
+*   **Action**: `com.m3.keytoolsl20.ACTION_SET_KEY`
+*   **Target package**: `com.m3.keytoolsl20`
+*   **Delivery**: Ordered broadcast
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `key_title` | `String` | O | KeyTool key title |
+| `key_function` | `String` | O | KeyTool function title |
+| `key_wakeup` | `Boolean` | X | Use on SM24 to also change Wake-Up in the same request |
+
+Omitting `key_wakeup` leaves the existing Wake-Up setting unchanged.
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+Minimum KeyTool SL20 versions are `1.2.6` for SL20/SL20K/SL20P/SL25/WD10, `1.3.8` for SM24, and `1.3.16` for SM25. The overload that includes `key_wakeup` requires SM24 and version `1.3.8` or later.
+
+
 #### Control Home and Recent Buttons
 
 Enables or disables the SystemUI Home and Recent navigation buttons. These methods send the same
@@ -913,6 +1611,23 @@ M3Mobile.instance.disableRecentButton()
 ```
 
 These are one-way requests. Verify the actual navigation button after each call.
+
+**Direct Broadcast**
+
+*   **Action**: `com.m3.keytoolsl20.ACTION_SET_KEY`
+*   **Target package**: `com.m3.keytoolsl20`
+
+| Operation | `key_title` (`String`, required) | `key_function` (`String`, required) |
+|---|---|---|
+| Enable Home | `Home` | `Default` |
+| Disable Home | `Home` | `Disable` |
+| Enable Recent | `Recent` | `Default` |
+| Disable Recent | `Recent` | `Disable` |
+
+> These are one-way requests. Sending a broadcast does not guarantee that a setting was applied. Verify the resulting state separately in the MDM.
+
+Send an ordered broadcast. KeyTool SL20 `1.4.1` or later is required.
+
 
 #### Control Scan-key Wake-Up
 
@@ -937,6 +1652,54 @@ M3Mobile.instance.disableRightScanWakeUp()
 
 The published-package sample displays the installed KeyTool package version and reports one-way
 calls as `REQUEST_SENT_UNVERIFIED` rather than success.
+
+**SL20P left**
+
+**Direct Broadcast**
+
+*   **Action**: `net.m3.keytool.WAKEUP_CONTROL_LEFT`
+*   **Target package**: `net.m3.keytool`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `wakeup_enable` | `Boolean` | O | `true` or `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+Use only for the SL20P left scan key.
+
+**SL20P right**
+
+**Direct Broadcast**
+
+*   **Action**: `net.m3.keytool.WAKEUP_CONTROL_RIGHT`
+*   **Target package**: `net.m3.keytool`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `wakeup_enable` | `Boolean` | O | `true` or `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+Use only for the SL20P right scan key.
+
+**SM24**
+
+**Direct Broadcast**
+
+*   **Action**: `com.m3.keytoolsl20.ACTION_SET_KEY`
+*   **Target package**: `com.m3.keytoolsl20`
+*   **Delivery**: Ordered broadcast
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `key_title` | `String` | O | `Left Scan` or `Right Scan` |
+| `key_wakeup` | `Boolean` | O | `true` or `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+Use only on SM24. KeyTool SL20 `1.3.8` or later is required and `1.3.9` or later is recommended. Do not send `key_function` when changing only Wake-Up.
+
 
 ---
 
@@ -966,16 +1729,21 @@ request and the SDK cannot confirm the result.
 M3Mobile.instance.changeKioskAdminPassword(currentPassword, newPassword)
 ```
 
-Direct AppCenter broadcast request:
+**Direct Broadcast**
 
-```java
-Intent request = new Intent("com.m3.appcenter.ACTION_CHANGE_PASSWORD");
-request.setPackage("com.m3.appcenter");
-request.putExtra("com.m3.appcenter.EXTRA_CURRENT_PASSWORD", currentPassword);
-request.putExtra("com.m3.appcenter.EXTRA_NEW_PASSWORD", newPassword);
-request.putExtra("com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED", true);
-context.sendBroadcast(request);
-```
+*   **Action**: `com.m3.appcenter.ACTION_CHANGE_PASSWORD`
+*   **Target package**: `com.m3.appcenter`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `com.m3.appcenter.EXTRA_CURRENT_PASSWORD` | `String` | O | Current administrator password |
+| `com.m3.appcenter.EXTRA_NEW_PASSWORD` | `String` | O | New password, 4 to 20 characters |
+| `com.m3.appcenter.EXTRA_ENCRYPTION_ENABLED` | `Boolean` | O | `true` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+AppCenter `2.2.0` or later is required.
+
 
 #### Keep Admin Mode While Screen Is Off
 
@@ -993,14 +1761,19 @@ M3Mobile.instance.setKeepAdminModeOnSleep(true)
 M3Mobile.instance.setKeepAdminModeOnSleep(false)
 ```
 
-Direct AppCenter broadcast request:
+**Direct Broadcast**
 
-```java
-Intent request = new Intent("com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP");
-request.setPackage("com.m3.appcenter");
-request.putExtra("com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP", enabled ? 1 : 0);
-context.sendBroadcast(request);
-```
+*   **Action**: `com.m3.appcenter.ACTION_SET_KEEP_ADMIN_MODE_ON_SLEEP`
+*   **Target package**: `com.m3.appcenter`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `com.m3.appcenter.EXTRA_KEEP_ADMIN_MODE_ON_SLEEP` | `Int` | O | Keep `1`, disable `0` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+AppCenter `2.2.0` or later is required.
+
 
 ---
 
@@ -1021,6 +1794,20 @@ Sets the date and time of the device.
 M3Mobile.instance.setDateTime(dateTime: LocalDateTime)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `datetime` |
+| `date` | `String` | O | `yyyy-MM-dd` |
+| `time` | `String` | O | `HH:mm:ss` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set NTP Server
 
 Sets the NTP server for automatic time synchronization. This setting takes effect after the next reboot.
@@ -1032,6 +1819,19 @@ Sets the NTP server for automatic time synchronization. This setting takes effec
 ```kotlin
 M3Mobile.instance.setNtpServer(host: String)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `ntp` |
+| `ntp_server` | `String` | O | NTP host |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Set Timezone
 
@@ -1045,6 +1845,19 @@ Sets the system's default timezone.
 M3Mobile.instance.setTimeZone(timezone: String)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `timezone` |
+| `timezone` | `String` | O | IANA timezone ID |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Get NTP Server
 
 Retrieves the currently configured NTP server address.
@@ -1055,6 +1868,11 @@ Retrieves the currently configured NTP server address.
 ```kotlin
 M3Mobile.instance.getNtpServer(): String
 ```
+
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
 
 #### Get NTP Interval
 
@@ -1067,6 +1885,11 @@ Retrieves the currently configured NTP synchronization interval.
 M3Mobile.instance.getNtpInterval(): Int
 ```
 
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
+
 #### Get Timezone
 
 Retrieves the system's current default timezone.
@@ -1076,6 +1899,11 @@ Retrieves the system's current default timezone.
 ```kotlin
 M3Mobile.instance.getTimeZone(): String
 ```
+
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
 
 ---
 
@@ -1094,6 +1922,19 @@ Sets the USB connection mode to MTP (Media Transfer Protocol).
 M3Mobile.instance.setUsbModeMtp()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `usb_mode` | `String` | O | `mtp` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set USB Mode to RNDIS
 
 Sets the USB connection mode to RNDIS (USB Tethering).
@@ -1104,6 +1945,19 @@ Sets the USB connection mode to RNDIS (USB Tethering).
 ```kotlin
 M3Mobile.instance.setUsbModeRndis()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `usb_mode` | `String` | O | `rndis` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Set USB Mode to MIDI
 
@@ -1116,6 +1970,19 @@ Sets the USB connection mode to MIDI.
 M3Mobile.instance.setUsbModeMidi()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `usb_mode` | `String` | O | `midi` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set USB Mode to PTP
 
 Sets the USB connection mode to PTP (Picture Transfer Protocol).
@@ -1126,6 +1993,19 @@ Sets the USB connection mode to PTP (Picture Transfer Protocol).
 ```kotlin
 M3Mobile.instance.setUsbModePtp()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `usb_mode` | `String` | O | `ptp` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Disable USB Data (Charging Only)
 
@@ -1138,6 +2018,19 @@ Disables all USB data connections, setting the mode to charging only.
 M3Mobile.instance.setUsbModeNone()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `usb_mode` | `String` | O | `none` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Get Current USB Modes
 
 Retrieves the current USB connection mode.
@@ -1147,6 +2040,11 @@ Retrieves the current USB connection mode.
 ```kotlin
 M3Mobile.instance.getCurrentUsbModes(): List<String>
 ```
+
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
 
 ---
 
@@ -1168,6 +2066,24 @@ M3Mobile.instance.getWifiMac(): String
 // Callback (for java)
 M3Mobile.instance.getWifiMac(callback: RequestCallback<String>): Job
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `get_wifi_mac` |
+
+*   **Response action**: `com.android.server.startupservice.system.response`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `get_wifi_mac` | `String` | Wi-Fi MAC address |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
 
 #### Get Factory Wi-Fi MAC Address
 
@@ -1203,14 +2119,6 @@ M3Mobile.INSTANCE.getInstance().getFactoryWifiMac((result, error) -> {
 });
 ```
 
-Direct StartUp broadcast request:
-
-```java
-Intent request = new Intent("com.android.server.startupservice.system");
-request.putExtra("setting", "get_factory_wifi_mac");
-context.sendBroadcast(request);
-```
-
 Direct StartUp broadcast response:
 
 ```java
@@ -1223,6 +2131,26 @@ BroadcastReceiver receiver = new BroadcastReceiver() {
     }
 };
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `get_factory_wifi_mac` |
+
+*   **Response action**: `com.android.server.startupservice.system.response`
+
+| Response extra | Type | Value |
+|---|---|---|
+| `get_factory_wifi_mac` | `String` | Factory Wi-Fi MAC address |
+| `get_factory_wifi_mac_success` | `Boolean` | Whether the lookup succeeded |
+| `get_factory_wifi_mac_error_message` | `String` | Failure detail |
+
+> A typical MDM web console may not receive the response broadcast. Use an Android application that listens for the response action when a result is required.
+
 
 #### Set Wi-Fi Enabled
 
@@ -1240,14 +2168,18 @@ M3Mobile.instance.setWifiEnabled(true)
 M3Mobile.instance.setWifiEnabled(false)
 ```
 
-Direct StartUp broadcast request:
+**Direct Broadcast**
 
-```java
-Intent request = new Intent("com.android.server.startupservice.system");
-request.putExtra("setting", "wifi_enabled");
-request.putExtra("enabled", true);
-context.sendBroadcast(request);
-```
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_enabled` |
+| `enabled` | `Boolean` | O | `true` or `false` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Captive Portal Detection
 
@@ -1260,6 +2192,19 @@ Controls whether the device detects captive portals (login pages for public Wi-F
 M3Mobile.instance.enableCaptivePortalDetection()
 M3Mobile.instance.disableCaptivePortalDetection()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `captive_portal` |
+| `value` | `Int` | O | Enable `1`, disable `0` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Frequency Band Control
 
@@ -1274,6 +2219,19 @@ M3Mobile.instance.allowOnly2_4GHzWifiFrequencyBand()
 M3Mobile.instance.allowOnly5GHzWifiFrequencyBand()
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_freq_band` |
+| `value` | `Int` | O | All `0`, 2.4 GHz `1`, 5 GHz `2` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set Wi-Fi Country
 
 Sets the Wi-Fi country code.
@@ -1287,6 +2245,19 @@ Sets the Wi-Fi country code.
 M3Mobile.instance.setWifiCountry(countryCode: String)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_country_code` |
+| `value` | `String` | O | Two-letter country code |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Open Network Notification
 
 Controls notifications for available open Wi-Fi networks.
@@ -1297,6 +2268,19 @@ Controls notifications for available open Wi-Fi networks.
 M3Mobile.instance.enableOpenNetworkNotification()
 M3Mobile.instance.disableOpenNetworkNotification()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_open_noti` |
+| `value` | `Int` | O | Enable `1`, disable `0` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Roaming Configuration
 
@@ -1320,6 +2304,19 @@ Sets the signal strength (RSSI) threshold to start scanning for roaming.
 M3Mobile.instance.setRoamingTrigger(index: Int)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_roam_trigger` |
+| `value` | `String` | O | SDK index encoded as a string |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 ##### Set Roaming Delta
 
 Sets the minimum signal difference required to roam to a new AP.
@@ -1337,6 +2334,19 @@ Sets the minimum signal difference required to roam to a new AP.
 M3Mobile.instance.setRoamingDelta(index: Int)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_roam_delta` |
+| `value` | `String` | O | SDK index encoded as a string |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Wi-Fi Sleep Policy
 
 Controls when Wi-Fi should go to sleep.
@@ -1348,6 +2358,19 @@ M3Mobile.instance.setWifiSleepPolicyNever()         // Keep Wi-Fi on always
 M3Mobile.instance.setWifiSleepPolicyPluggedOnly()   // Keep on when plugged in
 M3Mobile.instance.setWifiSleepPolicyAlways()        // Allow sleep when screen is off
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_sleep` |
+| `value` | `Int` | O | Never `0`, plugged only `1`, always `2` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Wi-Fi Stability
 
@@ -1361,6 +2384,19 @@ M3Mobile.instance.setWifiStabilityNormal() // Balanced
 M3Mobile.instance.setWifiStabilityHigh()   // Performance focused (High battery usage)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_stability` |
+| `value` | `Int` | O | Normal `1`, high `2` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+
 #### Set Wi-Fi Channels
 
 Sets the allowed Wi-Fi channels.
@@ -1373,6 +2409,19 @@ Sets the allowed Wi-Fi channels.
 ```kotlin
 M3Mobile.instance.setWifiChannel(vararg channels: Int)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `wifi_channel` |
+| `value` | `String[]` | O | Array of channel number strings |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Network Management
 
@@ -1388,6 +2437,31 @@ Configures a Wi-Fi Access Point.
 M3Mobile.instance.setAccessPoint(accessPoint: AccessPoint)
 ```
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `access_point` |
+| `ssid` | `String` | O | SSID |
+| `security` | `Int` | O | None `0`, WEP `1`, WPA/WPA2 PSK `2`, 802.1x EAP `3` |
+| `password` | `String` | X | Password |
+| `static_enable` | `Boolean` | X | Whether static IP is enabled |
+| `ip_address` | `String` | X | IP address |
+| `mask` | `String` | X | Subnet mask |
+| `gateway` | `String` | X | Gateway |
+| `dns` | `String` | X | DNS |
+| `mac_random` | `Int` | X | Randomized MAC `0` (default), device MAC `1` |
+| `hidden_ssid` | `Boolean` | X | Hidden SSID |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+For direct broadcasts, `security` and `mac_random` use the StartUp receiver wire type, `Int`.
+When omitted, `static_enable=false`, `mac_random=0`, and `hidden_ssid=false`; the other optional `String` extras are handled as `null`.
+
+
 ##### Clear Saved Wi-Fi Networks
 
 Removes all saved Wi-Fi networks.
@@ -1397,6 +2471,18 @@ Removes all saved Wi-Fi networks.
 ```kotlin
 M3Mobile.instance.clearSavedWifiNetworks()
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `remove_all_wifi` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 ##### Remove Wi-Fi Network
 
@@ -1409,6 +2495,19 @@ Removes a specific Wi-Fi network.
 ```kotlin
 M3Mobile.instance.removeWifiNetwork(ssid: String)
 ```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `remove_wifi_by_ssid` |
+| `ssid` | `String` | O | SSID to remove |
+
+> This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
 
 #### Device Specific Wi-Fi Settings
 
@@ -1425,6 +2524,11 @@ Retrieves the current Wi-Fi roaming threshold value.
 M3Mobile.instance.getRoamingThreshold(): Int
 ```
 
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
+
 ##### Get Roaming Delta
 
 Retrieves the current Wi-Fi roaming delta value.
@@ -1435,6 +2539,11 @@ Retrieves the current Wi-Fi roaming delta value.
 ```kotlin
 M3Mobile.instance.getRoamingDelta(): Int
 ```
+
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
 
 ##### Get Wi-Fi Frequency Band
 
@@ -1450,6 +2559,11 @@ Retrieves the current preferred Wi-Fi frequency band value.
 M3Mobile.instance.getWifiFrequencyBand(): Int
 ```
 
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.
+
+
 ##### Get Wi-Fi Country Code
 
 Retrieves the current Wi-Fi country code.
@@ -1460,3 +2574,7 @@ Retrieves the current Wi-Fi country code.
 ```kotlin
 M3Mobile.instance.getWifiCountryCode(): String
 ```
+
+**Direct Broadcast**
+
+No direct command broadcast is available. This API reads Android system settings or a sticky system broadcast and does not send a command broadcast.

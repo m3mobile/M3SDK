@@ -123,6 +123,15 @@ code {
   font-weight: 500;
 }
 
+td code,
+th code,
+li code,
+p code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+
 pre {
   background-color: var(--bg-code);
   border: 1px solid var(--border-color);
