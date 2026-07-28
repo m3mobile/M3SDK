@@ -2,3 +2,4 @@ public abstract interface class net/m3mobile/feature/appcenter/api/AppCenterKios
 	public abstract fun changeKioskAdminPassword (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun setKeepAdminModeOnSleep (Z)V
 }
+
