@@ -78,6 +78,8 @@
     <Compile Include="Shared\UsbApi.cs" />
     <Compile Include="Shared\WifiApi.cs" />
     <Compile Include="Startup\IStartUpApi.cs" />
+    <Compile Include="Startup\ProjectMediaModels.cs" />
+    <Compile Include="Startup\ProjectMediaRequest.cs" />
     <Compile Include="Startup\StartUpApi.cs" />
     <Compile Include="Startup\StartupModels.cs" />
   </ItemGroup>

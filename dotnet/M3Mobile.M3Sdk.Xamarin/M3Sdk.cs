@@ -465,6 +465,30 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public Task<ProjectMediaResult> AllowProjectMediaAsync(string packageName)
+        {
+            return AllowProjectMediaAsync(packageName, CancellationToken.None);
+        }
+
+        /// <inheritdoc />
+        public Task<ProjectMediaResult> AllowProjectMediaAsync(
+            string packageName,
+            CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            return _startUp.AllowProjectMediaAsync(packageName, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public IM3Cancelable AllowProjectMedia(
+            string packageName,
+            M3RequestCallback<ProjectMediaResult> callback)
+        {
+            ThrowIfDisposed();
+            return _startUp.AllowProjectMedia(packageName, callback);
+        }
+
+        /// <inheritdoc />
         public void SetQuickTiles(params QuickTile[] quickTiles)
         {
             ThrowIfDisposed();

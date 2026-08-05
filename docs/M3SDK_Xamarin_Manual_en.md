@@ -47,6 +47,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
   - [Permission API](#permission-api)
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
+    - [Allow PROJECT_MEDIA for an Application](#allow-project_media-for-an-application)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
@@ -1091,6 +1092,52 @@ m3.RevokePermission("com.example.app", "android.permission.CAMERA");
 
 > This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
 
+
+#### Allow PROJECT_MEDIA for an Application
+
+Allows the Android `PROJECT_MEDIA` app operation for an installed screen-capture application. The
+caller supplies the package name, so the API is not limited to DroidVNC-NG.
+
+*   **Requires StartUp Version**: `6.8.4` or later
+*   **Supported Model**: `SM24` currently returns `Success`; other models return `UnsupportedDevice`.
+*   **Parameter**: `packageName` is the exact package name of an already installed application.
+
+```csharp
+ProjectMediaResult result = await m3.AllowProjectMediaAsync(
+    "net.christianbeier.droidvnc_ng");
+
+if (result.IsSuccess)
+    Android.Util.Log.Info("ProjectMedia", "PROJECT_MEDIA allowed");
+else
+    Android.Util.Log.Error("ProjectMedia", result.Status + ": " + result.ErrorMessage);
+```
+
+A callback overload is also available:
+
+```csharp
+IM3Cancelable request = m3.AllowProjectMedia(packageName, (result, error) =>
+{
+    if (error != null)
+        Android.Util.Log.Error("ProjectMedia", error.ToString());
+    else
+        Android.Util.Log.Info("ProjectMedia", result.Status + " (" + (int)result.Status + ")");
+});
+```
+
+`ProjectMediaResult` represents a StartUp feature outcome. A faulted task or callback `error`
+represents a transport failure, such as a broadcast failure or response timeout, and has no
+`ProjectMediaStatus`. An unrecognized response code is normalized to `ApplyFailed`, with the raw
+code included in `ErrorMessage`.
+
+| Code | `ProjectMediaStatus` | Meaning | Recommended action |
+|---:|---|---|---|
+| 0 | `Success` | StartUp allowed the operation and verified `MODE_ALLOWED`. | Start or connect the screen-capture application. |
+| 1 | `UnsupportedDevice` | The current model does not support the feature. | Use SM24 or a StartUp build that explicitly supports the model. |
+| 2 | `TargetNotInstalled` | The requested package is not installed. | Install the application and retry with its exact package name. |
+| 3 | `InvalidTarget` | The package name is blank, or the package and UID do not match. | Check the package name and resolved UID. |
+| 4 | `PermissionDenied` | StartUp cannot control AppOps with its current system privileges. | Check firmware signing, shared UID, and AppOps privileges. |
+| 5 | `AppOpUnavailable` | The required AppOps API is unavailable. | Check Android framework and StartUp compatibility. |
+| 6 | `ApplyFailed` | Applying the mode failed, or readback was not `MODE_ALLOWED`. | Inspect StartUp logs and the package, UID, and AppOps state. |
 
 ---
 

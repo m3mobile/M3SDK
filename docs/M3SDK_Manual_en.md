@@ -44,6 +44,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
   - [Permission API](#permission-api)
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
+    - [Allow PROJECT_MEDIA for an Application](#allow-project_media-for-an-application)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
@@ -991,6 +992,50 @@ M3Mobile.instance.revokePermission(packageName: String, permission: String)
 
 > This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
 
+
+#### Allow PROJECT_MEDIA for an Application
+
+Allows the Android `PROJECT_MEDIA` app operation for an installed screen-capture application. The
+caller supplies the package name, so the API is not limited to DroidVNC-NG.
+
+*   **Requires StartUp Version**: `6.8.4` or later
+*   **Supported Model**: `SM24` currently returns `SUCCESS`; other models return `UNSUPPORTED_DEVICE`.
+*   **Parameter**: `packageName` is the exact package name of an already installed application.
+*   **When to call**: Call when the customer application starts, before starting or connecting the screen-capture application. Repeated calls are safe.
+
+```kotlin
+val result = M3Mobile.instance.allowProjectMedia("net.christianbeier.droidvnc_ng")
+when (result.status) {
+    ProjectMediaStatus.SUCCESS -> Log.i("ProjectMedia", "PROJECT_MEDIA allowed")
+    else -> Log.e("ProjectMedia", "${result.status}: ${result.errorMessage}")
+}
+```
+
+A callback overload is also available and returns a cancellable `Job`:
+
+```kotlin
+val request = M3Mobile.instance.allowProjectMedia(packageName) { result, error ->
+    when {
+        error != null -> Log.e("ProjectMedia", "StartUp transport failure", error)
+        result != null -> Log.i("ProjectMedia", "${result.status} (${result.status.code})")
+    }
+}
+```
+
+`ProjectMediaResult` represents a StartUp feature outcome. A thrown exception or callback `error`
+represents a transport failure, such as a broadcast failure or response timeout, and has no
+`ProjectMediaStatus`. An unrecognized response code is normalized to `APPLY_FAILED`, with the raw
+code included in `errorMessage`.
+
+| Code | `ProjectMediaStatus` | Meaning | Recommended action |
+|---:|---|---|---|
+| 0 | `SUCCESS` | StartUp allowed the operation and verified `MODE_ALLOWED`. | Start or connect the screen-capture application. |
+| 1 | `UNSUPPORTED_DEVICE` | The current model does not support the feature. | Use SM24 or a StartUp build that explicitly supports the model. |
+| 2 | `TARGET_NOT_INSTALLED` | The requested package is not installed. | Install the application and retry with its exact package name. |
+| 3 | `INVALID_TARGET` | The package name is blank, or the package and UID do not match. | Check the package name and resolved UID. |
+| 4 | `PERMISSION_DENIED` | StartUp cannot control AppOps with its current system privileges. | Check firmware signing, shared UID, and AppOps privileges. |
+| 5 | `APP_OP_UNAVAILABLE` | The required AppOps API is unavailable. | Check Android framework and StartUp compatibility. |
+| 6 | `APPLY_FAILED` | Applying the mode failed, or readback was not `MODE_ALLOWED`. | Inspect StartUp logs and the package, UID, and AppOps state. |
 
 ---
 

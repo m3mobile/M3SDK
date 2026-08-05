@@ -26,6 +26,8 @@ public sealed class CategoryActivity : Activity
     private const string KeyToolSl20Package = "com.m3.keytoolsl20";
     private const string KeyToolWakeUpPackage = "net.m3.keytool";
     private const string AppCenterPackage = "com.m3.appcenter";
+    private const string DroidVncPackage = "net.christianbeier.droidvnc_ng";
+    private const string MissingProjectMediaPackage = "net.m3mobile.missing.projectmedia";
     private const string DefaultScannerButtonImagePath =
         "/sdcard/Download/ScanEmul_Floating_Button_Images/target.png";
 
@@ -121,6 +123,7 @@ public sealed class CategoryActivity : Activity
             case SampleCategory.Language: LanguageSample(); break;
             case SampleCategory.Network: NetworkSample(); break;
             case SampleCategory.Permission: PermissionSample(); break;
+            case SampleCategory.ProjectMedia: ProjectMediaSample(); break;
             case SampleCategory.QuickTile: QuickTileSample(); break;
             case SampleCategory.Scanner: ScannerSample(); break;
             case SampleCategory.StartUpSetting: StartUpSettingSample(); break;
@@ -282,6 +285,85 @@ public sealed class CategoryActivity : Activity
             section.Result.Append("\nobserved=" +
                 (CheckSelfPermission(Manifest.Permission.Camera) == Permission.Granted));
         });
+    }
+
+    private void ProjectMediaSample()
+    {
+        var section = Section(Resource.String.project_media);
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.project_media_description) + "\n" +
+                GetString(Resource.String.project_media_requirement)
+        });
+        var packageName = TextField(Resource.String.project_media_target_package, DroidVncPackage);
+        section.Add(packageName);
+        AddAsyncButton(
+            section,
+            Resource.String.project_media_run_entered,
+            "AllowProjectMediaAsync(enteredPackage)",
+            async () => ProjectMediaText(
+                GetString(Resource.String.project_media_live_result),
+                packageName.Text ?? string.Empty,
+                await _sdk!.AllowProjectMediaAsync(packageName.Text ?? string.Empty)));
+        AddAsyncButton(
+            section,
+            Resource.String.project_media_test_droid_vnc,
+            "AllowProjectMediaAsync(DroidVNC)",
+            async () =>
+            {
+                packageName.Text = DroidVncPackage;
+                return ProjectMediaText(
+                    GetString(Resource.String.project_media_live_result),
+                    DroidVncPackage,
+                    await _sdk!.AllowProjectMediaAsync(DroidVncPackage));
+            });
+        AddAsyncButton(
+            section,
+            Resource.String.project_media_test_missing,
+            "AllowProjectMediaAsync(missingPackage)",
+            async () =>
+            {
+                packageName.Text = MissingProjectMediaPackage;
+                return ProjectMediaText(
+                    GetString(Resource.String.project_media_live_result),
+                    MissingProjectMediaPackage,
+                    await _sdk!.AllowProjectMediaAsync(MissingProjectMediaPackage));
+            });
+        AddAsyncButton(
+            section,
+            Resource.String.project_media_test_invalid,
+            "AllowProjectMediaAsync(blankPackage)",
+            async () =>
+            {
+                packageName.Text = string.Empty;
+                return ProjectMediaText(
+                    GetString(Resource.String.project_media_live_result),
+                    string.Empty,
+                    await _sdk!.AllowProjectMediaAsync(string.Empty));
+            });
+
+        section.Add(SectionTitle(Resource.String.project_media_status_preview_title));
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.project_media_status_preview_description)
+        });
+        foreach (var status in Enum.GetValues<ProjectMediaStatus>())
+        {
+            var previewStatus = status;
+            AddButton(section, status + " (" + (int)status + ")", () =>
+            {
+                var content = previewStatus.Content();
+                var errorMessage = previewStatus == ProjectMediaStatus.Success
+                    ? string.Empty
+                    : GetString(content.ConditionResource);
+                section.Result.Text = _executionTrace.Message(
+                    "PreviewProjectMediaStatus(" + previewStatus + ")",
+                    ProjectMediaText(
+                        GetString(Resource.String.project_media_preview_result),
+                        packageName.Text ?? string.Empty,
+                        new ProjectMediaResult(previewStatus, errorMessage)));
+            });
+        }
     }
 
     private void QuickTileSample()
@@ -534,9 +616,14 @@ public sealed class CategoryActivity : Activity
 
     private void AddButton(SectionView section, int labelId, Action action)
     {
+        AddButton(section, GetString(labelId), action);
+    }
+
+    private void AddButton(SectionView section, string label, Action action)
+    {
         var button = new Button(this)
         {
-            Text = GetString(labelId)
+            Text = label
         };
         button.Click += (_, _) =>
         {
@@ -668,6 +755,24 @@ public sealed class CategoryActivity : Activity
             "\nimagePath=" + (settings == null ? string.Empty : settings.ImagePath) +
             "\nopacity=" + (settings == null ? string.Empty : settings.OpacityPercent.ToString()) +
             "\nsize=" + (settings == null ? string.Empty : settings.Size.ToString());
+    }
+
+    private string ProjectMediaText(
+        string source,
+        string packageName,
+        ProjectMediaResult result)
+    {
+        var content = result.Status.Content();
+        return
+            source +
+            "\nstatus=" + result.Status +
+            "\ncode=" + (int)result.Status +
+            "\nisSuccess=" + result.IsSuccess +
+            "\npackage=" + (string.IsNullOrEmpty(packageName) ? "<empty>" : packageName) +
+            "\nerrorMessage=" + (string.IsNullOrEmpty(result.ErrorMessage) ? "<empty>" : result.ErrorMessage) +
+            "\ncondition=" + GetString(content.ConditionResource) +
+            "\nnextAction=" + GetString(content.ActionResource) +
+            "\ndevice=" + Build.Model;
     }
 
     private static string SdkVersion()

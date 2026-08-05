@@ -22,6 +22,7 @@
 | Language | English/Korean 변경 | 단방향 요청 |
 | Network | NFC 켜기/끄기와 상태 확인 | 요청 상태 + 관찰값 |
 | Permission | 샘플 앱 카메라 권한 부여와 실제 권한 확인 | 요청 상태 + 관찰값 |
+| PROJECT_MEDIA | 패키지 직접 입력, DroidVNC, 미설치, 빈 대상 실제 호출과 7개 상태 UI 미리보기 | StartUp 상태 코드 또는 통신 예외 |
 | Quick Tile | Wi-Fi Quick Tile 설정 | 단방향 요청 |
 | Scanner | Scan Result Listener | 수신값 |
 | StartUp Setting | Reset StartUp Settings | 단방향 요청 |
@@ -79,6 +80,10 @@ Alpha는 기본 필수 단계가 아니다. 다음 중 하나에 해당할 때 �
 - 응답형 API가 실제 값을 표시하는가.
 - 단방향 API가 `REQUEST_SENT_UNVERIFIED`로 표시되는가.
 - 실패 시 예외 타입, 메시지, 모델, Android 및 대상 앱 버전을 한 화면에서 확인할 수 있는가.
+- SM24에서 DroidVNC 프리셋 호출 결과가 `SUCCESS(0)`이고 실제 AppOps가 `allow`인가.
+- SM24에서 미설치 패키지와 빈 패키지 프리셋이 각각 `TARGET_NOT_INSTALLED(2)`, `INVALID_TARGET(3)`를 반환하는가.
+- 최신 StartUp을 설치한 비 SM24에서 호출 결과가 `UNSUPPORTED_DEVICE(1)`인가.
+- 두 샘플의 상태 미리보기에서 0~6 전체 상태의 의미와 대응 방법이 표시되며 실제 StartUp 미호출임을 명시하는가.
 - SM24에서 Wi-Fi를 끈 상태로 `setWifiEnabled(true)` 호출 후 실제 Wi-Fi가 켜지는가. StartUp 6.8.3 이상 조건으로 확인한다.
 - SM24에서 Wi-Fi를 켠 상태로 `setWifiEnabled(false)` 호출 후 실제 Wi-Fi가 꺼지는가. StartUp 6.8.3 이상 조건으로 확인한다.
 - AppCenter 2.2.0 이상에서 관리자 비밀번호 변경 요청이 `REQUEST_SENT_UNVERIFIED`로 표시되고, 비밀번호 값이 결과 화면에 표시되지 않는가.

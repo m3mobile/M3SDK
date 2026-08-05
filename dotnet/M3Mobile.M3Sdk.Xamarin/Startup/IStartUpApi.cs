@@ -252,6 +252,40 @@ namespace M3Sdk.Xamarin.Startup
         void RevokePermission(string packageName, string permission);
 
         /// <summary>
+        /// Asynchronously allows PROJECT_MEDIA for an installed application package.
+        /// </summary>
+        /// <param name="packageName">The installed package that will receive PROJECT_MEDIA.</param>
+        /// <returns>A task that resolves to the StartUp feature result.</returns>
+        /// <remarks>
+        /// Requires StartUp version <c>6.8.4</c> or later. StartUp currently returns
+        /// <see cref="ProjectMediaStatus.Success" /> only on SM24; other models return
+        /// <see cref="ProjectMediaStatus.UnsupportedDevice" />.
+        /// </remarks>
+        Task<ProjectMediaResult> AllowProjectMediaAsync(string packageName);
+
+        /// <summary>
+        /// Asynchronously allows PROJECT_MEDIA for an installed application package.
+        /// </summary>
+        /// <param name="packageName">The installed package that will receive PROJECT_MEDIA.</param>
+        /// <param name="cancellationToken">A token that cancels the pending StartUp response wait.</param>
+        /// <returns>A task that resolves to the StartUp feature result.</returns>
+        /// <remarks>Requires StartUp version <c>6.8.4</c> or later.</remarks>
+        Task<ProjectMediaResult> AllowProjectMediaAsync(
+            string packageName,
+            CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Allows PROJECT_MEDIA and returns the result through a main-thread callback.
+        /// </summary>
+        /// <param name="packageName">The installed package that will receive PROJECT_MEDIA.</param>
+        /// <param name="callback">The callback that receives the StartUp result or a transport error.</param>
+        /// <returns>A cancellable request handle.</returns>
+        /// <remarks>Requires StartUp version <c>6.8.4</c> or later.</remarks>
+        IM3Cancelable AllowProjectMedia(
+            string packageName,
+            M3RequestCallback<ProjectMediaResult> callback);
+
+        /// <summary>
         /// Adds quick settings tiles to the system UI.
         /// </summary>
         /// <param name="quickTiles">The quick settings tiles to add.</param>

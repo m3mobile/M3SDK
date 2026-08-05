@@ -321,6 +321,17 @@ internal fun CategoryScreen(category: SampleCategory) {
             }) { Text(stringResource(R.string.grant_camera)) }
         }
 
+        SampleCard(
+            SampleCategory.PROJECT_MEDIA,
+            category,
+            stringResource(R.string.project_media),
+            results["projectMedia"],
+        ) {
+            ProjectMediaSample { operation, body ->
+                record("projectMedia", operation, body)
+            }
+        }
+
         SampleCard(SampleCategory.QUICK_TILE, category, stringResource(R.string.quick_tile), results["quickTile"]) {
             SdkActionButton(onClick = {
                 oneWay("quickTile", "setQuickTiles(id=WIFI, title=Wi-Fi)") {
@@ -698,7 +709,7 @@ private fun SampleCard(
 }
 
 @Composable
-private fun ActionRow(
+internal fun ActionRow(
     first: Pair<String, () -> Unit>,
     second: Pair<String, () -> Unit>
 ) {
@@ -732,9 +743,10 @@ private fun OptionRow(
 }
 
 @Composable
-private fun SdkActionButton(
+internal fun SdkActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     content: @Composable RowScope.() -> Unit
 ) {
     val focus = LocalFocusManager.current
@@ -746,6 +758,7 @@ private fun SdkActionButton(
             onClick()
         },
         modifier = modifier,
+        enabled = enabled,
         content = content
     )
 }

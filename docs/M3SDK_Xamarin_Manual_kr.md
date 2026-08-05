@@ -47,6 +47,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
   - [Permission API](#permission-api)
     - [권한 부여](#권한-부여)
     - [권한 취소](#권한-취소)
+    - [애플리케이션 PROJECT_MEDIA 허용](#애플리케이션-project_media-허용)
   - [Quick Tile API](#quick-tile-api)
     - [빠른 설정 타일 지정](#빠른-설정-타일-지정)
     - [빠른 설정 타일 초기화](#빠른-설정-타일-초기화)
@@ -1090,6 +1091,51 @@ m3.RevokePermission("com.example.app", "android.permission.CAMERA");
 
 > 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
 
+
+#### 애플리케이션 PROJECT_MEDIA 허용
+
+설치된 화면 캡처 애플리케이션에 Android `PROJECT_MEDIA` AppOps를 허용합니다. 호출자가
+패키지명을 전달하므로 DroidVNC-NG에 한정되지 않습니다.
+
+*   **필요 StartUp 버전**: `6.8.4` 이상
+*   **지원 모델**: 현재 `SM24`에서 `Success`를 반환하며, 다른 모델은 `UnsupportedDevice`를 반환합니다.
+*   **매개변수**: `packageName`은 이미 설치된 애플리케이션의 정확한 패키지명입니다.
+
+```csharp
+ProjectMediaResult result = await m3.AllowProjectMediaAsync(
+    "net.christianbeier.droidvnc_ng");
+
+if (result.IsSuccess)
+    Android.Util.Log.Info("ProjectMedia", "PROJECT_MEDIA 허용 완료");
+else
+    Android.Util.Log.Error("ProjectMedia", result.Status + ": " + result.ErrorMessage);
+```
+
+callback 방식도 제공합니다.
+
+```csharp
+IM3Cancelable request = m3.AllowProjectMedia(packageName, (result, error) =>
+{
+    if (error != null)
+        Android.Util.Log.Error("ProjectMedia", error.ToString());
+    else
+        Android.Util.Log.Info("ProjectMedia", result.Status + " (" + (int)result.Status + ")");
+});
+```
+
+`ProjectMediaResult`는 StartUp의 기능 처리 결과입니다. 실패한 Task 또는 callback의 `error`는
+Broadcast 실패나 응답 시간 초과 같은 통신 실패이며 `ProjectMediaStatus`가 없습니다. 알 수 없는
+응답 코드는 `ApplyFailed`로 정규화하고 원본 코드를 `ErrorMessage`에 기록합니다.
+
+| 코드 | `ProjectMediaStatus` | 의미 | 대응 방법 |
+|---:|---|---|---|
+| 0 | `Success` | StartUp이 허용을 적용하고 `MODE_ALLOWED`까지 확인했습니다. | 화면 캡처 앱을 실행하거나 연결합니다. |
+| 1 | `UnsupportedDevice` | 현재 모델에서 지원하지 않습니다. | SM24 또는 해당 모델을 명시적으로 지원하는 StartUp을 사용합니다. |
+| 2 | `TargetNotInstalled` | 요청한 패키지가 설치되어 있지 않습니다. | 앱을 설치하고 정확한 패키지명으로 재시도합니다. |
+| 3 | `InvalidTarget` | 패키지명이 비어 있거나 패키지와 UID가 일치하지 않습니다. | 패키지명과 조회된 UID를 확인합니다. |
+| 4 | `PermissionDenied` | 현재 시스템 권한으로 StartUp이 AppOps를 제어할 수 없습니다. | 펌웨어 서명, shared UID, AppOps 권한을 확인합니다. |
+| 5 | `AppOpUnavailable` | 필요한 AppOps API를 사용할 수 없습니다. | Android Framework와 StartUp 호환성을 확인합니다. |
+| 6 | `ApplyFailed` | 적용 실패 또는 조회 결과가 `MODE_ALLOWED`가 아닙니다. | StartUp 로그와 패키지, UID, AppOps 상태를 확인합니다. |
 
 ---
 

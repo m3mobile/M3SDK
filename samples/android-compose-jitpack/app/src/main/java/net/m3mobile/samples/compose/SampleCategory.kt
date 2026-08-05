@@ -10,6 +10,7 @@ internal enum class SampleCategory(@StringRes val titleRes: Int) {
     LANGUAGE(R.string.language),
     NETWORK(R.string.network),
     PERMISSION(R.string.permission),
+    PROJECT_MEDIA(R.string.project_media),
     QUICK_TILE(R.string.quick_tile),
     SCANNER(R.string.scanner),
     STARTUP_SETTING(R.string.startup_setting),
