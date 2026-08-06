@@ -11,5 +11,5 @@ NuGet package: [M3Mobile.M3Sdk.Xamarin](https://www.nuget.org/packages/M3Mobile.
 
 ## Documentation
 
-*   [M3SDK_Xamarin_Manual_en_v2.3.11.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.11/M3SDK_Xamarin_Manual_en_v2.3.11.pdf)
-*   [M3SDK_Xamarin_Manual_kr_v2.3.11.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.11/M3SDK_Xamarin_Manual_kr_v2.3.11.pdf)
+*   [M3SDK_Xamarin_Manual_en_v2.3.12.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Xamarin_Manual_en_v2.3.12.pdf)
+*   [M3SDK_Xamarin_Manual_kr_v2.3.12.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Xamarin_Manual_kr_v2.3.12.pdf)

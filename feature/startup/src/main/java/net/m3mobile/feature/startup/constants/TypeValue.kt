@@ -12,6 +12,7 @@ internal object TypeValue {
     const val INSTALL_APK = "apk_install"
     const val APPLICATION = "application"
     const val PERMISSION = "permission"
+    const val PROJECT_MEDIA = "project_media"
     const val DATETIME = "datetime"
     const val NTP = "ntp"
     const val TIMEZONE = "timezone"

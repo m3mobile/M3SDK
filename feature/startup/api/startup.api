@@ -113,6 +113,8 @@ public abstract interface class net/m3mobile/feature/startup/api/StartUpNetworkA
 }
 
 public abstract interface class net/m3mobile/feature/startup/api/StartUpPermissionApi {
+	public abstract fun allowProjectMedia (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun allowProjectMedia (Ljava/lang/String;Lnet/m3mobile/core/RequestCallback;)Lkotlinx/coroutines/Job;
 	public abstract fun grantPermission (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun revokePermission (Ljava/lang/String;Ljava/lang/String;)V
 }
@@ -342,6 +344,33 @@ public final class net/m3mobile/feature/startup/params/PolicyControl : java/lang
 	public static final field HIDE_SYSTEM_BAR Lnet/m3mobile/feature/startup/params/PolicyControl;
 	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/startup/params/PolicyControl;
 	public static fun values ()[Lnet/m3mobile/feature/startup/params/PolicyControl;
+}
+
+public final class net/m3mobile/feature/startup/params/ProjectMediaResult {
+	public fun <init> (Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;Ljava/lang/String;)V
+	public final fun component1 ()Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;Ljava/lang/String;)Lnet/m3mobile/feature/startup/params/ProjectMediaResult;
+	public static synthetic fun copy$default (Lnet/m3mobile/feature/startup/params/ProjectMediaResult;Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;Ljava/lang/String;ILjava/lang/Object;)Lnet/m3mobile/feature/startup/params/ProjectMediaResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrorMessage ()Ljava/lang/String;
+	public final fun getStatus ()Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public final fun getSuccessful ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/m3mobile/feature/startup/params/ProjectMediaStatus : java/lang/Enum {
+	public static final field APPLY_FAILED Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static final field APP_OP_UNAVAILABLE Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static final field INVALID_TARGET Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static final field PERMISSION_DENIED Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static final field SUCCESS Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static final field TARGET_NOT_INSTALLED Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static final field UNSUPPORTED_DEVICE Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public final fun getCode ()I
+	public static fun valueOf (Ljava/lang/String;)Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
+	public static fun values ()[Lnet/m3mobile/feature/startup/params/ProjectMediaStatus;
 }
 
 public final class net/m3mobile/feature/startup/params/QuickTile {

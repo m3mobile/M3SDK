@@ -43,6 +43,14 @@ The Wi-Fi screen exposes `Enable Wi-Fi` and `Disable Wi-Fi` buttons that call
 `SetWifiEnabled(true)` and `SetWifiEnabled(false)`. Verify the device Wi-Fi state after calling
 them on SM24 with StartUp 6.8.3 or later.
 
+The `PROJECT_MEDIA` screen accepts any installed target package name and calls
+`AllowProjectMediaAsync(packageName)`. It includes live presets for DroidVNC-NG, a deliberately
+missing package, and an empty package. On SM24 these cover `Success`, `TargetNotInstalled`, and
+`InvalidTarget`; updated StartUp builds on other models return `UnsupportedDevice`. A separate,
+clearly labelled preview area renders the condition and recommended action for all seven statuses
+without calling StartUp. `PermissionDenied`, `AppOpUnavailable`, and `ApplyFailed` should be
+verified through unit tests and previews rather than by damaging a test device system configuration.
+
 The application enables M3 SDK strict mode and shows:
 
 - `SUCCESS` for APIs with a response or observable value.

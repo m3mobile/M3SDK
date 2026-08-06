@@ -10,7 +10,7 @@ const MANUALS = [
   "docs/M3SDK_Xamarin_Manual_kr.md",
   "docs/M3SDK_Xamarin_Manual_en.md",
 ];
-const EXPECTED_DIRECT_BLOCKS = 79;
+const EXPECTED_DIRECT_BLOCKS = 80;
 const KOTLIN_ACTION_SOURCES = {
   startUpRequest:
     "feature/startup/src/main/java/net/m3mobile/feature/startup/constants/RequestAction.kt",

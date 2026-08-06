@@ -29,6 +29,7 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeInstallApk = "apk_install";
             internal const string TypeApplication = "application";
             internal const string TypePermission = "permission";
+            internal const string TypeProjectMedia = "project_media";
             internal const string TypeDateTime = "datetime";
             internal const string TypeNtp = "ntp";
             internal const string TypeTimeZone = "timezone";
@@ -99,6 +100,9 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraPermissionPackage = "package";
             internal const string ExtraPermissionName = "permission";
             internal const string ExtraPermissionMode = "permission_mode";
+            internal const string ExtraProjectMediaPackage = "project_media_package";
+            internal const string ExtraProjectMediaMessenger = "project_media_messenger";
+            internal const string ExtraProjectMediaErrorMessage = "project_media_error_message";
             internal const string ExtraQuickTileAction = "quick_tile_action";
             internal const string ExtraQuickTileItems = "quick_tile_items";
             internal const string ExtraQuickTileId = "id";
