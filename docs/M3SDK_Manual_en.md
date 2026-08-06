@@ -44,7 +44,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
   - [Permission API](#permission-api)
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
-    - [Allow PROJECT_MEDIA for an Application](#allow-project_media-for-an-application)
+    - [Allow PROJECT_MEDIA for an Application](#allow-projectmedia-for-an-application)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)

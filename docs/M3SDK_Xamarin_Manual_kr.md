@@ -47,7 +47,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
   - [Permission API](#permission-api)
     - [권한 부여](#권한-부여)
     - [권한 취소](#권한-취소)
-    - [애플리케이션 PROJECT_MEDIA 허용](#애플리케이션-project_media-허용)
+    - [애플리케이션 PROJECT_MEDIA 허용](#애플리케이션-projectmedia-허용)
   - [Quick Tile API](#quick-tile-api)
     - [빠른 설정 타일 지정](#빠른-설정-타일-지정)
     - [빠른 설정 타일 초기화](#빠른-설정-타일-초기화)

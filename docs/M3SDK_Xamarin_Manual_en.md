@@ -47,7 +47,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
   - [Permission API](#permission-api)
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
-    - [Allow PROJECT_MEDIA for an Application](#allow-project_media-for-an-application)
+    - [Allow PROJECT_MEDIA for an Application](#allow-projectmedia-for-an-application)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
