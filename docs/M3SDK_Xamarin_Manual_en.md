@@ -1139,6 +1139,21 @@ code included in `ErrorMessage`.
 | 5 | `AppOpUnavailable` | The required AppOps API is unavailable. | Check Android framework and StartUp compatibility. |
 | 6 | `ApplyFailed` | Applying the mode failed, or readback was not `MODE_ALLOWED`. | Inspect StartUp logs and the package, UID, and AppOps state. |
 
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `project_media` |
+| `project_media_package` | `String` | O | Installed target package name |
+| `project_media_messenger` | `Messenger` | O | Messenger receiving the result |
+
+The result is returned through `project_media_messenger`. `Message.what` contains the
+`ProjectMediaStatus` code, and `project_media_error_message` may contain additional failure
+details.
+
 ---
 
 ### Quick Tile API

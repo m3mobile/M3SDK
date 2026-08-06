@@ -1137,6 +1137,21 @@ Broadcast 실패나 응답 시간 초과 같은 통신 실패이며 `ProjectMedi
 | 5 | `AppOpUnavailable` | 필요한 AppOps API를 사용할 수 없습니다. | Android Framework와 StartUp 호환성을 확인합니다. |
 | 6 | `ApplyFailed` | 적용 실패 또는 조회 결과가 `MODE_ALLOWED`가 아닙니다. | StartUp 로그와 패키지, UID, AppOps 상태를 확인합니다. |
 
+**직접 Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `project_media` |
+| `project_media_package` | `String` | O | 설치된 대상 패키지명 |
+| `project_media_messenger` | `Messenger` | O | 결과를 받을 Messenger |
+
+결과는 `project_media_messenger`를 통해 반환됩니다. `Message.what`에는
+`ProjectMediaStatus` 코드가 전달되며, `project_media_error_message`에는 실패 상세 내용이
+전달될 수 있습니다.
+
 ---
 
 ### Quick Tile API
