@@ -2526,8 +2526,8 @@ Enables or disables Wi-Fi on the device.
 
 This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
 
-*   **Requires StartUp Version**: `6.8.3` or later
-*   **Supported Models**: `SM24`
+*   **Requires StartUp Version**: `6.8.5` or later (`6.8.3` or later on `SM24`)
+*   **Supported Models**: `SM20`, `SL20`, `SL20P`, `SL20K`, `US20`, `US30`, `UL20` (including `UL20F/W/WF`), `UL30`, `SM24`, `SM25`, `PC10`, `WD10`
 *   **Parameters**:
     *   `enabled` (bool): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
 

@@ -84,8 +84,8 @@ Alpha는 기본 필수 단계가 아니다. 다음 중 하나에 해당할 때 �
 - SM24에서 미설치 패키지와 빈 패키지 프리셋이 각각 `TARGET_NOT_INSTALLED(2)`, `INVALID_TARGET(3)`를 반환하는가.
 - 최신 StartUp을 설치한 비 SM24에서 호출 결과가 `UNSUPPORTED_DEVICE(1)`인가.
 - 두 샘플의 상태 미리보기에서 0~6 전체 상태의 의미와 대응 방법이 표시되며 실제 StartUp 미호출임을 명시하는가.
-- SM24에서 Wi-Fi를 끈 상태로 `setWifiEnabled(true)` 호출 후 실제 Wi-Fi가 켜지는가. StartUp 6.8.3 이상 조건으로 확인한다.
-- SM24에서 Wi-Fi를 켠 상태로 `setWifiEnabled(false)` 호출 후 실제 Wi-Fi가 꺼지는가. StartUp 6.8.3 이상 조건으로 확인한다.
+- 지원 모델에서 Wi-Fi를 끈 상태로 `setWifiEnabled(true)` 호출 후 실제 Wi-Fi가 켜지는가. StartUp 6.8.5 이상 조건으로 확인하며, SM24는 6.8.3 이상으로 확인한다.
+- 지원 모델에서 Wi-Fi를 켠 상태로 `setWifiEnabled(false)` 호출 후 실제 Wi-Fi가 꺼지는가. 지원 모델은 SM20, SL20, SL20P, SL20K, US20, US30, UL20 계열, UL30, SM24, SM25, PC10, WD10이다.
 - AppCenter 2.2.0 이상에서 관리자 비밀번호 변경 요청이 `REQUEST_SENT_UNVERIFIED`로 표시되고, 비밀번호 값이 결과 화면에 표시되지 않는가.
 - AppCenter 2.2.0 이상에서 화면 OFF 관리자 모드 유지/해제 요청 후 실제 화면 OFF 동작이 기대와 일치하는가.
 - KeyTool `Set Key Function` 호출 후 지정한 물리 키가 실제로 변경되었는가.

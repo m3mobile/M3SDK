@@ -2523,8 +2523,8 @@ IM3Cancelable request = m3.GetFactoryWifiMac((callbackResult, error) =>
 
 이 API는 StartUp에서 처리합니다. Android 10 이상에서는 일반 Android 앱이 Wi-Fi를 직접 제어할 수 없으므로, StartUp이 system 또는 privileged app으로 배포되어 있어야 합니다.
 
-*   **필요 StartUp 버전**: `6.8.3` 이상
-*   **지원 모델**: `SM24`
+*   **필요 StartUp 버전**: `6.8.5` 이상 (`SM24`는 `6.8.3` 이상)
+*   **지원 모델**: `SM20`, `SL20`, `SL20P`, `SL20K`, `US20`, `US30`, `UL20` (`UL20F/W/WF` 포함), `UL30`, `SM24`, `SM25`, `PC10`, `WD10`
 *   **매개변수**:
     *   `enabled` (bool): `true`이면 Wi-Fi 활성화, `false`이면 Wi-Fi 비활성화
 
