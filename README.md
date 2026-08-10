@@ -4,10 +4,10 @@ This is a comprehensive SDK for M3Mobile devices, providing various functionalit
 
 ## Documentation
 
-*   [Java/Kotlin SDK Manual (English) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Manual_en_v2.3.12.pdf)
-*   [Java/Kotlin SDK Manual (Korean) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Manual_kr_v2.3.12.pdf)
-*   [Xamarin SDK Manual (English) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Xamarin_Manual_en_v2.3.12.pdf)
-*   [Xamarin SDK Manual (Korean) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Xamarin_Manual_kr_v2.3.12.pdf)
+*   [Java/Kotlin SDK Manual (English) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Manual_en_v2.3.13.pdf)
+*   [Java/Kotlin SDK Manual (Korean) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Manual_kr_v2.3.13.pdf)
+*   [Xamarin SDK Manual (English) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Xamarin_Manual_en_v2.3.13.pdf)
+*   [Xamarin SDK Manual (Korean) PDF](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Xamarin_Manual_kr_v2.3.13.pdf)
 
 ### Source Markdown
 

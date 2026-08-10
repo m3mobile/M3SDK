@@ -1,5 +1,5 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en_v2.3.12.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Manual_en_v2.3.12.pdf)
+Download PDF: [M3SDK_Manual_en_v2.3.13.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Manual_en_v2.3.13.pdf)
 
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
@@ -136,14 +136,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.3.12")
+    implementation("com.github.m3mobile:M3SDK:2.3.13")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.3.12"
+    implementation "com.github.m3mobile:M3SDK:2.3.13"
 }
 ```
 
@@ -1422,10 +1422,10 @@ M3Mobile.instance.isScannerProfileEnabled()
 
 #### Floating Scanner Button UI
 
-Sets or retrieves the ScanEmul default scanner button image, opacity, and size on SM24.
+Sets or retrieves the ScanEmul default scanner button image, opacity, and size on supported devices.
 
-*   **Supported model**: `SM24`
-*   **Required ScanEmul version**: `4.14.10` or later
+*   **Supported models**: All models except `WD10` (ScanEmul is not available on `WD10`)
+*   **Required ScanEmul version**: `4.15.1` or later (`4.14.10` or later on `SM24`)
 
 ```kotlin
 val options = ScannerButtonUiOptions(
@@ -1474,7 +1474,7 @@ GET uses the following contract.
 | `setting` | `String` | O | `scanner_button_ui` |
 | `request_id` | `String` | X | Response correlation ID |
 
-If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.14.10` or later is required.
+If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.15.1` or later is required (`4.14.10` or later on `SM24`).
 
 An application that handles the response directly must register a dynamic receiver for the response action and match `request_id`.
 
@@ -2218,8 +2218,8 @@ Enables or disables Wi-Fi on the device.
 
 This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
 
-*   **Requires StartUp Version**: `6.8.3` or later
-*   **Supported Models**: `SM24`
+*   **Requires StartUp Version**: `6.8.5` or later (`6.8.3` or later on `SM24`)
+*   **Supported Models**: `SM20`, `SL20`, `SL20P`, `SL20K`, `US20`, `US30`, `UL20` (including `UL20F/W/WF`), `UL30`, `SM24`, `SM25`, `PC10`, `WD10`
 *   **Parameters**:
     *   `enabled` (Boolean): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
 

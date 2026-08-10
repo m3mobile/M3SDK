@@ -2,6 +2,7 @@ package net.m3mobile.feature.startup.api
 
 import kotlinx.coroutines.Job
 import net.m3mobile.core.InternalM3Api
+import net.m3mobile.core.ModelVersion
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
 import net.m3mobile.core.SupportedModels
@@ -66,12 +67,30 @@ public interface StartUpWifiApi {
      * This request is handled by StartUp and requires StartUp to be installed as a system or
      * privileged app. General Android apps cannot control Wi-Fi directly on Android 10 or later.
      *
-     * StartUp version `6.8.3` or later is required.
+     * StartUp version `6.8.5` or later is required. SM24 requires `6.8.3` or later.
      *
      * @param enabled `true` to enable Wi-Fi, `false` to disable Wi-Fi.
      */
-    @SupportedModels(DeviceModel.SM24)
-    @RequiresStartUp("6.8.3")
+    @SupportedModels(
+        DeviceModel.SM20,
+        DeviceModel.SM20_U,
+        DeviceModel.SL20,
+        DeviceModel.SL20P,
+        DeviceModel.SL20K,
+        DeviceModel.US20,
+        DeviceModel.US30,
+        DeviceModel.UL20_OREO,
+        DeviceModel.UL20_PIE,
+        DeviceModel.UX20_Q,
+        DeviceModel.UL20_A10,
+        DeviceModel.UL20F,
+        DeviceModel.UL30,
+        DeviceModel.SM24,
+        DeviceModel.SM25,
+        DeviceModel.PC10,
+        DeviceModel.WD10,
+    )
+    @RequiresStartUp("6.8.5", ModelVersion(DeviceModel.SM24, "6.8.3"))
     public fun setWifiEnabled(enabled: Boolean)
 
     /**

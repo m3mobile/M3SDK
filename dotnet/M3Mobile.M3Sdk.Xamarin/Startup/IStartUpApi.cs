@@ -425,9 +425,11 @@ namespace M3Sdk.Xamarin.Startup
         /// </summary>
         /// <param name="enabled"><c>true</c> to enable Wi-Fi, <c>false</c> to disable Wi-Fi.</param>
         /// <remarks>
-        /// Supported on SM24. Requires StartUp version <c>6.8.3</c> or later. The request must be
-        /// handled by StartUp running as a system or privileged app; general Android apps cannot
-        /// control Wi-Fi directly on Android 10 or later.
+        /// Supported on SM20, SL20, SL20P, SL20K, US20, US30, UL20, UL30, SM24, SM25, PC10,
+        /// and WD10 families. Requires StartUp version <c>6.8.5</c> or later, except SM24,
+        /// which requires <c>6.8.3</c> or later. The request must be handled by StartUp running
+        /// as a system or privileged app; general Android apps cannot control Wi-Fi directly
+        /// on Android 10 or later.
         /// </remarks>
         void SetWifiEnabled(bool enabled);
 

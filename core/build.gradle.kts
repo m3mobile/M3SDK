@@ -3,6 +3,10 @@ plugins {
 }
 
 dependencies {
+    testImplementation(libs.junit)
+}
+
+dependencies {
 
     implementation(libs.kotlin.reflect)
 }

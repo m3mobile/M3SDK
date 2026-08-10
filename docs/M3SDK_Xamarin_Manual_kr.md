@@ -1,6 +1,6 @@
 # M3 SDK Xamarin 매뉴얼
 
-NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.12](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.12)
+NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.13](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.13)
 
 
 M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile 장치를 구성하고 제어하기 위한 C# API 모음을 제공합니다.
@@ -122,7 +122,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
 Visual Studio의 NuGet 패키지 관리자에서 `M3Mobile.M3Sdk.Xamarin`을 검색하여 설치하거나, 패키지 관리자 콘솔에서 다음 명령을 실행합니다.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.12
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.13
 ```
 
 NuGet 패키지 페이지는 문서 상단의 배포 링크에서 확인할 수 있습니다.
@@ -132,7 +132,7 @@ NuGet 패키지 페이지는 문서 상단의 배포 링크에서 확인할 수 
 프로젝트 파일에서 다음과 같은 패키지 참조를 확인할 수 있습니다.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.12" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.13" />
 ```
 
 ## 기본 사용법 (Basic Usage)
@@ -1696,10 +1696,10 @@ IM3Cancelable request = m3.IsScannerProfileEnabled((result, error) =>
 
 #### 플로팅 스캐너 버튼 UI
 
-SM24에서 ScanEmul 기본 스캐너 버튼의 이미지, 투명도, 크기를 설정하거나 현재 값을 조회합니다.
+지원 기기에서 ScanEmul 기본 스캐너 버튼의 이미지, 투명도, 크기를 설정하거나 현재 값을 조회합니다.
 
-*   **지원 모델**: `SM24`
-*   **필요 ScanEmul 버전**: `4.14.10` 이상
+*   **지원 모델**: 전체 모델 (`WD10` 제외, `WD10`에는 ScanEmul 앱이 없음)
+*   **필요 ScanEmul 버전**: `4.15.1` 이상 (`SM24`는 `4.14.10` 이상)
 
 ```csharp
 var options = new ScannerButtonUiOptions(
@@ -1748,7 +1748,7 @@ GET 요청은 다음 계약을 사용합니다.
 | `setting` | `String` | O | `scanner_button_ui` |
 | `request_id` | `String` | X | 응답 연결용 ID |
 
-`request_id`를 생략하면 응답에도 연결 ID가 포함되지 않습니다. SET에서는 이미지 경로, 투명도, 크기 중 하나 이상을 보내야 하며, 생략한 UI 항목은 현재 값을 유지합니다. ScanEmul `4.14.10` 이상이 필요합니다.
+`request_id`를 생략하면 응답에도 연결 ID가 포함되지 않습니다. SET에서는 이미지 경로, 투명도, 크기 중 하나 이상을 보내야 하며, 생략한 UI 항목은 현재 값을 유지합니다. ScanEmul `4.15.1` 이상이 필요하며, `SM24`는 `4.14.10` 이상이 필요합니다.
 
 응답을 직접 처리하는 애플리케이션은 다음 response action을 동적 receiver로 등록하고 `request_id`를 비교해야 합니다.
 
@@ -2523,8 +2523,8 @@ IM3Cancelable request = m3.GetFactoryWifiMac((callbackResult, error) =>
 
 이 API는 StartUp에서 처리합니다. Android 10 이상에서는 일반 Android 앱이 Wi-Fi를 직접 제어할 수 없으므로, StartUp이 system 또는 privileged app으로 배포되어 있어야 합니다.
 
-*   **필요 StartUp 버전**: `6.8.3` 이상
-*   **지원 모델**: `SM24`
+*   **필요 StartUp 버전**: `6.8.5` 이상 (`SM24`는 `6.8.3` 이상)
+*   **지원 모델**: `SM20`, `SL20`, `SL20P`, `SL20K`, `US20`, `US30`, `UL20` (`UL20F/W/WF` 포함), `UL30`, `SM24`, `SM25`, `PC10`, `WD10`
 *   **매개변수**:
     *   `enabled` (bool): `true`이면 Wi-Fi 활성화, `false`이면 Wi-Fi 비활성화
 

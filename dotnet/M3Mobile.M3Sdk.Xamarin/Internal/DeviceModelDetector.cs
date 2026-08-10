@@ -46,7 +46,7 @@ namespace M3Sdk.Xamarin.Internal
                 return sdkInt == 34 ? DeviceModel.SM20_U : DeviceModel.SM20;
             if (Contains(model, "PC10"))
                 return DeviceModel.PC10;
-            if (Contains(model, "US30"))
+            if (Contains(model, "US30") || Contains(model, "AXTS30"))
                 return DeviceModel.US30;
             if (Contains(model, "SM30"))
                 return DeviceModel.SM30;

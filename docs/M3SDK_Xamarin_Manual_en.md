@@ -1,6 +1,6 @@
 # M3 SDK Xamarin Manual
 
-NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.12](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.12)
+NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.13](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.13)
 
 
 The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 Mobile devices from Xamarin.Android applications.
@@ -121,7 +121,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
 Search for `M3Mobile.M3Sdk.Xamarin` in Visual Studio NuGet Package Manager, or run the following command in Package Manager Console.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.12
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.13
 ```
 
 The NuGet package page is linked at the top of this document.
@@ -131,7 +131,7 @@ The NuGet package page is linked at the top of this document.
 The project file should contain the following package reference.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.12" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.13" />
 ```
 
 ## Basic Usage
@@ -1698,10 +1698,10 @@ IM3Cancelable request = m3.IsScannerProfileEnabled((result, error) =>
 
 #### Floating Scanner Button UI
 
-Sets or retrieves the ScanEmul default scanner button image, opacity, and size on SM24.
+Sets or retrieves the ScanEmul default scanner button image, opacity, and size on supported devices.
 
-*   **Supported model**: `SM24`
-*   **Required ScanEmul version**: `4.14.10` or later
+*   **Supported models**: All models except `WD10` (ScanEmul is not available on `WD10`)
+*   **Required ScanEmul version**: `4.15.1` or later (`4.14.10` or later on `SM24`)
 
 ```csharp
 var options = new ScannerButtonUiOptions(
@@ -1750,7 +1750,7 @@ GET uses the following contract.
 | `setting` | `String` | O | `scanner_button_ui` |
 | `request_id` | `String` | X | Response correlation ID |
 
-If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.14.10` or later is required.
+If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.15.1` or later is required (`4.14.10` or later on `SM24`).
 
 An application that handles the response directly must register a dynamic receiver for the response action and match `request_id`.
 
@@ -2526,8 +2526,8 @@ Enables or disables Wi-Fi on the device.
 
 This API is handled by StartUp. On Android 10 or later, a general Android app cannot control Wi-Fi directly; StartUp must be deployed as a system or privileged app.
 
-*   **Requires StartUp Version**: `6.8.3` or later
-*   **Supported Models**: `SM24`
+*   **Requires StartUp Version**: `6.8.5` or later (`6.8.3` or later on `SM24`)
+*   **Supported Models**: `SM20`, `SL20`, `SL20P`, `SL20K`, `US20`, `US30`, `UL20` (including `UL20F/W/WF`), `UL30`, `SM24`, `SM25`, `PC10`, `WD10`
 *   **Parameters**:
     *   `enabled` (bool): `true` to enable Wi-Fi, `false` to disable Wi-Fi.
 

@@ -39,7 +39,6 @@ public sealed class CategoryActivity : Activity
     protected override void OnCreate(Bundle? savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
-        RequestScannerImageReadPermission();
         Window?.SetSoftInputMode(SoftInput.AdjustResize);
         var categoryValue = Intent?.GetIntExtra(CategoryExtra, -1) ?? -1;
         if (!Enum.IsDefined(typeof(SampleCategory), categoryValue))
@@ -375,6 +374,7 @@ public sealed class CategoryActivity : Activity
 
     private void ScannerSample()
     {
+        RequestScannerImageReadPermission();
         var section = Section(Resource.String.scanner);
         var imagePath = TextField(Resource.String.floating_button_image_path, DefaultScannerButtonImagePath);
         imagePath.InputType = InputTypes.ClassText | InputTypes.TextVariationUri;

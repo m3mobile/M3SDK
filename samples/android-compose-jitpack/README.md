@@ -30,7 +30,8 @@ notification and logs, installed package, and launched screen.
 
 The Wi-Fi screen exposes `Enable Wi-Fi` and `Disable Wi-Fi` buttons that call
 `setWifiEnabled(true)` and `setWifiEnabled(false)`. Verify the device Wi-Fi state after calling
-them on SM24 with StartUp 6.8.3 or later.
+them on SM20, SL20, SL20P, SL20K, US20, US30, UL20 (including F/W/WF), UL30, SM24, SM25,
+PC10, or WD10. StartUp 6.8.5 or later is required, except SM24 requires 6.8.3 or later.
 
 The `PROJECT_MEDIA` screen accepts any installed target package name and calls
 `allowProjectMedia(packageName)`. It includes live presets for DroidVNC-NG, a deliberately missing

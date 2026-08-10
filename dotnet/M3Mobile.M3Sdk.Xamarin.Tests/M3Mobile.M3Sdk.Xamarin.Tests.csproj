@@ -20,7 +20,9 @@
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Internal\Constants.cs" Link="Sdk\Constants.cs" />
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\KeyTool\KeyToolVersionPolicy.cs" Link="Sdk\KeyToolVersionPolicy.cs" />
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\KeyTool\KeySettingRequest.cs" Link="Sdk\KeySettingRequest.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\ScanEmul\ScannerButtonUiPolicy.cs" Link="Sdk\ScannerButtonUiPolicy.cs" />
     <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Startup\ProjectMediaModels.cs" Link="Sdk\ProjectMediaModels.cs" />
+    <Compile Include="..\M3Mobile.M3Sdk.Xamarin\Startup\StartUpWifiPolicy.cs" Link="Sdk\StartUpWifiPolicy.cs" />
   </ItemGroup>
 
   <ItemGroup>

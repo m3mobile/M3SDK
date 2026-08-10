@@ -68,6 +68,7 @@
     <Compile Include="ScanEmul\DecodeMessageConnection.cs" />
     <Compile Include="ScanEmul\IScanEmulApi.cs" />
     <Compile Include="ScanEmul\ScanEmulApi.cs" />
+    <Compile Include="ScanEmul\ScannerButtonUiPolicy.cs" />
     <Compile Include="ScanEmul\ScannerButtonUiModels.cs" />
     <Compile Include="ScanEmul\ScanResult.cs" />
     <Compile Include="Shared\ITimeApi.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Startup\ProjectMediaModels.cs" />
     <Compile Include="Startup\ProjectMediaRequest.cs" />
     <Compile Include="Startup\StartUpApi.cs" />
+    <Compile Include="Startup\StartUpWifiPolicy.cs" />
     <Compile Include="Startup\StartupModels.cs" />
   </ItemGroup>
   <ItemGroup>

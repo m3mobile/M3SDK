@@ -565,6 +565,7 @@ namespace M3Sdk.Xamarin.ScanEmul
             ThrowIfDisposed();
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
+            GuardScannerButtonUi("SetScannerButtonUi");
 
             return new ScannerButtonUiRequester(_context, requestId, options)
                 .FetchAsync(cancellationToken);
@@ -617,6 +618,7 @@ namespace M3Sdk.Xamarin.ScanEmul
             CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
+            GuardScannerButtonUi("GetScannerButtonUi");
             return new ScannerButtonUiRequester(_context, requestId, null)
                 .FetchAsync(cancellationToken);
         }
@@ -731,6 +733,15 @@ namespace M3Sdk.Xamarin.ScanEmul
         private void GuardScanEmul(string methodName, string version)
         {
             _guard.AssertScanEmulVersion(methodName, version);
+        }
+
+        private void GuardScannerButtonUi(string methodName)
+        {
+            _guard.AssertDeviceSupport(methodName, null, ScannerButtonUiPolicy.UnsupportedModels);
+            _guard.AssertScanEmulVersion(
+                methodName,
+                ScannerButtonUiPolicy.DefaultMinimumVersion,
+                ScannerButtonUiPolicy.MinimumVersionOverrides);
         }
 
         private DecodeMessageConnection EnsureDecodeConnection()

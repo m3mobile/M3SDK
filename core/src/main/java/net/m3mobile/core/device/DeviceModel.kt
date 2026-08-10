@@ -81,7 +81,7 @@ private fun initCurrentDeviceModel(): DeviceModel {
         }
     } else if (Build.MODEL.contains("PC10")) {
         DeviceModel.PC10
-    } else if (Build.MODEL.contains("US30")) {
+    } else if (Build.MODEL.contains("US30") || Build.MODEL.contains("AXTS30")) {
         DeviceModel.US30
     } else if (Build.MODEL.contains("SM30")) {
         DeviceModel.SM30

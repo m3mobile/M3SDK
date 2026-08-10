@@ -1,17 +1,21 @@
 package net.m3mobile.m3sdk
 
+import android.os.Build
 import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import net.m3mobile.feature.scanemul.params.ScannerButtonUiOptions
 import net.m3mobile.feature.scanemul.params.ScannerButtonUiResult
+import net.m3mobile.feature.scanemul.params.ScannerButtonUiSettings
 import net.m3mobile.feature.scanemul.params.ScannerButtonUiSize
 import net.m3mobile.feature.scanemul.params.ScannerButtonUiStatus
 import net.m3mobile.feature.scanemul.params.ScannerButtonUiTransportStatus
 import net.m3mobile.feature.scanemul.params.ScannerButtonUiVerificationResult
 import net.m3mobile.sdk.M3Mobile
+import org.junit.Assume.assumeTrue
 import org.junit.After
+import org.junit.Before
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -20,20 +24,34 @@ import org.junit.Test
 
 class ScannerButtonUiInstrumentedTest {
 
+    private var originalSettings: ScannerButtonUiSettings? = null
+
+    @Before
+    fun rememberOriginalSettings() {
+        assumeTrue(
+            "Scanner Button UI is unsupported on WD10",
+            !Build.MODEL.contains("WD10"),
+        )
+        val result = awaitGet("backup-${UUID.randomUUID()}")
+        assertSaved(result)
+        originalSettings = checkNotNull(result.settings())
+    }
+
     @After
-    fun restoreDefaultSettings() {
+    fun restoreOriginalSettings() {
+        val settings = originalSettings ?: return
         awaitSet(
             ScannerButtonUiOptions(
-                imagePath = "",
-                opacityPercent = 100,
-                size = ScannerButtonUiSize.MEDIUM,
+                imagePath = settings.imagePath(),
+                opacityPercent = settings.opacityPercent(),
+                size = settings.size(),
             ),
             "restore-${UUID.randomUUID()}",
         )
     }
 
     @Test
-    fun setGetAndVerifyScannerButtonUiOnSm24() {
+    fun setGetAndVerifyScannerButtonUiOnSupportedDevice() {
         val fullSet = awaitSet(
             ScannerButtonUiOptions(
                 imagePath = "",

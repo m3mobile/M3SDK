@@ -1,9 +1,19 @@
+public final class net/m3mobile/feature/generated/device/ScanEmulScannerSettingApiDeviceSupportMapSource : net/m3mobile/core/source/DeviceSupportMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
 public final class net/m3mobile/feature/generated/version/ScanEmulScannerApiAppVersionMapSource : net/m3mobile/core/source/ScanEmulVersionMapSource {
 	public fun <init> ()V
 	public fun get ()Ljava/util/Map;
 }
 
 public final class net/m3mobile/feature/generated/version/ScanEmulScannerSettingApiAppVersionMapSource : net/m3mobile/core/source/ScanEmulVersionMapSource {
+	public fun <init> ()V
+	public fun get ()Ljava/util/Map;
+}
+
+public final class net/m3mobile/feature/generated/version/ScanEmulScannerSettingApiModelVersionMapSource : net/m3mobile/core/source/ScanEmulModelVersionMapSource {
 	public fun <init> ()V
 	public fun get ()Ljava/util/Map;
 }
