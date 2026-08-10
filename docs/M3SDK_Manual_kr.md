@@ -1,6 +1,6 @@
 # M3 SDK 매뉴얼
 
-PDF 다운로드 : [M3SDK_Manual_kr_v2.3.12.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.12/M3SDK_Manual_kr_v2.3.12.pdf)
+PDF 다운로드 : [M3SDK_Manual_kr_v2.3.13.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Manual_kr_v2.3.13.pdf)
 
 
 M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제공합니다.
@@ -138,14 +138,14 @@ dependencyResolutionManagement {
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.3.12")
+    implementation("com.github.m3mobile:M3SDK:2.3.13")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.3.12"
+    implementation "com.github.m3mobile:M3SDK:2.3.13"
 }
 ```
 
