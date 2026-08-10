@@ -1,11 +1,13 @@
-# SM24 Floating Scanner Button UI API Examples
+# Floating Scanner Button UI API Examples
 
 These APIs wrap the ScanEmul broadcast contract for `scanner_button_ui`.
 They do not store settings in M3SDK. ScanEmul is the source of truth.
 
-- Supported device: SM24
-- Required ScanEmul version: 4.14.10 or later
-- Older ScanEmul versions return `FEATURE_NOT_AVAILABLE` / `FeatureNotAvailable`.
+- Supported devices: all models except WD10 (ScanEmul is not available on WD10)
+- Required ScanEmul version: 4.15.1 or later (4.14.10 or later on SM24)
+- With M3SDK Strict Mode enabled, a lower installed ScanEmul version throws
+  `UnsatisfiedVersionException` before the broadcast is sent. With Strict Mode disabled,
+  an older ScanEmul can return `FEATURE_NOT_AVAILABLE` / `FeatureNotAvailable`.
 
 ## Kotlin
 

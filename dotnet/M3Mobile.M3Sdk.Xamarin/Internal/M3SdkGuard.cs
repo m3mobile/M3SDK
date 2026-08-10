@@ -64,7 +64,25 @@ namespace M3Sdk.Xamarin.Internal
         /// <param name="requiredVersion">The minimum required ScanEmul app version.</param>
         internal void AssertScanEmulVersion(string methodName, string requiredVersion)
         {
-            AssertAppVersion(methodName, Constants.ScanEmul.AppName, Constants.ScanEmul.PackageName, requiredVersion);
+            AssertScanEmulVersion(methodName, requiredVersion, null);
+        }
+
+        /// <summary>
+        /// Verifies that the installed ScanEmul app satisfies the required version, applying model-specific overrides when present.
+        /// </summary>
+        /// <param name="methodName">The public SDK method being guarded.</param>
+        /// <param name="requiredVersion">The default minimum required ScanEmul app version.</param>
+        /// <param name="modelVersionOverrides">Optional minimum versions keyed by device model.</param>
+        internal void AssertScanEmulVersion(
+            string methodName,
+            string requiredVersion,
+            IDictionary<DeviceModel, string> modelVersionOverrides)
+        {
+            AssertAppVersion(
+                methodName,
+                Constants.ScanEmul.AppName,
+                Constants.ScanEmul.PackageName,
+                GetEffectiveVersion(requiredVersion, modelVersionOverrides));
         }
 
         /// <summary>

@@ -68,6 +68,7 @@
     <Compile Include="ScanEmul\DecodeMessageConnection.cs" />
     <Compile Include="ScanEmul\IScanEmulApi.cs" />
     <Compile Include="ScanEmul\ScanEmulApi.cs" />
+    <Compile Include="ScanEmul\ScannerButtonUiPolicy.cs" />
     <Compile Include="ScanEmul\ScannerButtonUiModels.cs" />
     <Compile Include="ScanEmul\ScanResult.cs" />
     <Compile Include="Shared\ITimeApi.cs" />

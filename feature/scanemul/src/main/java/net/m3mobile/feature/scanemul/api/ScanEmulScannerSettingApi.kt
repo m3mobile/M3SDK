@@ -2,8 +2,11 @@ package net.m3mobile.feature.scanemul.api
 
 import androidx.annotation.IntRange
 import kotlinx.coroutines.Job
+import net.m3mobile.core.ModelVersion
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresScanEmul
+import net.m3mobile.core.UnsupportedModels
+import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.scanemul.params.EndCharacter
 import net.m3mobile.feature.scanemul.params.OutputMode
 import net.m3mobile.feature.scanemul.params.ReadMode
@@ -225,34 +228,44 @@ public interface ScanEmulScannerSettingApi {
     public fun getScannerReadMode(callback: RequestCallback<ReadMode>): Job
 
     /**
-     * Sets SM24 floating scanner button UI settings.
+     * Sets floating scanner button UI settings.
      *
      * Missing values are not sent to ScanEmul and keep their current values.
      * Empty image path means the default ScanEmul button image.
+     *
+     * ScanEmul version `4.15.1` or later is required. SM24 requires `4.14.10` or later.
      */
     @JvmSynthetic
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public suspend fun setScannerButtonUi(options: ScannerButtonUiOptions): ScannerButtonUiResult
 
     /**
-     * Sets SM24 floating scanner button UI settings with a caller-provided request id.
+     * Sets floating scanner button UI settings with a caller-provided request id.
      */
     @JvmSynthetic
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public suspend fun setScannerButtonUi(
         options: ScannerButtonUiOptions,
         requestId: String,
     ): ScannerButtonUiResult
 
     /**
-     * Sets SM24 floating scanner button UI settings by callback.
+     * Sets floating scanner button UI settings by callback.
      */
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public fun setScannerButtonUi(
         options: ScannerButtonUiOptions,
         callback: RequestCallback<ScannerButtonUiResult>,
     ): Job
 
     /**
-     * Sets SM24 floating scanner button UI settings by callback with a caller-provided request id.
+     * Sets floating scanner button UI settings by callback with a caller-provided request id.
      */
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public fun setScannerButtonUi(
         options: ScannerButtonUiOptions,
         requestId: String,
@@ -260,61 +273,77 @@ public interface ScanEmulScannerSettingApi {
     ): Job
 
     /**
-     * Gets SM24 floating scanner button UI settings.
+     * Gets floating scanner button UI settings.
      */
     @JvmSynthetic
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public suspend fun getScannerButtonUi(): ScannerButtonUiResult
 
     /**
-     * Gets SM24 floating scanner button UI settings with a caller-provided request id.
+     * Gets floating scanner button UI settings with a caller-provided request id.
      */
     @JvmSynthetic
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public suspend fun getScannerButtonUi(requestId: String): ScannerButtonUiResult
 
     /**
-     * Gets SM24 floating scanner button UI settings by callback.
+     * Gets floating scanner button UI settings by callback.
      */
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public fun getScannerButtonUi(callback: RequestCallback<ScannerButtonUiResult>): Job
 
     /**
-     * Gets SM24 floating scanner button UI settings by callback with a caller-provided request id.
+     * Gets floating scanner button UI settings by callback with a caller-provided request id.
      */
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public fun getScannerButtonUi(
         requestId: String,
         callback: RequestCallback<ScannerButtonUiResult>,
     ): Job
 
     /**
-     * Sets SM24 floating scanner button UI settings and verifies saved values with a GET request
+     * Sets floating scanner button UI settings and verifies saved values with a GET request
      * after the SET result reports a saved state.
      */
     @JvmSynthetic
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public suspend fun setAndVerifyScannerButtonUi(
         options: ScannerButtonUiOptions,
     ): ScannerButtonUiVerificationResult
 
     /**
-     * Sets SM24 floating scanner button UI settings with a caller-provided SET request id and
+     * Sets floating scanner button UI settings with a caller-provided SET request id and
      * verifies saved values with a GET request after the SET result reports a saved state.
      */
     @JvmSynthetic
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public suspend fun setAndVerifyScannerButtonUi(
         options: ScannerButtonUiOptions,
         requestId: String,
     ): ScannerButtonUiVerificationResult
 
     /**
-     * Sets SM24 floating scanner button UI settings and verifies saved values by callback.
+     * Sets floating scanner button UI settings and verifies saved values by callback.
      */
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public fun setAndVerifyScannerButtonUi(
         options: ScannerButtonUiOptions,
         callback: RequestCallback<ScannerButtonUiVerificationResult>,
     ): Job
 
     /**
-     * Sets SM24 floating scanner button UI settings with a caller-provided SET request id and
+     * Sets floating scanner button UI settings with a caller-provided SET request id and
      * verifies saved values by callback.
      */
+    @UnsupportedModels(DeviceModel.WD10)
+    @RequiresScanEmul("4.15.1", ModelVersion(DeviceModel.SM24, "4.14.10"))
     public fun setAndVerifyScannerButtonUi(
         options: ScannerButtonUiOptions,
         requestId: String,

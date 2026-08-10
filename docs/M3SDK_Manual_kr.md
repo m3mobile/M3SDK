@@ -1421,10 +1421,10 @@ M3Mobile.instance.isScannerProfileEnabled()
 
 #### 플로팅 스캐너 버튼 UI
 
-SM24에서 ScanEmul 기본 스캐너 버튼의 이미지, 투명도, 크기를 설정하거나 현재 값을 조회합니다.
+지원 기기에서 ScanEmul 기본 스캐너 버튼의 이미지, 투명도, 크기를 설정하거나 현재 값을 조회합니다.
 
-*   **지원 모델**: `SM24`
-*   **필요 ScanEmul 버전**: `4.14.10` 이상
+*   **지원 모델**: 전체 모델 (`WD10` 제외, `WD10`에는 ScanEmul 앱이 없음)
+*   **필요 ScanEmul 버전**: `4.15.1` 이상 (`SM24`는 `4.14.10` 이상)
 
 ```kotlin
 val options = ScannerButtonUiOptions(
@@ -1473,7 +1473,7 @@ GET 요청은 다음 계약을 사용합니다.
 | `setting` | `String` | O | `scanner_button_ui` |
 | `request_id` | `String` | X | 응답 연결용 ID |
 
-`request_id`를 생략하면 응답에도 연결 ID가 포함되지 않습니다. SET에서는 이미지 경로, 투명도, 크기 중 하나 이상을 보내야 하며, 생략한 UI 항목은 현재 값을 유지합니다. ScanEmul `4.14.10` 이상이 필요합니다.
+`request_id`를 생략하면 응답에도 연결 ID가 포함되지 않습니다. SET에서는 이미지 경로, 투명도, 크기 중 하나 이상을 보내야 하며, 생략한 UI 항목은 현재 값을 유지합니다. ScanEmul `4.15.1` 이상이 필요하며, `SM24`는 `4.14.10` 이상이 필요합니다.
 
 응답을 직접 처리하는 애플리케이션은 다음 response action을 동적 receiver로 등록하고 `request_id`를 비교해야 합니다.
 

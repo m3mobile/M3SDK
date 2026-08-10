@@ -1698,10 +1698,10 @@ IM3Cancelable request = m3.IsScannerProfileEnabled((result, error) =>
 
 #### Floating Scanner Button UI
 
-Sets or retrieves the ScanEmul default scanner button image, opacity, and size on SM24.
+Sets or retrieves the ScanEmul default scanner button image, opacity, and size on supported devices.
 
-*   **Supported model**: `SM24`
-*   **Required ScanEmul version**: `4.14.10` or later
+*   **Supported models**: All models except `WD10` (ScanEmul is not available on `WD10`)
+*   **Required ScanEmul version**: `4.15.1` or later (`4.14.10` or later on `SM24`)
 
 ```csharp
 var options = new ScannerButtonUiOptions(
@@ -1750,7 +1750,7 @@ GET uses the following contract.
 | `setting` | `String` | O | `scanner_button_ui` |
 | `request_id` | `String` | X | Response correlation ID |
 
-If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.14.10` or later is required.
+If `request_id` is omitted, the response has no correlation ID. SET must include at least one of image path, opacity, or size; omitted UI fields keep their current values. ScanEmul `4.15.1` or later is required (`4.14.10` or later on `SM24`).
 
 An application that handles the response directly must register a dynamic receiver for the response action and match `request_id`.
 
