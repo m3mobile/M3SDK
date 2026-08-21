@@ -13,6 +13,7 @@ internal object TypeValue {
     const val APPLICATION = "application"
     const val PERMISSION = "permission"
     const val PROJECT_MEDIA = "project_media"
+    const val MEDIA_PROJECTION_INDICATOR_PACKAGES = "media_projection_exempt_packages"
     const val DATETIME = "datetime"
     const val NTP = "ntp"
     const val TIMEZONE = "timezone"

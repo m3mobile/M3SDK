@@ -52,6 +52,12 @@ clearly labelled preview area renders the condition and recommended action for a
 without calling StartUp. `PermissionDenied`, `AppOpUnavailable`, and `ApplyFailed` should be
 verified through unit tests and previews rather than by damaging a test device system configuration.
 
+The `MediaProjection indicator` screen calls the SM24 and StartUp 6.8.7+ APIs that replace, add,
+remove, or clear screen-recording indicator exception packages. Enter multiple package names with
+commas. These requests are one-way and persisted by StartUp; start a real MediaProjection session
+after each change to verify whether the status-bar indicator is hidden. Changes do not affect an
+active session, so stop and restart it before verification, then restore the required exception list.
+
 The application enables M3 SDK strict mode and shows:
 
 - `SUCCESS` for APIs with a response or observable value.

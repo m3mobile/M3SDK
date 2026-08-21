@@ -48,6 +48,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [권한 부여](#권한-부여)
     - [권한 취소](#권한-취소)
     - [애플리케이션 PROJECT_MEDIA 허용](#애플리케이션-projectmedia-허용)
+    - [MediaProjection 화면 녹화 표시 예외 설정](#mediaprojection-화면-녹화-표시-예외-설정)
   - [Quick Tile API](#quick-tile-api)
     - [빠른 설정 타일 지정](#빠른-설정-타일-지정)
     - [빠른 설정 타일 초기화](#빠른-설정-타일-초기화)
@@ -1151,6 +1152,53 @@ Broadcast 실패나 응답 시간 초과 같은 통신 실패이며 `ProjectMedi
 결과는 `project_media_messenger`를 통해 반환됩니다. `Message.what`에는
 `ProjectMediaStatus` 코드가 전달되며, `project_media_error_message`에는 실패 상세 내용이
 전달될 수 있습니다.
+
+#### MediaProjection 화면 녹화 표시 예외 설정
+
+선택한 패키지가 MediaProjection을 사용할 때 SM24 상태 표시줄의 화면 녹화 표시를 숨깁니다.
+이 기능은 녹화 권한을 부여하는 `AllowProjectMediaAsync()`와 별개입니다.
+
+*   **필요 StartUp 버전**: `6.8.7` 이상
+*   **지원 모델**: `SM24`
+*   **처리 방식**: 단방향 요청입니다. StartUp이 공백과 중복을 제거한 목록을 저장하고 앱 재시작과 기기 재부팅 후 복원합니다.
+
+```csharp
+// 기존 목록 전체 대체
+m3.SetMediaProjectionIndicatorExemptPackages(
+    "net.christianbeier.droidvnc_ng",
+    "com.example.recorder");
+
+// 기존 목록에 추가 또는 일부 삭제
+m3.AddMediaProjectionIndicatorExemptPackages("com.example.support");
+m3.RemoveMediaProjectionIndicatorExemptPackages("com.example.recorder");
+
+// 전체 삭제
+m3.ClearMediaProjectionIndicatorExemptPackages();
+```
+
+`SetMediaProjectionIndicatorExemptPackages()`에 패키지를 전달하지 않으면 전체 목록을 비웁니다.
+처리 응답은 반환되지 않습니다. 변경 사항은 요청 후 새로 시작한 MediaProjection 세션부터
+적용되므로, 실행 중인 세션을 종료하고 다시 시작한 뒤 화면 녹화 표시를 확인해야 합니다.
+
+| 동작 | 기존 목록 처리 |
+|---|---|
+| `SetMediaProjectionIndicatorExemptPackages` | 전달 목록으로 대체 |
+| `AddMediaProjectionIndicatorExemptPackages` | 전달 목록을 뒤에 추가하고 중복 제거 |
+| `RemoveMediaProjectionIndicatorExemptPackages` | 전달 패키지만 삭제 |
+| `ClearMediaProjectionIndicatorExemptPackages` | 전체 삭제 |
+
+**직접 Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `setting` | `String` | O | `media_projection_exempt_packages` |
+| `mode` | `String` | X | `replace`, `append`, `remove`, `clear`; 생략하면 `replace` |
+| `packages` | `String` 또는 `ArrayList<String>` | 조건부 | `replace`, `append`, `remove` 대상. `clear`에서는 생략 |
+
+> 단방향 요청입니다. Broadcast 전송 성공은 StartUp의 저장 및 시스템 속성 적용 성공을 보장하지 않습니다.
 
 ---
 

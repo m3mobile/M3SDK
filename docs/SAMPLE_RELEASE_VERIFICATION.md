@@ -23,6 +23,7 @@
 | Network | NFC 켜기/끄기와 상태 확인 | 요청 상태 + 관찰값 |
 | Permission | 샘플 앱 카메라 권한 부여와 실제 권한 확인 | 요청 상태 + 관찰값 |
 | PROJECT_MEDIA | 패키지 직접 입력, DroidVNC, 미설치, 빈 대상 실제 호출과 7개 상태 UI 미리보기 | StartUp 상태 코드 또는 통신 예외 |
+| MediaProjection 녹화 표시 | 예외 패키지 목록 대체·추가·삭제·전체 삭제 | 단방향 요청 + 실제 녹화 표시 확인 |
 | Quick Tile | Wi-Fi Quick Tile 설정 | 단방향 요청 |
 | Scanner | Scan Result Listener | 수신값 |
 | StartUp Setting | Reset StartUp Settings | 단방향 요청 |
@@ -84,6 +85,10 @@ Alpha는 기본 필수 단계가 아니다. 다음 중 하나에 해당할 때 �
 - SM24에서 미설치 패키지와 빈 패키지 프리셋이 각각 `TARGET_NOT_INSTALLED(2)`, `INVALID_TARGET(3)`를 반환하는가.
 - 최신 StartUp을 설치한 비 SM24에서 호출 결과가 `UNSUPPORTED_DEVICE(1)`인가.
 - 두 샘플의 상태 미리보기에서 0~6 전체 상태의 의미와 대응 방법이 표시되며 실제 StartUp 미호출임을 명시하는가.
+- SM24와 StartUp 6.8.7 이상에서 MediaProjection 녹화 표시 예외 목록의 대체·추가·삭제·전체 삭제 요청이 `REQUEST_SENT_UNVERIFIED`로 표시되는가.
+- 예외 패키지로 새 MediaProjection 세션을 시작했을 때 상태 표시줄 녹화 표시가 숨겨지고, 예외 삭제 후 세션을 종료·재시작하면 다시 표시되는가.
+- 예외 목록을 변경해도 실행 중인 MediaProjection 세션의 표시 상태는 바뀌지 않고, 새 세션부터 적용되는가.
+- StartUp 앱 재시작과 기기 재부팅 후 예외 패키지 목록과 실제 표시 숨김 동작이 복원되는가.
 - 지원 모델에서 Wi-Fi를 끈 상태로 `setWifiEnabled(true)` 호출 후 실제 Wi-Fi가 켜지는가. StartUp 6.8.5 이상 조건으로 확인하며, SM24는 6.8.3 이상으로 확인한다.
 - 지원 모델에서 Wi-Fi를 켠 상태로 `setWifiEnabled(false)` 호출 후 실제 Wi-Fi가 꺼지는가. 지원 모델은 SM20, SL20, SL20P, SL20K, US20, US30, UL20 계열, UL30, SM24, SM25, PC10, WD10이다.
 - AppCenter 2.2.0 이상에서 관리자 비밀번호 변경 요청이 `REQUEST_SENT_UNVERIFIED`로 표시되고, 비밀번호 값이 결과 화면에 표시되지 않는가.

@@ -37,6 +37,15 @@
   <string name="project_media_app_op_action">Android Framework 구현과 해당 펌웨어의 StartUp 호환성을 확인합니다.</string>
   <string name="project_media_apply_condition">StartUp이 PROJECT_MEDIA를 적용하지 못했거나 조회 결과가 MODE_ALLOWED가 아닙니다.</string>
   <string name="project_media_apply_action">StartUp 로그와 대상 패키지, UID, AppOps 상태를 확인합니다.</string>
+  <string name="media_projection_indicator">MediaProjection 녹화 표시</string>
+  <string name="media_projection_indicator_description">선택한 패키지가 MediaProjection을 사용하는 동안 상태 표시줄의 화면 녹화 표시를 숨깁니다.</string>
+  <string name="media_projection_indicator_requirement">SM24와 StartUp 6.8.7 이상이 필요합니다. 요청은 단방향이며 StartUp에 저장됩니다. 변경 후 MediaProjection을 다시 시작하고 표시를 확인하세요.</string>
+  <string name="media_projection_indicator_packages">예외 패키지명</string>
+  <string name="media_projection_indicator_packages_hint">여러 패키지명은 쉼표로 구분합니다.</string>
+  <string name="replace_packages">대체</string>
+  <string name="add_packages">추가</string>
+  <string name="remove_packages">삭제</string>
+  <string name="clear_packages">전체 삭제</string>
   <string name="quick_tile">빠른 설정 타일</string>
   <string name="scanner">스캐너</string>
   <string name="startup_setting">StartUp 설정</string>

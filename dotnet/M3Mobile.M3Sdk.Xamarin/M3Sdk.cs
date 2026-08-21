@@ -489,6 +489,34 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void SetMediaProjectionIndicatorExemptPackages(params string[] packageNames)
+        {
+            ThrowIfDisposed();
+            _startUp.SetMediaProjectionIndicatorExemptPackages(packageNames);
+        }
+
+        /// <inheritdoc />
+        public void AddMediaProjectionIndicatorExemptPackages(params string[] packageNames)
+        {
+            ThrowIfDisposed();
+            _startUp.AddMediaProjectionIndicatorExemptPackages(packageNames);
+        }
+
+        /// <inheritdoc />
+        public void RemoveMediaProjectionIndicatorExemptPackages(params string[] packageNames)
+        {
+            ThrowIfDisposed();
+            _startUp.RemoveMediaProjectionIndicatorExemptPackages(packageNames);
+        }
+
+        /// <inheritdoc />
+        public void ClearMediaProjectionIndicatorExemptPackages()
+        {
+            ThrowIfDisposed();
+            _startUp.ClearMediaProjectionIndicatorExemptPackages();
+        }
+
+        /// <inheritdoc />
         public void SetQuickTiles(params QuickTile[] quickTiles)
         {
             ThrowIfDisposed();

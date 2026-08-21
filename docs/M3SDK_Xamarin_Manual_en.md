@@ -48,6 +48,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
     - [Allow PROJECT_MEDIA for an Application](#allow-projectmedia-for-an-application)
+    - [Configure MediaProjection Screen-recording Indicator Exceptions](#configure-mediaprojection-screen-recording-indicator-exceptions)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
@@ -1153,6 +1154,54 @@ code included in `ErrorMessage`.
 The result is returned through `project_media_messenger`. `Message.what` contains the
 `ProjectMediaStatus` code, and `project_media_error_message` may contain additional failure
 details.
+
+#### Configure MediaProjection Screen-recording Indicator Exceptions
+
+Hides the SM24 status-bar screen-recording indicator while selected packages use MediaProjection.
+This feature is separate from `AllowProjectMediaAsync()`, which grants the recording AppOps permission.
+
+*   **Requires StartUp Version**: `6.8.7` or later
+*   **Supported Model**: `SM24`
+*   **Behavior**: This is a one-way request. StartUp removes blanks and duplicates, persists the list, and restores it after app or device restart.
+
+```csharp
+// Replace the complete list.
+m3.SetMediaProjectionIndicatorExemptPackages(
+    "net.christianbeier.droidvnc_ng",
+    "com.example.recorder");
+
+// Add to or remove from the existing list.
+m3.AddMediaProjectionIndicatorExemptPackages("com.example.support");
+m3.RemoveMediaProjectionIndicatorExemptPackages("com.example.recorder");
+
+// Clear the complete list.
+m3.ClearMediaProjectionIndicatorExemptPackages();
+```
+
+Calling `SetMediaProjectionIndicatorExemptPackages()` without package names clears the list. No
+processing response is returned. Changes apply to MediaProjection sessions started after the
+request; stop and restart an active session before verifying whether the screen-recording indicator
+is hidden.
+
+| API | Existing-list behavior |
+|---|---|
+| `SetMediaProjectionIndicatorExemptPackages` | Replaces the complete list |
+| `AddMediaProjectionIndicatorExemptPackages` | Appends packages and removes duplicates |
+| `RemoveMediaProjectionIndicatorExemptPackages` | Removes only the supplied packages |
+| `ClearMediaProjectionIndicatorExemptPackages` | Clears the complete list |
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `media_projection_exempt_packages` |
+| `mode` | `String` | X | `replace`, `append`, `remove`, `clear`; defaults to `replace` when omitted |
+| `packages` | `String` or `ArrayList<String>` | Conditional | Targets for `replace`, `append`, or `remove`; omit for `clear` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that StartUp saved the list or applied the system property.
 
 ---
 

@@ -39,6 +39,15 @@
     <string name="project_media_app_op_action">Check the Android framework implementation and StartUp compatibility for this firmware.</string>
     <string name="project_media_apply_condition">StartUp could not apply PROJECT_MEDIA or the readback was not MODE_ALLOWED.</string>
     <string name="project_media_apply_action">Inspect StartUp logs and verify the target package, UID, and AppOps state.</string>
+    <string name="media_projection_indicator">MediaProjection indicator</string>
+    <string name="media_projection_indicator_description">Hide the status-bar screen-recording indicator while selected packages use MediaProjection.</string>
+    <string name="media_projection_indicator_requirement">SM24 and StartUp 6.8.7+ are required. Requests are one-way and persisted by StartUp. Restart MediaProjection after each change, then verify the indicator.</string>
+    <string name="media_projection_indicator_packages">Exception package names</string>
+    <string name="media_projection_indicator_packages_hint">Separate multiple package names with commas.</string>
+    <string name="replace_packages">Replace</string>
+    <string name="add_packages">Add</string>
+    <string name="remove_packages">Remove</string>
+    <string name="clear_packages">Clear all</string>
     <string name="quick_tile">Quick Tile</string>
     <string name="scanner">Scanner</string>
     <string name="floating_button_image_path">Floating button image path</string>

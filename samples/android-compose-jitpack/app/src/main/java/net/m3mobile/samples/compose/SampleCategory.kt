@@ -11,6 +11,7 @@ internal enum class SampleCategory(@StringRes val titleRes: Int) {
     NETWORK(R.string.network),
     PERMISSION(R.string.permission),
     PROJECT_MEDIA(R.string.project_media),
+    MEDIA_PROJECTION_INDICATOR(R.string.media_projection_indicator),
     QUICK_TILE(R.string.quick_tile),
     SCANNER(R.string.scanner),
     STARTUP_SETTING(R.string.startup_setting),

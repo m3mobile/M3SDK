@@ -30,6 +30,8 @@ namespace M3Sdk.Xamarin.Internal
             internal const string TypeApplication = "application";
             internal const string TypePermission = "permission";
             internal const string TypeProjectMedia = "project_media";
+            internal const string TypeMediaProjectionIndicatorPackages =
+                "media_projection_exempt_packages";
             internal const string TypeDateTime = "datetime";
             internal const string TypeNtp = "ntp";
             internal const string TypeTimeZone = "timezone";
@@ -103,6 +105,8 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraProjectMediaPackage = "project_media_package";
             internal const string ExtraProjectMediaMessenger = "project_media_messenger";
             internal const string ExtraProjectMediaErrorMessage = "project_media_error_message";
+            internal const string ExtraMediaProjectionIndicatorPackages = "packages";
+            internal const string ExtraMediaProjectionIndicatorMode = "mode";
             internal const string ExtraQuickTileAction = "quick_tile_action";
             internal const string ExtraQuickTileItems = "quick_tile_items";
             internal const string ExtraQuickTileId = "id";
@@ -144,6 +148,10 @@ namespace M3Sdk.Xamarin.Internal
             internal const int NotShowBatteryPercent = 2;
             internal const int RevokePermission = 2;
             internal const int GrantPermission = 1;
+            internal const string ReplaceMediaProjectionIndicatorPackages = "replace";
+            internal const string AppendMediaProjectionIndicatorPackages = "append";
+            internal const string RemoveMediaProjectionIndicatorPackages = "remove";
+            internal const string ClearMediaProjectionIndicatorPackages = "clear";
             internal const string AddQuickTile = "add";
             internal const string ResetQuickTile = "reset";
             internal const string EmptyQuickTileItems = "[]";
