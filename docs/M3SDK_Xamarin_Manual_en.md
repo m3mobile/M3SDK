@@ -1179,9 +1179,10 @@ m3.ClearMediaProjectionIndicatorExemptPackages();
 ```
 
 Calling `SetMediaProjectionIndicatorExemptPackages()` without package names clears the list. No
-processing response is returned. Changes apply to MediaProjection sessions started after the
-request; stop and restart an active session before verifying whether the screen-recording indicator
-is hidden.
+processing response is returned. The request is sent immediately, but the status-bar screen-recording
+indicator for an active MediaProjection session may not refresh immediately. For deterministic
+verification, stop and restart the active session. On SM24, expanding and collapsing the notification
+shade may also refresh the indicator. A device reboot is not required.
 
 | API | Existing-list behavior |
 |---|---|

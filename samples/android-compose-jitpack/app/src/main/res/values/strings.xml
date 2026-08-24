@@ -41,7 +41,7 @@
     <string name="project_media_apply_action">Inspect StartUp logs and verify the target package, UID, and AppOps state.</string>
     <string name="media_projection_indicator">MediaProjection indicator</string>
     <string name="media_projection_indicator_description">Hide the status-bar screen-recording indicator while selected packages use MediaProjection.</string>
-    <string name="media_projection_indicator_requirement">SM24 and StartUp 6.8.7+ are required. Requests are one-way and persisted by StartUp. Restart MediaProjection after each change, then verify the indicator.</string>
+    <string name="media_projection_indicator_requirement">SM24 and StartUp 6.8.7+ are required. Requests are one-way and persisted by StartUp. An active session\'s indicator may not refresh immediately. Stop and restart MediaProjection for deterministic verification; opening and closing the notification shade may also refresh it. A device reboot is not required.</string>
     <string name="media_projection_indicator_packages">Exception package names</string>
     <string name="media_projection_indicator_packages_hint">Separate multiple package names with commas.</string>
     <string name="replace_packages">Replace</string>
