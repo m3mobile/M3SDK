@@ -1648,36 +1648,38 @@ M3OTA는 단말기에 저장된 OTA ZIP 파일의 설치 요청 Broadcast를 받
 * **필요 앱**: 대상 단말기에서 실행 중인 M3OTA (`com.m3.m3ota`)
 * **파일 위치**: 아래 예시에서는 `/sdcard/Download/update.zip`
 
-릴리즈 OS에 탑재된 것으로 기록된 M3OTA 버전은 다음과 같습니다. 각 버전의 소스 코드에서 이 Broadcast에 `file_name="update"`를 전달하는 방식을 확인했습니다.
+아래 표에는 OS 릴리즈 노트의 앱 버전 표에서 직접 확인한 빌드만 적었습니다. `file_name` 값은 해당 버전의 M3OTA 수신 코드와 대조했습니다. 예시 파일은 `/sdcard/Download/update.zip`입니다.
 
-| 제품 | Android 버전 | OS 탑재 M3OTA 버전 |
-|---|---|---|
-| SM15 | 7.1 / 8.1 | V2.0.7 |
-| SM15 | 10 | V2.2.0 |
-| UL20 | 9 | V2.2.0 |
-| UL20 / US20 | 10 | V2.2.3 |
-| SL20 | 11 | V2.0.8 |
-| SM20 | 11 / 12 | V11.0.10 |
-| WD10 | 13 | V11.2.0 |
-| SL20K | 13 | V11.2.1 |
-| PC10 | 13 | V11.2.3 |
-| US30 / SL20P | 13 | V11.4.1 |
-| SM30 | 14 | V11.4.3 |
-| SM20 / UL30 | 14 | V11.4.4 |
-| SM24 / SM25 | 16 | V11.4.3 |
+| 제품 | 릴리즈 OS 빌드 (릴리즈 노트) | 탑재 M3OTA | `file_name` |
+|---|---|---|---|
+| SM15W / SM15N / SM15X | [V1.7.1 (W)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/211943463) / [V2.9.7_EEA (N)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45481986) / [V2.9.7_EEA (X)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/44990828) | V2.0.7 | `update` |
+| SM15N / SM15X | [V3.7.1 (N)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45089064) / [V3.7.1 (X)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45089162) | V2.2.0 | `update` |
+| UL20F / UL20W / UL20X | [V2.10.7_EEA (F)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407864026) / [W](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407864221) / [X](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407864323) | V2.2.0 | `update` |
+| UL20F / UL20W / UL20X | [V3.6.9_EEA (F)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407863832) / [W](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407797782) / [X](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407863735) | V2.2.3 | `update` |
+| US20W / US20X | [V1.8.9 (W)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/185139314) / [X](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/192184354) | V2.2.3 | `update` |
+| SL20 | [20251225](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/322666551) | V2.0.8 | `update` |
+| SM20 | [V1.9.3](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45220083) / [V2.6.1](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/128811089) | V11.0.10 | `update` |
+| WD10 | [V1.1.11](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/158793729) | V11.2.0 | `update` |
+| SL20K | [20250723](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/161546310) | V11.2.1 | `update` |
+| PC10 | [20251203](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/246415361) | V11.2.3 | `update` |
+| US30 | [V1.3.5](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/391413761) | V11.4.1 | `update` |
+| SL20P | [20260706](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/388530178) | V11.4.1 | `update` |
+| SM30 | [V1.3.19](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/362053638) | V11.4.3 | `update` |
+| SM20 | [V4.3.0](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/248610818) / [V4.4.1](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/295993445) / [V4.5.6](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/376438785) | V11.2.7 | `update.zip` |
+| SM20 | [V4.6.2](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/463699971) | V11.4.4 | `update` |
+| UL30F / UL30W | [V1.1.5 (F)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/441155618) / [W](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/440467811) | V11.4.4 | `update` |
+| SM24 | [V1.1.5](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/420675585) | V11.4.3 | `update` |
+| SM25 | [V1.2.0](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/422576129) | V11.4.3 | `update` |
 
-SL10과 SL10K의 탑재 M3OTA 버전은 아직 확인되지 않았습니다. 이 기기에서는 설치된 앱 버전을 확인한 뒤 명령을 사용하세요. OS 릴리즈 후 앱을 별도로 업데이트했다면 실제 앱 버전은 위 표와 다를 수 있습니다.
+SL10·SL10K의 OS 탑재 M3OTA 버전은 확인되지 않았습니다. OS 릴리즈 후 앱을 별도로 업데이트했다면 설치된 버전이 표와 다를 수 있으므로, 명령을 보내기 전에 앱 버전과 수신 방식을 확인하세요.
 
 **직접 Broadcast**
 
 * **Action**: `com.m3.intent.action.UPDATE_PACKAGES`
 * **Target package**: `com.m3.m3ota`
+* **Extra**: `file_name` (`String`, 필수). 위 표의 해당 OS 빌드에 적힌 값을 사용합니다.
 
-| Extra | 타입 | 필수 | 값 |
-|---|---|---|---|
-| `file_name` | `String` | O | `update` 또는 `update.zip`(아래 버전 표 참고) |
-
-위 릴리즈 OS 표의 앱 버전에서는 `.zip`을 **빼고** 전달합니다.
+표에서 `update`로 표시된 OS 빌드는 확장자 `.zip`을 **빼고** 전달합니다. 수신 코드가 확장자를 붙입니다.
 
 ```shell
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update"
@@ -1691,25 +1693,13 @@ val request = Intent("com.m3.intent.action.UPDATE_PACKAGES").apply {
 context.sendBroadcast(request)
 ```
 
-다른 M3OTA 버전은 수신 코드가 다릅니다. `/sdcard/Download/update.zip`을 설치하는 경우 소스 코드에서 요구하는 값은 다음과 같습니다.
-
-| 설치된 M3OTA 버전 | `file_name` 값 | 수신 코드의 파일 탐색 방식 |
-|---|---|---|
-| V11.0.3~V11.0.4 | `update.zip` | 전달한 파일명을 그대로 사용 |
-| V11.0.5~V11.2.4 | `update` | `.zip`을 덧붙임 |
-| V11.2.6~V11.2.7 | `update.zip` | 전달한 파일명을 그대로 사용 |
-| V11.2.8 | `update` | `.zip`을 덧붙임 |
-| V11.3.0~V11.3.3 | `update.zip` | 전달한 파일명을 그대로 사용 |
-| 확인된 V11.3.5 이후 버전 | `update` | `.zip`을 덧붙임 |
-| V2.0.7, V2.0.8, V2.2.0, V2.2.3 | `update` | `.zip`을 덧붙임 |
-
-파일명 전체를 요구하는 버전에서는 다음 명령을 사용합니다.
+SM20의 OS `V4.3.0`, `V4.4.1`, `V4.5.6`에는 M3OTA `V11.2.7`이 탑재되었습니다. 이 버전의 수신 코드는 파일명을 그대로 사용하므로 `update.zip`을 전달합니다.
 
 ```shell
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update.zip"
 ```
 
-이 표는 소스 코드에서 읽는 파일명을 설명하며, 기기에서 특정 OTA 패키지를 설치할 수 있다는 뜻은 아닙니다. 설치된 버전이 표에 없으면 해당 빌드를 확인한 뒤 명령을 보내세요. StartUp V6.5.32는 `.zip`을 뺀 파일명을 M3OTA에 전달하므로, `update.zip`을 요구하는 수신 버전에서는 URL 방식이 실패할 수 있습니다.
+이 예외는 StartUp의 URL Broadcast에도 영향을 줄 수 있습니다. StartUp V6.5.32는 확장자를 뺀 파일명을 전달하므로, 위 SM20 빌드에서는 URL 방식이 실패할 수 있습니다. OS에 탑재된 APK와 소스 빌드의 해시까지 대조한 결과는 아니며, 앱을 별도로 업데이트한 경우 실제 설치 버전을 확인해야 합니다. 파일명 형식만으로 OTA 패키지의 설치 가능 여부를 판단할 수는 없습니다.
 
 대상 모델·Android 버전·현재 OS에 맞는 OTA ZIP 파일을 사용합니다. 이 Broadcast는 `/sdcard/Download/` 아래 파일을 읽으며 파일을 다운로드하지 않습니다. Full/경량 패키지 설치 가능 여부와 재부팅 동작은
 단말기에 탑재된 M3OTA 버전과 OS에 따라 다릅니다. Broadcast 전송 성공은 설치

@@ -1653,36 +1653,38 @@ This documents an existing M3OTA broadcast; it does not add an SDK method.
 * **Required app**: M3OTA (`com.m3.m3ota`) running on the target device
 * **File location**: `/sdcard/Download/update.zip` for the example below
 
-The following M3OTA versions are listed for released OS builds. The corresponding source code accepts this broadcast with `file_name="update"` for each version listed here.
+The table includes only OS builds whose release notes explicitly list the bundled M3OTA version. The `file_name` values were checked against the receiver source for each version. The example file is `/sdcard/Download/update.zip`.
 
-| Device | Android version | Shipped M3OTA version |
-|---|---|---|
-| SM15 | 7.1 / 8.1 | V2.0.7 |
-| SM15 | 10 | V2.2.0 |
-| UL20 | 9 | V2.2.0 |
-| UL20 / US20 | 10 | V2.2.3 |
-| SL20 | 11 | V2.0.8 |
-| SM20 | 11 / 12 | V11.0.10 |
-| WD10 | 13 | V11.2.0 |
-| SL20K | 13 | V11.2.1 |
-| PC10 | 13 | V11.2.3 |
-| US30 / SL20P | 13 | V11.4.1 |
-| SM30 | 14 | V11.4.3 |
-| SM20 / UL30 | 14 | V11.4.4 |
-| SM24 / SM25 | 16 | V11.4.3 |
+| Device | Released OS build (release note) | Bundled M3OTA | `file_name` |
+|---|---|---|---|
+| SM15W / SM15N / SM15X | [V1.7.1 (W)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/211943463) / [V2.9.7_EEA (N)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45481986) / [V2.9.7_EEA (X)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/44990828) | V2.0.7 | `update` |
+| SM15N / SM15X | [V3.7.1 (N)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45089064) / [V3.7.1 (X)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45089162) | V2.2.0 | `update` |
+| UL20F / UL20W / UL20X | [V2.10.7_EEA (F)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407864026) / [W](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407864221) / [X](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407864323) | V2.2.0 | `update` |
+| UL20F / UL20W / UL20X | [V3.6.9_EEA (F)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407863832) / [W](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407797782) / [X](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/407863735) | V2.2.3 | `update` |
+| US20W / US20X | [V1.8.9 (W)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/185139314) / [X](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/192184354) | V2.2.3 | `update` |
+| SL20 | [20251225](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/322666551) | V2.0.8 | `update` |
+| SM20 | [V1.9.3](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/45220083) / [V2.6.1](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/128811089) | V11.0.10 | `update` |
+| WD10 | [V1.1.11](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/158793729) | V11.2.0 | `update` |
+| SL20K | [20250723](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/161546310) | V11.2.1 | `update` |
+| PC10 | [20251203](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/246415361) | V11.2.3 | `update` |
+| US30 | [V1.3.5](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/391413761) | V11.4.1 | `update` |
+| SL20P | [20260706](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/388530178) | V11.4.1 | `update` |
+| SM30 | [V1.3.19](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/362053638) | V11.4.3 | `update` |
+| SM20 | [V4.3.0](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/248610818) / [V4.4.1](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/295993445) / [V4.5.6](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/376438785) | V11.2.7 | `update.zip` |
+| SM20 | [V4.6.2](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/463699971) | V11.4.4 | `update` |
+| UL30F / UL30W | [V1.1.5 (F)](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/441155618) / [W](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/440467811) | V11.4.4 | `update` |
+| SM24 | [V1.1.5](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/420675585) | V11.4.3 | `update` |
+| SM25 | [V1.2.0](https://m3-mobile.atlassian.net/wiki/spaces/OSRN/pages/422576129) | V11.4.3 | `update` |
 
-The shipped M3OTA version for SL10 and SL10K is not confirmed. Check the installed app version before using this command on those devices. An app updated after the OS release may also differ from the table.
+The bundled M3OTA version for SL10 and SL10K is unconfirmed. If M3OTA was updated after the OS release, the installed version can differ from the table; check its version and receiver behavior before sending the command.
 
 **Direct Broadcast**
 
 * **Action**: `com.m3.intent.action.UPDATE_PACKAGES`
 * **Target package**: `com.m3.m3ota`
+* **Extra**: `file_name` (required `String`). Use the value shown for the installed OS build.
 
-| Extra | Type | Required | Value |
-|---|---|---|---|
-| `file_name` | `String` | Yes | `update` or `update.zip` (see version table below) |
-
-For the released OS versions in the table above, pass the filename **without** `.zip`:
+For OS builds marked `update`, omit `.zip`; the receiver appends the extension.
 
 ```shell
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update"
@@ -1696,25 +1698,13 @@ val request = Intent("com.m3.intent.action.UPDATE_PACKAGES").apply {
 context.sendBroadcast(request)
 ```
 
-Some other M3OTA versions use a different receiver. For a file stored as `/sdcard/Download/update.zip`, the source code expects:
-
-| Installed M3OTA version | `file_name` value | Receiver path |
-|---|---|---|
-| V11.0.3–V11.0.4 | `update.zip` | Uses the supplied filename as-is |
-| V11.0.5–V11.2.4 | `update` | Appends `.zip` |
-| V11.2.6–V11.2.7 | `update.zip` | Uses the supplied filename as-is |
-| V11.2.8 | `update` | Appends `.zip` |
-| V11.3.0–V11.3.3 | `update.zip` | Uses the supplied filename as-is |
-| V11.3.5 and later confirmed versions | `update` | Appends `.zip` |
-| V2.0.7, V2.0.8, V2.2.0, V2.2.3 | `update` | Appends `.zip` |
-
-For a version requiring the complete filename, use:
+SM20 OS `V4.3.0`, `V4.4.1`, and `V4.5.6` shipped with M3OTA `V11.2.7`. Its receiver uses the supplied filename as-is, so pass `update.zip`:
 
 ```shell
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update.zip"
 ```
 
-The table records source-code behavior; it does not establish which OTA packages a device can install. If the installed version is absent from the table, inspect that build before sending the command. StartUp V6.5.32 sends a filename **without** `.zip`, so its URL route can fail on versions whose receiver expects `update.zip`.
+This exception can also affect the StartUp URL broadcast: StartUp V6.5.32 sends the filename without the extension, so the URL route may fail on these SM20 builds. The OS APK hash has not been matched to the source build; check the installed app if it was updated separately. The filename format does not establish whether a particular OTA package is eligible for installation.
 
 Use an OTA ZIP compatible with the model, Android version, and current OS. The broadcast reads a file under `/sdcard/Download/`; it does not download the file.
 Available Full/incremental packages and reboot behavior depend on the installed M3OTA
