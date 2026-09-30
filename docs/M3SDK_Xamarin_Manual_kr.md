@@ -1,8 +1,8 @@
 # M3 SDK Xamarin 매뉴얼
 
-**매뉴얼 버전: 2.3.16 · 대상 SDK 버전: 2.3.15**
+**매뉴얼 버전: 2.3.17 · 대상 SDK 버전: 2.3.15**
 
-PDF 다운로드: [M3SDK_Xamarin_Manual_kr_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Xamarin_Manual_kr_v2.3.16.pdf)
+PDF 다운로드: [M3SDK_Xamarin_Manual_kr_v2.3.17.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.17/M3SDK_Xamarin_Manual_kr_v2.3.17.pdf)
 
 NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.15](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.15)
 
@@ -75,8 +75,10 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [키오스크 관리자 비밀번호 변경](#키오스크-관리자-비밀번호-변경)
     - [화면 OFF 시 관리자 모드 유지](#화면-off-시-관리자-모드-유지)
   - [StartUp Setting API](#startup-setting-api)
-    - [URL로 OS 업데이트 요청 (Broadcast)](#url로-os-업데이트-요청-broadcast)
     - [StartUp 설정 초기화](#startup-설정-초기화)
+  - [OTA 업데이트 (Broadcast)](#ota-업데이트-broadcast)
+    - [URL로 OS 업데이트 요청 (Broadcast)](#url로-os-업데이트-요청-broadcast)
+    - [로컬 OTA 파일로 OS 업데이트 요청 (M3OTA Broadcast)](#로컬-ota-파일로-os-업데이트-요청-m3ota-broadcast)
   - [Time API](#time-api)
     - [날짜 및 시간 설정](#날짜-및-시간-설정)
     - [NTP 서버 설정](#ntp-서버-설정)
@@ -2155,12 +2157,40 @@ AppCenter `2.2.0` 이상이 필요합니다.
 
 StartUp SDK 자체의 설정을 관리합니다.
 
+#### StartUp 설정 초기화
+
+StartUp 설정을 기본값으로 초기화합니다.
+
+*   **필요 StartUp 버전**: `6.2.14` 이상
+
+```csharp
+m3.ResetStartUpSetting();
+```
+
+**직접 Broadcast**
+
+*   **Action**: `com.android.server.startupservice.config`
+*   **Target package**: 지정하지 않음 (implicit broadcast)
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `setting` | `String` | O | `option` |
+| `option_reset` | `Boolean` | O | `true` |
+
+설정 요청 직후 `com.android.server.startupservice.config.fin` Broadcast를 추가로 보내야 합니다.
+
+> 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
+
+---
+
+### OTA 업데이트 (Broadcast)
+
 #### URL로 OS 업데이트 요청 (Broadcast)
 
-Start Up이 URL에서 OTA ZIP 파일을 다운로드한 뒤 M3OTA에 설치를 요청합니다.
-이 항목은 Start Up이 제공하는 Broadcast 사용법이며, SDK 메서드 추가가 아닙니다.
+StartUp이 URL에서 OTA ZIP 파일을 다운로드한 뒤 M3OTA에 설치를 요청합니다.
+이 항목은 StartUp이 제공하는 Broadcast 사용법이며, SDK 메서드 추가가 아닙니다.
 
-* **필요 Start Up 버전**: `6.5.32` 이상
+* **필요 StartUp 버전**: `6.5.32` 이상
 * **필요 앱**: 단말기에 맞는 M3OTA (`com.m3.m3ota`)
 
 **직접 Broadcast**
@@ -2186,40 +2216,53 @@ context.SendBroadcast(request);
 ```
 
 예제 URL은 실제 배포 URL로 바꿉니다. URL 마지막 경로에 `.zip` 파일명을 포함하고,
-대상 모델·Android 버전·현재 OS에 맞는 패키지를 사용합니다. 다운로드 후 Start Up은
+대상 모델·Android 버전·현재 OS에 맞는 패키지를 사용합니다. 다운로드 후 StartUp은
 `com.m3.intent.action.UPDATE_PACKAGES` Broadcast를 `com.m3.m3ota`로 보내며,
 `file_name`에는 `.zip` 확장자를 뺀 파일명을 전달합니다.
 
 이 시스템 명령은 별도의 `config.fin` Broadcast 없이 실행됩니다.
 파일 다운로드 완료나 Broadcast 전송 성공은 OS 설치 완료를 뜻하지 않습니다.
 설치 가능 여부와 배터리 제한, 재부팅 동작은 탑재된 M3OTA 버전 및 기기의 OS에 따릅니다.
-M3OTA가 적용하는 배터리 제한은 Start Up의 다운로드 시작 조건과 구분합니다.
+M3OTA가 적용하는 배터리 제한은 StartUp의 다운로드 시작 조건과 구분합니다.
 
-기능 도입 근거: [Start Up V6.5.32 변경 이력](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
+기능 도입 근거: [StartUp V6.5.32 변경 이력](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
 
-#### StartUp 설정 초기화
+#### 로컬 OTA 파일로 OS 업데이트 요청 (M3OTA Broadcast)
 
-StartUp 설정을 기본값으로 초기화합니다.
+M3OTA는 단말기에 저장된 OTA ZIP 파일의 설치 요청 Broadcast를 받습니다.
+기존 M3OTA Broadcast 사용법이며 SDK 메서드 추가가 아닙니다.
 
-*   **필요 StartUp 버전**: `6.2.14` 이상
-
-```csharp
-m3.ResetStartUpSetting();
-```
+* **OS 릴리즈에서 확인한 앱 버전**: M3OTA `V2.0.7`(SM15 Android 7.1/8.1), `V2.0.8`(SL20 Android 11), `V11.0.10`(SM20 Android 11/12). 이후 지원 버전에도 이 Action이 있으며, OS별 탑재 버전은 [M3OTA 기기·OS 표](https://m3-mobile.atlassian.net/wiki/spaces/M3APPMANUAL/pages/82608131/M3+OTA+KR)에서 확인합니다.
+* **필요 앱**: 대상 단말기에서 실행 중인 M3OTA (`com.m3.m3ota`)
+* **파일 위치**: 아래 예시에서는 `/sdcard/Download/update.zip`
 
 **직접 Broadcast**
 
-*   **Action**: `com.android.server.startupservice.config`
-*   **Target package**: 지정하지 않음 (implicit broadcast)
+* **Action**: `com.m3.intent.action.UPDATE_PACKAGES`
+* **Target package**: `com.m3.m3ota`
 
 | Extra | 타입 | 필수 | 값 |
 |---|---|---|---|
-| `setting` | `String` | O | `option` |
-| `option_reset` | `Boolean` | O | `true` |
+| `file_name` | `String` | O | `.zip` 확장자와 경로를 제외한 OTA ZIP 파일명(예시: `update`) |
 
-설정 요청 직후 `com.android.server.startupservice.config.fin` Broadcast를 추가로 보내야 합니다.
+```shell
+adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update"
+```
 
-> 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
+```csharp
+var request = new Android.Content.Intent("com.m3.intent.action.UPDATE_PACKAGES");
+request.SetPackage("com.m3.m3ota");
+request.PutExtra("file_name", "update");
+context.SendBroadcast(request);
+```
+
+대상 모델·Android 버전·현재 OS에 맞는 OTA ZIP 파일을 사용합니다. M3OTA는
+`/sdcard/Download/<file_name>.zip`에서 파일을 찾으며, 이 Broadcast가 파일을
+다운로드하지는 않습니다. Full/경량 패키지 설치 가능 여부와 재부팅 동작은
+단말기에 탑재된 M3OTA 버전과 OS에 따라 다릅니다. Broadcast 전송 성공은 설치
+성공을 뜻하지 않습니다. 확인된 V2 단말에서는 M3OTA `V2.2.3`부터, 확인된
+V11 단말에서는 `V11.2.6`부터 이 경로에도 배터리 제한이 적용됩니다. 자세한
+기기별 조건은 [M3OTA 매뉴얼](https://m3-mobile.atlassian.net/wiki/spaces/M3APPMANUAL/pages/82608131/M3+OTA+KR)을 확인합니다.
 
 
 ---
