@@ -1,6 +1,8 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en_v2.3.15.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.15/M3SDK_Manual_en_v2.3.15.pdf)
 
+**Manual version: 2.3.16 · SDK version: 2.3.15**
+
+PDF download: [M3SDK_Manual_en_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Manual_en_v2.3.16.pdf)
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
 
@@ -60,6 +62,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Scanner Settings](#scanner-settings)
     - [Floating Scanner Button UI](#floating-scanner-button-ui)
   - [StartUp Setting API](#startup-setting-api)
+    - [Request an OS Update from a URL (Broadcast)](#request-an-os-update-from-a-url-broadcast)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [KeyTool API](#keytool-api)
     - [Control Function-key Mode](#control-function-key-mode)
@@ -1567,6 +1570,50 @@ context.sendOrderedBroadcast(request, null)
 ### StartUp Setting API
 
 Manages the StartUp SDK's own settings.
+
+#### Request an OS Update from a URL (Broadcast)
+
+Start Up downloads an OTA ZIP file from a URL and asks M3OTA to install it.
+This documents an existing Start Up broadcast; it does not add an SDK method.
+
+* **Required Start Up version**: `6.5.32` or later
+* **Required app**: M3OTA (`com.m3.m3ota`) for the target device
+
+**Direct Broadcast**
+
+* **Action**: `com.android.server.startupservice.system`
+* **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | Yes | `ota_url` |
+| `value` | `String` | Yes | Full download URL of the OTA ZIP file |
+
+```shell
+adb shell am broadcast -a com.android.server.startupservice.system -p com.m3.startup --es setting ota_url --es value "https://example.com/OS/OTA/update.zip"
+```
+
+```kotlin
+val request = Intent("com.android.server.startupservice.system").apply {
+    setPackage("com.m3.startup")
+    putExtra("setting", "ota_url")
+    putExtra("value", "https://example.com/OS/OTA/update.zip")
+}
+context.sendBroadcast(request)
+```
+
+Replace the example URL with a real download URL whose final path contains a `.zip`
+filename. Use a package compatible with the model, Android version, and current OS.
+After downloading, Start Up sends `com.m3.intent.action.UPDATE_PACKAGES` to
+`com.m3.m3ota`, with the filename without its `.zip` extension in `file_name`.
+
+This system command does not require a separate `config.fin` broadcast.
+A completed download or a sent broadcast does not confirm that OS installation has
+completed. Installation eligibility, battery limits, and reboot behavior depend on
+the installed M3OTA version and device OS. M3OTA's installation battery limits are
+separate from Start Up's conditions for starting the download.
+
+Introduction: [Start Up V6.5.32 change](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
 
 #### Reset StartUp Settings
 
