@@ -1,6 +1,10 @@
 # M3 SDK Xamarin 매뉴얼
 
-NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.13](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.13)
+**매뉴얼 버전: 2.3.16 · 대상 SDK 버전: 2.3.15**
+
+PDF 다운로드: [M3SDK_Xamarin_Manual_kr_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Xamarin_Manual_kr_v2.3.16.pdf)
+
+NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.15](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.15)
 
 
 M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile 장치를 구성하고 제어하기 위한 C# API 모음을 제공합니다.
@@ -48,6 +52,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [권한 부여](#권한-부여)
     - [권한 취소](#권한-취소)
     - [애플리케이션 PROJECT_MEDIA 허용](#애플리케이션-projectmedia-허용)
+    - [MediaProjection 화면 녹화 표시 예외 설정](#mediaprojection-화면-녹화-표시-예외-설정)
   - [Quick Tile API](#quick-tile-api)
     - [빠른 설정 타일 지정](#빠른-설정-타일-지정)
     - [빠른 설정 타일 초기화](#빠른-설정-타일-초기화)
@@ -70,6 +75,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [키오스크 관리자 비밀번호 변경](#키오스크-관리자-비밀번호-변경)
     - [화면 OFF 시 관리자 모드 유지](#화면-off-시-관리자-모드-유지)
   - [StartUp Setting API](#startup-setting-api)
+    - [URL로 OS 업데이트 요청 (Broadcast)](#url로-os-업데이트-요청-broadcast)
     - [StartUp 설정 초기화](#startup-설정-초기화)
   - [Time API](#time-api)
     - [날짜 및 시간 설정](#날짜-및-시간-설정)
@@ -122,7 +128,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
 Visual Studio의 NuGet 패키지 관리자에서 `M3Mobile.M3Sdk.Xamarin`을 검색하여 설치하거나, 패키지 관리자 콘솔에서 다음 명령을 실행합니다.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.13
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.15
 ```
 
 NuGet 패키지 페이지는 문서 상단의 배포 링크에서 확인할 수 있습니다.
@@ -132,7 +138,7 @@ NuGet 패키지 페이지는 문서 상단의 배포 링크에서 확인할 수 
 프로젝트 파일에서 다음과 같은 패키지 참조를 확인할 수 있습니다.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.13" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.15" />
 ```
 
 ## 기본 사용법 (Basic Usage)
@@ -1152,6 +1158,55 @@ Broadcast 실패나 응답 시간 초과 같은 통신 실패이며 `ProjectMedi
 `ProjectMediaStatus` 코드가 전달되며, `project_media_error_message`에는 실패 상세 내용이
 전달될 수 있습니다.
 
+#### MediaProjection 화면 녹화 표시 예외 설정
+
+선택한 패키지가 MediaProjection을 사용할 때 SM24 상태 표시줄의 화면 녹화 표시를 숨깁니다.
+이 기능은 녹화 권한을 부여하는 `AllowProjectMediaAsync()`와 별개입니다.
+
+*   **필요 StartUp 버전**: `6.8.7` 이상
+*   **지원 모델**: `SM24`
+*   **처리 방식**: 단방향 요청입니다. StartUp이 공백과 중복을 제거한 목록을 저장하고 앱 재시작과 기기 재부팅 후 복원합니다.
+
+```csharp
+// 기존 목록 전체 대체
+m3.SetMediaProjectionIndicatorExemptPackages(
+    "net.christianbeier.droidvnc_ng",
+    "com.example.recorder");
+
+// 기존 목록에 추가 또는 일부 삭제
+m3.AddMediaProjectionIndicatorExemptPackages("com.example.support");
+m3.RemoveMediaProjectionIndicatorExemptPackages("com.example.recorder");
+
+// 전체 삭제
+m3.ClearMediaProjectionIndicatorExemptPackages();
+```
+
+`SetMediaProjectionIndicatorExemptPackages()`에 패키지를 전달하지 않으면 전체 목록을 비웁니다.
+처리 응답은 반환되지 않습니다. 설정 요청은 즉시 전달되지만, 진행 중인 MediaProjection
+세션의 상태 표시줄 화면 녹화 표시는 즉시 갱신되지 않을 수 있습니다. 확실하게 반영하려면
+진행 중인 세션을 종료하고 다시 시작하십시오. SM24에서는 알림창을 열었다 닫아도 표시가
+갱신될 수 있습니다. 기기 재부팅은 필요하지 않습니다.
+
+| 동작 | 기존 목록 처리 |
+|---|---|
+| `SetMediaProjectionIndicatorExemptPackages` | 전달 목록으로 대체 |
+| `AddMediaProjectionIndicatorExemptPackages` | 전달 목록을 뒤에 추가하고 중복 제거 |
+| `RemoveMediaProjectionIndicatorExemptPackages` | 전달 패키지만 삭제 |
+| `ClearMediaProjectionIndicatorExemptPackages` | 전체 삭제 |
+
+**직접 Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `setting` | `String` | O | `media_projection_exempt_packages` |
+| `mode` | `String` | X | `replace`, `append`, `remove`, `clear`; 생략하면 `replace` |
+| `packages` | `String` 또는 `ArrayList<String>` | 조건부 | `replace`, `append`, `remove` 대상. `clear`에서는 생략 |
+
+> 단방향 요청입니다. Broadcast 전송 성공은 StartUp의 저장 및 시스템 속성 적용 성공을 보장하지 않습니다.
+
 ---
 
 ### Quick Tile API
@@ -2099,6 +2154,48 @@ AppCenter `2.2.0` 이상이 필요합니다.
 ### StartUp Setting API
 
 StartUp SDK 자체의 설정을 관리합니다.
+
+#### URL로 OS 업데이트 요청 (Broadcast)
+
+Start Up이 URL에서 OTA ZIP 파일을 다운로드한 뒤 M3OTA에 설치를 요청합니다.
+이 항목은 Start Up이 제공하는 Broadcast 사용법이며, SDK 메서드 추가가 아닙니다.
+
+* **필요 Start Up 버전**: `6.5.32` 이상
+* **필요 앱**: 단말기에 맞는 M3OTA (`com.m3.m3ota`)
+
+**직접 Broadcast**
+
+* **Action**: `com.android.server.startupservice.system`
+* **Target package**: `com.m3.startup`
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `setting` | `String` | O | `ota_url` |
+| `value` | `String` | O | 다운로드 가능한 OTA ZIP 파일의 전체 URL |
+
+```shell
+adb shell am broadcast -a com.android.server.startupservice.system -p com.m3.startup --es setting ota_url --es value "https://example.com/OS/OTA/update.zip"
+```
+
+```csharp
+var request = new Android.Content.Intent("com.android.server.startupservice.system");
+request.SetPackage("com.m3.startup");
+request.PutExtra("setting", "ota_url");
+request.PutExtra("value", "https://example.com/OS/OTA/update.zip");
+context.SendBroadcast(request);
+```
+
+예제 URL은 실제 배포 URL로 바꿉니다. URL 마지막 경로에 `.zip` 파일명을 포함하고,
+대상 모델·Android 버전·현재 OS에 맞는 패키지를 사용합니다. 다운로드 후 Start Up은
+`com.m3.intent.action.UPDATE_PACKAGES` Broadcast를 `com.m3.m3ota`로 보내며,
+`file_name`에는 `.zip` 확장자를 뺀 파일명을 전달합니다.
+
+이 시스템 명령은 별도의 `config.fin` Broadcast 없이 실행됩니다.
+파일 다운로드 완료나 Broadcast 전송 성공은 OS 설치 완료를 뜻하지 않습니다.
+설치 가능 여부와 배터리 제한, 재부팅 동작은 탑재된 M3OTA 버전 및 기기의 OS에 따릅니다.
+M3OTA가 적용하는 배터리 제한은 Start Up의 다운로드 시작 조건과 구분합니다.
+
+기능 도입 근거: [Start Up V6.5.32 변경 이력](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
 
 #### StartUp 설정 초기화
 

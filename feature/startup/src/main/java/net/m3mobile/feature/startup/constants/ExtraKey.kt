@@ -48,6 +48,8 @@ internal object ExtraKey {
     const val PROJECT_MEDIA_PACKAGE = "project_media_package"
     const val PROJECT_MEDIA_MESSENGER = "project_media_messenger"
     const val PROJECT_MEDIA_ERROR_MESSAGE = "project_media_error_message"
+    const val MEDIA_PROJECTION_INDICATOR_PACKAGES = "packages"
+    const val MEDIA_PROJECTION_INDICATOR_MODE = "mode"
     const val QUICK_TILE_ACTION = "quick_tile_action"
     const val QUICK_TILE_ITEMS = "quick_tile_items"
     const val QUICK_TILE_ID = "id"

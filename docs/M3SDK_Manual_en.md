@@ -1,6 +1,8 @@
 # M3 SDK Manual
-Download PDF: [M3SDK_Manual_en_v2.3.13.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.13/M3SDK_Manual_en_v2.3.13.pdf)
 
+**Manual version: 2.3.16 · SDK version: 2.3.15**
+
+PDF download: [M3SDK_Manual_en_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Manual_en_v2.3.16.pdf)
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
 
@@ -45,6 +47,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
     - [Allow PROJECT_MEDIA for an Application](#allow-projectmedia-for-an-application)
+    - [Configure MediaProjection Screen-recording Indicator Exceptions](#configure-mediaprojection-screen-recording-indicator-exceptions)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
@@ -59,6 +62,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
     - [Scanner Settings](#scanner-settings)
     - [Floating Scanner Button UI](#floating-scanner-button-ui)
   - [StartUp Setting API](#startup-setting-api)
+    - [Request an OS Update from a URL (Broadcast)](#request-an-os-update-from-a-url-broadcast)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [KeyTool API](#keytool-api)
     - [Control Function-key Mode](#control-function-key-mode)
@@ -136,14 +140,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.3.13")
+    implementation("com.github.m3mobile:M3SDK:2.3.15")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.3.13"
+    implementation "com.github.m3mobile:M3SDK:2.3.15"
 }
 ```
 
@@ -1052,6 +1056,58 @@ The result is returned through `project_media_messenger`. `Message.what` contain
 `ProjectMediaStatus` code, and `project_media_error_message` may contain additional failure
 details.
 
+#### Configure MediaProjection Screen-recording Indicator Exceptions
+
+Hides the SM24 status-bar screen-recording indicator while selected packages use MediaProjection.
+This feature is separate from `allowProjectMedia()`, which grants the recording AppOps permission.
+
+*   **Requires StartUp Version**: `6.8.7` or later
+*   **Supported Model**: `SM24`
+*   **Behavior**: This is a one-way request. StartUp removes blanks and duplicates, persists the list, and restores it after app or device restart.
+
+```kotlin
+val sdk = M3Mobile.instance
+
+// Replace the complete list.
+sdk.setMediaProjectionIndicatorExemptPackages(
+    "net.christianbeier.droidvnc_ng",
+    "com.example.recorder",
+)
+
+// Add to or remove from the existing list.
+sdk.addMediaProjectionIndicatorExemptPackages("com.example.support")
+sdk.removeMediaProjectionIndicatorExemptPackages("com.example.recorder")
+
+// Clear the complete list.
+sdk.clearMediaProjectionIndicatorExemptPackages()
+```
+
+Calling `setMediaProjectionIndicatorExemptPackages()` without package names clears the list. No
+processing response is returned. The request is sent immediately, but the status-bar screen-recording
+indicator for an active MediaProjection session may not refresh immediately. For deterministic
+verification, stop and restart the active session. On SM24, expanding and collapsing the notification
+shade may also refresh the indicator. A device reboot is not required.
+
+| API | Existing-list behavior |
+|---|---|
+| `setMediaProjectionIndicatorExemptPackages` | Replaces the complete list |
+| `addMediaProjectionIndicatorExemptPackages` | Appends packages and removes duplicates |
+| `removeMediaProjectionIndicatorExemptPackages` | Removes only the supplied packages |
+| `clearMediaProjectionIndicatorExemptPackages` | Clears the complete list |
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `media_projection_exempt_packages` |
+| `mode` | `String` | X | `replace`, `append`, `remove`, `clear`; defaults to `replace` when omitted |
+| `packages` | `String` or `ArrayList<String>` | Conditional | Targets for `replace`, `append`, or `remove`; omit for `clear` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that StartUp saved the list or applied the system property.
+
 ---
 
 ### Quick Tile API
@@ -1514,6 +1570,50 @@ context.sendOrderedBroadcast(request, null)
 ### StartUp Setting API
 
 Manages the StartUp SDK's own settings.
+
+#### Request an OS Update from a URL (Broadcast)
+
+Start Up downloads an OTA ZIP file from a URL and asks M3OTA to install it.
+This documents an existing Start Up broadcast; it does not add an SDK method.
+
+* **Required Start Up version**: `6.5.32` or later
+* **Required app**: M3OTA (`com.m3.m3ota`) for the target device
+
+**Direct Broadcast**
+
+* **Action**: `com.android.server.startupservice.system`
+* **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | Yes | `ota_url` |
+| `value` | `String` | Yes | Full download URL of the OTA ZIP file |
+
+```shell
+adb shell am broadcast -a com.android.server.startupservice.system -p com.m3.startup --es setting ota_url --es value "https://example.com/OS/OTA/update.zip"
+```
+
+```kotlin
+val request = Intent("com.android.server.startupservice.system").apply {
+    setPackage("com.m3.startup")
+    putExtra("setting", "ota_url")
+    putExtra("value", "https://example.com/OS/OTA/update.zip")
+}
+context.sendBroadcast(request)
+```
+
+Replace the example URL with a real download URL whose final path contains a `.zip`
+filename. Use a package compatible with the model, Android version, and current OS.
+After downloading, Start Up sends `com.m3.intent.action.UPDATE_PACKAGES` to
+`com.m3.m3ota`, with the filename without its `.zip` extension in `file_name`.
+
+This system command does not require a separate `config.fin` broadcast.
+A completed download or a sent broadcast does not confirm that OS installation has
+completed. Installation eligibility, battery limits, and reboot behavior depend on
+the installed M3OTA version and device OS. M3OTA's installation battery limits are
+separate from Start Up's conditions for starting the download.
+
+Introduction: [Start Up V6.5.32 change](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
 
 #### Reset StartUp Settings
 

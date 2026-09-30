@@ -1,6 +1,10 @@
 # M3 SDK Xamarin Manual
 
-NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.13](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.13)
+**Manual version: 2.3.16 · SDK version: 2.3.15**
+
+PDF download: [M3SDK_Xamarin_Manual_en_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Xamarin_Manual_en_v2.3.16.pdf)
+
+NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.15](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.15)
 
 
 The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 Mobile devices from Xamarin.Android applications.
@@ -48,6 +52,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
     - [Allow PROJECT_MEDIA for an Application](#allow-projectmedia-for-an-application)
+    - [Configure MediaProjection Screen-recording Indicator Exceptions](#configure-mediaprojection-screen-recording-indicator-exceptions)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
     - [Reset Quick Tiles](#reset-quick-tiles)
@@ -70,6 +75,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Change Kiosk Admin Password](#change-kiosk-admin-password)
     - [Keep Admin Mode While Screen Is Off](#keep-admin-mode-while-screen-is-off)
   - [StartUp Setting API](#startup-setting-api)
+    - [Request an OS Update from a URL (Broadcast)](#request-an-os-update-from-a-url-broadcast)
     - [Reset StartUp Settings](#reset-startup-settings)
   - [Time API](#time-api)
     - [Set Date and Time](#set-date-and-time)
@@ -121,7 +127,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
 Search for `M3Mobile.M3Sdk.Xamarin` in Visual Studio NuGet Package Manager, or run the following command in Package Manager Console.
 
 ```powershell
-Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.13
+Install-Package M3Mobile.M3Sdk.Xamarin -Version 2.3.15
 ```
 
 The NuGet package page is linked at the top of this document.
@@ -131,7 +137,7 @@ The NuGet package page is linked at the top of this document.
 The project file should contain the following package reference.
 
 ```xml
-<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.13" />
+<PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="2.3.15" />
 ```
 
 ## Basic Usage
@@ -1154,6 +1160,55 @@ The result is returned through `project_media_messenger`. `Message.what` contain
 `ProjectMediaStatus` code, and `project_media_error_message` may contain additional failure
 details.
 
+#### Configure MediaProjection Screen-recording Indicator Exceptions
+
+Hides the SM24 status-bar screen-recording indicator while selected packages use MediaProjection.
+This feature is separate from `AllowProjectMediaAsync()`, which grants the recording AppOps permission.
+
+*   **Requires StartUp Version**: `6.8.7` or later
+*   **Supported Model**: `SM24`
+*   **Behavior**: This is a one-way request. StartUp removes blanks and duplicates, persists the list, and restores it after app or device restart.
+
+```csharp
+// Replace the complete list.
+m3.SetMediaProjectionIndicatorExemptPackages(
+    "net.christianbeier.droidvnc_ng",
+    "com.example.recorder");
+
+// Add to or remove from the existing list.
+m3.AddMediaProjectionIndicatorExemptPackages("com.example.support");
+m3.RemoveMediaProjectionIndicatorExemptPackages("com.example.recorder");
+
+// Clear the complete list.
+m3.ClearMediaProjectionIndicatorExemptPackages();
+```
+
+Calling `SetMediaProjectionIndicatorExemptPackages()` without package names clears the list. No
+processing response is returned. The request is sent immediately, but the status-bar screen-recording
+indicator for an active MediaProjection session may not refresh immediately. For deterministic
+verification, stop and restart the active session. On SM24, expanding and collapsing the notification
+shade may also refresh the indicator. A device reboot is not required.
+
+| API | Existing-list behavior |
+|---|---|
+| `SetMediaProjectionIndicatorExemptPackages` | Replaces the complete list |
+| `AddMediaProjectionIndicatorExemptPackages` | Appends packages and removes duplicates |
+| `RemoveMediaProjectionIndicatorExemptPackages` | Removes only the supplied packages |
+| `ClearMediaProjectionIndicatorExemptPackages` | Clears the complete list |
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `media_projection_exempt_packages` |
+| `mode` | `String` | X | `replace`, `append`, `remove`, `clear`; defaults to `replace` when omitted |
+| `packages` | `String` or `ArrayList<String>` | Conditional | Targets for `replace`, `append`, or `remove`; omit for `clear` |
+
+> This is a one-way request. Sending the broadcast does not guarantee that StartUp saved the list or applied the system property.
+
 ---
 
 ### Quick Tile API
@@ -2102,6 +2157,49 @@ AppCenter `2.2.0` or later is required.
 ### StartUp Setting API
 
 Manages the StartUp SDK's own settings.
+
+#### Request an OS Update from a URL (Broadcast)
+
+Start Up downloads an OTA ZIP file from a URL and asks M3OTA to install it.
+This documents an existing Start Up broadcast; it does not add an SDK method.
+
+* **Required Start Up version**: `6.5.32` or later
+* **Required app**: M3OTA (`com.m3.m3ota`) for the target device
+
+**Direct Broadcast**
+
+* **Action**: `com.android.server.startupservice.system`
+* **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | Yes | `ota_url` |
+| `value` | `String` | Yes | Full download URL of the OTA ZIP file |
+
+```shell
+adb shell am broadcast -a com.android.server.startupservice.system -p com.m3.startup --es setting ota_url --es value "https://example.com/OS/OTA/update.zip"
+```
+
+```csharp
+var request = new Android.Content.Intent("com.android.server.startupservice.system");
+request.SetPackage("com.m3.startup");
+request.PutExtra("setting", "ota_url");
+request.PutExtra("value", "https://example.com/OS/OTA/update.zip");
+context.SendBroadcast(request);
+```
+
+Replace the example URL with a real download URL whose final path contains a `.zip`
+filename. Use a package compatible with the model, Android version, and current OS.
+After downloading, Start Up sends `com.m3.intent.action.UPDATE_PACKAGES` to
+`com.m3.m3ota`, with the filename without its `.zip` extension in `file_name`.
+
+This system command does not require a separate `config.fin` broadcast.
+A completed download or a sent broadcast does not confirm that OS installation has
+completed. Installation eligibility, battery limits, and reboot behavior depend on
+the installed M3OTA version and device OS. M3OTA's installation battery limits are
+separate from Start Up's conditions for starting the download.
+
+Introduction: [Start Up V6.5.32 change](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
 
 #### Reset StartUp Settings
 

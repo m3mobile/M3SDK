@@ -4,6 +4,8 @@ import android.content.Context
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.utils.launchOnMain
 import net.m3mobile.feature.startup.params.ProjectMediaResult
+import net.m3mobile.feature.startup.requester.permission.MediaProjectionIndicatorPackageMode
+import net.m3mobile.feature.startup.requester.permission.MediaProjectionIndicatorPackageRequest
 import net.m3mobile.feature.startup.requester.permission.GrantPermissionRequester
 import net.m3mobile.feature.startup.requester.permission.ProjectMediaRequest
 import net.m3mobile.feature.startup.requester.permission.RevokePermissionRequester
@@ -30,5 +32,40 @@ internal class StartUpPermissionApiImpl(private val context: Context): StartUpPe
         } catch (e: Exception) {
             callback.onComplete(null, e)
         }
+    }
+
+    override fun setMediaProjectionIndicatorExemptPackages(vararg packageNames: String) {
+        sendMediaProjectionIndicatorPackageRequest(
+            MediaProjectionIndicatorPackageMode.REPLACE,
+            packageNames,
+        )
+    }
+
+    override fun addMediaProjectionIndicatorExemptPackages(vararg packageNames: String) {
+        sendMediaProjectionIndicatorPackageRequest(
+            MediaProjectionIndicatorPackageMode.APPEND,
+            packageNames,
+        )
+    }
+
+    override fun removeMediaProjectionIndicatorExemptPackages(vararg packageNames: String) {
+        sendMediaProjectionIndicatorPackageRequest(
+            MediaProjectionIndicatorPackageMode.REMOVE,
+            packageNames,
+        )
+    }
+
+    override fun clearMediaProjectionIndicatorExemptPackages() {
+        sendMediaProjectionIndicatorPackageRequest(
+            MediaProjectionIndicatorPackageMode.CLEAR,
+            emptyArray(),
+        )
+    }
+
+    private fun sendMediaProjectionIndicatorPackageRequest(
+        mode: MediaProjectionIndicatorPackageMode,
+        packageNames: Array<out String>,
+    ) {
+        MediaProjectionIndicatorPackageRequest(context, mode, packageNames.asList()).send()
     }
 }

@@ -27,6 +27,9 @@ namespace M3Sdk.Xamarin.Startup
         private static readonly ISet<DeviceModel> UnsupportedSl10 =
             new HashSet<DeviceModel> { DeviceModel.SL10, DeviceModel.SL10K };
 
+        private static readonly ISet<DeviceModel> MediaProjectionIndicatorSupportedModels =
+            new HashSet<DeviceModel> { DeviceModel.SM24 };
+
         private static readonly IDictionary<DeviceModel, string> BluetoothMacVersionOverrides =
             new Dictionary<DeviceModel, string> { { DeviceModel.UL30, "6.5.31" } };
 
@@ -352,6 +355,42 @@ namespace M3Sdk.Xamarin.Startup
             return CallbackRunner.Run(
                 cancellationToken => AllowProjectMediaAsync(packageName, cancellationToken),
                 callback);
+        }
+
+        /// <inheritdoc />
+        public void SetMediaProjectionIndicatorExemptPackages(params string[] packageNames)
+        {
+            SendMediaProjectionIndicatorPackages(
+                "SetMediaProjectionIndicatorExemptPackages",
+                Constants.StartUp.ReplaceMediaProjectionIndicatorPackages,
+                packageNames);
+        }
+
+        /// <inheritdoc />
+        public void AddMediaProjectionIndicatorExemptPackages(params string[] packageNames)
+        {
+            SendMediaProjectionIndicatorPackages(
+                "AddMediaProjectionIndicatorExemptPackages",
+                Constants.StartUp.AppendMediaProjectionIndicatorPackages,
+                packageNames);
+        }
+
+        /// <inheritdoc />
+        public void RemoveMediaProjectionIndicatorExemptPackages(params string[] packageNames)
+        {
+            SendMediaProjectionIndicatorPackages(
+                "RemoveMediaProjectionIndicatorExemptPackages",
+                Constants.StartUp.RemoveMediaProjectionIndicatorPackages,
+                packageNames);
+        }
+
+        /// <inheritdoc />
+        public void ClearMediaProjectionIndicatorExemptPackages()
+        {
+            SendMediaProjectionIndicatorPackages(
+                "ClearMediaProjectionIndicatorExemptPackages",
+                Constants.StartUp.ClearMediaProjectionIndicatorPackages,
+                new string[0]);
         }
 
         /// <inheritdoc />
@@ -723,6 +762,36 @@ namespace M3Sdk.Xamarin.Startup
         {
             GuardStartUp(methodName, "6.5.10", UsbSupportedModels, null, null);
             SendSystem(Constants.StartUp.TypeUsbSetting, StringExtra(Constants.StartUp.ExtraUsbMode, mode));
+        }
+
+        private void SendMediaProjectionIndicatorPackages(
+            string methodName,
+            string mode,
+            string[] packageNames)
+        {
+            if (packageNames == null)
+                throw new ArgumentNullException(nameof(packageNames));
+
+            GuardStartUp(
+                methodName,
+                "6.8.7",
+                MediaProjectionIndicatorSupportedModels,
+                null,
+                null);
+
+            var intent = new Intent(Constants.StartUp.RequestSystem)
+                .SetPackage(Constants.StartUp.PackageName)
+                .PutExtra(
+                    Constants.StartUp.TypeSetting,
+                    Constants.StartUp.TypeMediaProjectionIndicatorPackages)
+                .PutExtra(Constants.StartUp.ExtraMediaProjectionIndicatorMode, mode);
+            if (mode != Constants.StartUp.ClearMediaProjectionIndicatorPackages)
+            {
+                intent.PutStringArrayListExtra(
+                    Constants.StartUp.ExtraMediaProjectionIndicatorPackages,
+                    new List<string>(packageNames));
+            }
+            _context.SendBroadcast(intent);
         }
 
         private void SetWifiFrequencyBand(string methodName, int value)

@@ -3,6 +3,8 @@ package net.m3mobile.feature.startup.api
 import kotlinx.coroutines.Job
 import net.m3mobile.core.RequestCallback
 import net.m3mobile.core.RequiresStartUp
+import net.m3mobile.core.SupportedModels
+import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.startup.params.ProjectMediaResult
 
 public interface StartUpPermissionApi {
@@ -56,4 +58,49 @@ public interface StartUpPermissionApi {
         packageName: String,
         callback: RequestCallback<ProjectMediaResult>,
     ): Job
+
+    /**
+     * Replaces the packages for which SM24 hides the MediaProjection screen-recording indicator.
+     *
+     * StartUp version `6.8.7` or later is required. This is a one-way request. StartUp persists the
+     * normalized package list and restores it after app or device restart. Changes apply to
+     * MediaProjection sessions started after this request; restart an active session to apply them.
+     *
+     * @param packageNames Package names that replace the complete exception list. Passing no names
+     * clears the list.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    @RequiresStartUp("6.8.7")
+    public fun setMediaProjectionIndicatorExemptPackages(vararg packageNames: String)
+
+    /**
+     * Adds packages for which SM24 hides the MediaProjection screen-recording indicator.
+     *
+     * StartUp version `6.8.7` or later is required. Blank and duplicate names are normalized by
+     * StartUp. This is a one-way request. Changes apply to MediaProjection sessions started after
+     * this request; restart an active session to apply them.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    @RequiresStartUp("6.8.7")
+    public fun addMediaProjectionIndicatorExemptPackages(vararg packageNames: String)
+
+    /**
+     * Removes packages from the SM24 MediaProjection screen-recording indicator exception list.
+     *
+     * StartUp version `6.8.7` or later is required. This is a one-way request. Changes apply to
+     * MediaProjection sessions started after this request; restart an active session to apply them.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    @RequiresStartUp("6.8.7")
+    public fun removeMediaProjectionIndicatorExemptPackages(vararg packageNames: String)
+
+    /**
+     * Clears all SM24 MediaProjection screen-recording indicator exceptions.
+     *
+     * StartUp version `6.8.7` or later is required. This is a one-way request. Changes apply to
+     * MediaProjection sessions started after this request; restart an active session to apply them.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    @RequiresStartUp("6.8.7")
+    public fun clearMediaProjectionIndicatorExemptPackages()
 }

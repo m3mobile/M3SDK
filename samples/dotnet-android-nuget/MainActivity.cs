@@ -123,6 +123,7 @@ public sealed class CategoryActivity : Activity
             case SampleCategory.Network: NetworkSample(); break;
             case SampleCategory.Permission: PermissionSample(); break;
             case SampleCategory.ProjectMedia: ProjectMediaSample(); break;
+            case SampleCategory.MediaProjectionIndicator: MediaProjectionIndicatorSample(); break;
             case SampleCategory.QuickTile: QuickTileSample(); break;
             case SampleCategory.Scanner: ScannerSample(); break;
             case SampleCategory.StartUpSetting: StartUpSettingSample(); break;
@@ -363,6 +364,51 @@ public sealed class CategoryActivity : Activity
                         new ProjectMediaResult(previewStatus, errorMessage)));
             });
         }
+    }
+
+    private void MediaProjectionIndicatorSample()
+    {
+        var section = Section(Resource.String.media_projection_indicator);
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.media_projection_indicator_description) + "\n" +
+                GetString(Resource.String.media_projection_indicator_requirement)
+        });
+        var packageNames = TextField(
+            Resource.String.media_projection_indicator_packages,
+            DroidVncPackage);
+        packageNames.Hint = GetString(Resource.String.media_projection_indicator_packages_hint);
+        section.Add(packageNames);
+
+        AddButton(section, Resource.String.replace_packages, () =>
+        {
+            var packages = MediaProjectionPackages(packageNames.Text);
+            RunOneWay(
+                section,
+                "SetMediaProjectionIndicatorExemptPackages(" + string.Join(", ", packages) + ")",
+                () => _sdk!.SetMediaProjectionIndicatorExemptPackages(packages));
+        });
+        AddButton(section, Resource.String.add_packages, () =>
+        {
+            var packages = MediaProjectionPackages(packageNames.Text);
+            RunOneWay(
+                section,
+                "AddMediaProjectionIndicatorExemptPackages(" + string.Join(", ", packages) + ")",
+                () => _sdk!.AddMediaProjectionIndicatorExemptPackages(packages));
+        });
+        AddButton(section, Resource.String.remove_packages, () =>
+        {
+            var packages = MediaProjectionPackages(packageNames.Text);
+            RunOneWay(
+                section,
+                "RemoveMediaProjectionIndicatorExemptPackages(" + string.Join(", ", packages) + ")",
+                () => _sdk!.RemoveMediaProjectionIndicatorExemptPackages(packages));
+        });
+        AddButton(section, Resource.String.clear_packages, () =>
+            RunOneWay(
+                section,
+                "ClearMediaProjectionIndicatorExemptPackages",
+                () => _sdk!.ClearMediaProjectionIndicatorExemptPackages()));
     }
 
     private void QuickTileSample()
@@ -617,6 +663,15 @@ public sealed class CategoryActivity : Activity
     private void AddButton(SectionView section, int labelId, Action action)
     {
         AddButton(section, GetString(labelId), action);
+    }
+
+    private static string[] MediaProjectionPackages(string? value)
+    {
+        return (value ?? string.Empty)
+            .Split(',')
+            .Select(packageName => packageName.Trim())
+            .Where(packageName => packageName.Length > 0)
+            .ToArray();
     }
 
     private void AddButton(SectionView section, string label, Action action)

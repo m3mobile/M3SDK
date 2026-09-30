@@ -3,11 +3,10 @@
   <PropertyGroup>
     <_M3MobileM3SdkXamarinTargetsAlreadyImported>$(M3MobileM3SdkXamarinTargetsImported)</_M3MobileM3SdkXamarinTargetsAlreadyImported>
     <M3MobileM3SdkXamarinTargetsImported>true</M3MobileM3SdkXamarinTargetsImported>
-    <_M3MobileM3SdkXamarinTargetFrameworkVersion>$([System.String]::Copy('$(TargetFrameworkVersion)').Replace('v', '').Replace('V', ''))</_M3MobileM3SdkXamarinTargetFrameworkVersion>
     <_M3MobileM3SdkXamarinQueriesManifest>$(MSBuildThisFileDirectory)..\manifest\AndroidManifest.xml</_M3MobileM3SdkXamarinQueriesManifest>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(_M3MobileM3SdkXamarinTargetsAlreadyImported)' != 'true' and '$(_M3MobileM3SdkXamarinTargetFrameworkVersion)' != '' and '$(_M3MobileM3SdkXamarinTargetFrameworkVersion)' >= '11.0'">
+  <PropertyGroup Condition="'$(_M3MobileM3SdkXamarinTargetsAlreadyImported)' != 'true' and ('$(TargetFrameworkIdentifier)' == 'MonoAndroid' or '$(TargetPlatformIdentifier)' == 'android')">
     <_M3MobileM3SdkXamarinAddQueriesManifest>true</_M3MobileM3SdkXamarinAddQueriesManifest>
   </PropertyGroup>
 

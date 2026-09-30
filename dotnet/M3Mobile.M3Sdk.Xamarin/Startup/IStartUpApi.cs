@@ -286,6 +286,33 @@ namespace M3Sdk.Xamarin.Startup
             M3RequestCallback<ProjectMediaResult> callback);
 
         /// <summary>
+        /// Replaces the packages for which SM24 hides the MediaProjection screen-recording indicator.
+        /// </summary>
+        /// <param name="packageNames">Package names that replace the complete exception list. Passing no names clears the list.</param>
+        /// <remarks>Supported on SM24. Requires StartUp version <c>6.8.7</c> or later. This is a one-way request. Restart an active MediaProjection session to apply the change.</remarks>
+        void SetMediaProjectionIndicatorExemptPackages(params string[] packageNames);
+
+        /// <summary>
+        /// Adds packages for which SM24 hides the MediaProjection screen-recording indicator.
+        /// </summary>
+        /// <param name="packageNames">Package names to append to the exception list.</param>
+        /// <remarks>Supported on SM24. Requires StartUp version <c>6.8.7</c> or later. This is a one-way request. Restart an active MediaProjection session to apply the change.</remarks>
+        void AddMediaProjectionIndicatorExemptPackages(params string[] packageNames);
+
+        /// <summary>
+        /// Removes packages from the SM24 MediaProjection screen-recording indicator exception list.
+        /// </summary>
+        /// <param name="packageNames">Package names to remove from the exception list.</param>
+        /// <remarks>Supported on SM24. Requires StartUp version <c>6.8.7</c> or later. This is a one-way request. Restart an active MediaProjection session to apply the change.</remarks>
+        void RemoveMediaProjectionIndicatorExemptPackages(params string[] packageNames);
+
+        /// <summary>
+        /// Clears all SM24 MediaProjection screen-recording indicator exceptions.
+        /// </summary>
+        /// <remarks>Supported on SM24. Requires StartUp version <c>6.8.7</c> or later. This is a one-way request. Restart an active MediaProjection session to apply the change.</remarks>
+        void ClearMediaProjectionIndicatorExemptPackages();
+
+        /// <summary>
         /// Adds quick settings tiles to the system UI.
         /// </summary>
         /// <param name="quickTiles">The quick settings tiles to add.</param>

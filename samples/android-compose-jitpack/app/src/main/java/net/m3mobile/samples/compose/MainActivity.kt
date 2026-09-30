@@ -332,6 +332,17 @@ internal fun CategoryScreen(category: SampleCategory) {
             }
         }
 
+        SampleCard(
+            SampleCategory.MEDIA_PROJECTION_INDICATOR,
+            category,
+            stringResource(R.string.media_projection_indicator),
+            results["mediaProjectionIndicator"],
+        ) {
+            MediaProjectionIndicatorSample { operation, body ->
+                record("mediaProjectionIndicator", operation, body)
+            }
+        }
+
         SampleCard(SampleCategory.QUICK_TILE, category, stringResource(R.string.quick_tile), results["quickTile"]) {
             SdkActionButton(onClick = {
                 oneWay("quickTile", "setQuickTiles(id=WIFI, title=Wi-Fi)") {
