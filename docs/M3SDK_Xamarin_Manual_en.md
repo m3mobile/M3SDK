@@ -1,5 +1,9 @@
 # M3 SDK Xamarin Manual
 
+**Manual version: 2.3.18 (draft) · SDK version: 2.3.15**
+
+Current public PDF (2.3.15): [M3SDK_Xamarin_Manual_en_v2.3.15.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.15/M3SDK_Xamarin_Manual_en_v2.3.15.pdf)
+
 NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.15](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.15)
 
 
@@ -72,6 +76,9 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Keep Admin Mode While Screen Is Off](#keep-admin-mode-while-screen-is-off)
   - [StartUp Setting API](#startup-setting-api)
     - [Reset StartUp Settings](#reset-startup-settings)
+  - [OTA Update (Broadcast)](#ota-update-broadcast)
+    - [Request an OS Update from a URL (Broadcast)](#request-an-os-update-from-a-url-broadcast)
+    - [Install a Local OTA ZIP with M3OTA (Broadcast)](#install-a-local-ota-zip-with-m3ota-broadcast)
   - [Time API](#time-api)
     - [Set Date and Time](#set-date-and-time)
     - [Set NTP Server](#set-ntp-server)
@@ -2176,6 +2183,128 @@ m3.ResetStartUpSetting();
 Immediately after the setting request, send an additional `com.android.server.startupservice.config.fin` broadcast.
 
 > This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
+
+---
+
+### OTA Update (Broadcast)
+
+#### Request an OS Update from a URL (Broadcast)
+
+StartUp downloads an OTA ZIP file from a URL and asks M3OTA to install it.
+This documents an existing StartUp broadcast; it does not add an SDK method.
+
+* **Required StartUp version**: `6.5.32` or later
+* **Required app**: M3OTA (`com.m3.m3ota`) for the target device
+
+**Direct Broadcast**
+
+* **Action**: `com.android.server.startupservice.system`
+* **Target package**: `com.m3.startup`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | Yes | `ota_url` |
+| `value` | `String` | Yes | Full download URL of the OTA ZIP file |
+
+```shell
+adb shell am broadcast -a com.android.server.startupservice.system -p com.m3.startup --es setting ota_url --es value "https://example.com/OS/OTA/update.zip"
+```
+
+```csharp
+var request = new Android.Content.Intent("com.android.server.startupservice.system");
+request.SetPackage("com.m3.startup");
+request.PutExtra("setting", "ota_url");
+request.PutExtra("value", "https://example.com/OS/OTA/update.zip");
+context.SendBroadcast(request);
+```
+
+Replace the example URL with a real download URL whose final path contains a `.zip`
+filename. Use a package compatible with the model, Android version, and current OS.
+After downloading, StartUp sends `com.m3.intent.action.UPDATE_PACKAGES` to
+`com.m3.m3ota`, with the filename without its `.zip` extension in `file_name`.
+
+This system command does not require a separate `config.fin` broadcast.
+A completed download or a sent broadcast does not confirm that OS installation has
+completed. Installation eligibility, battery limits, and reboot behavior depend on
+the installed M3OTA version and device OS. M3OTA's installation battery limits are
+separate from StartUp's conditions for starting the download.
+
+#### Install a Local OTA ZIP with M3OTA (Broadcast)
+
+M3OTA receives a broadcast to install an OTA ZIP already stored on the device.
+This documents an existing M3OTA broadcast; it does not add an SDK method.
+
+* **Required app**: M3OTA (`com.m3.m3ota`) running on the target device
+* **File location**: `/sdcard/Download/update.zip` for the example below
+
+The following M3OTA versions are listed for released OS builds. The corresponding source code accepts this broadcast with `file_name="update"` for each version listed here.
+
+| Device | Android version | Shipped M3OTA version |
+|---|---|---|
+| SM15 | 7.1 / 8.1 | V2.0.7 |
+| SM15 | 10 | V2.2.0 |
+| UL20 | 9 | V2.2.0 |
+| UL20 / US20 | 10 | V2.2.3 |
+| SL20 | 11 | V2.0.8 |
+| SM20 | 11 / 12 | V11.0.10 |
+| WD10 | 13 | V11.2.0 |
+| SL20K | 13 | V11.2.1 |
+| PC10 | 13 | V11.2.3 |
+| US30 / SL20P | 13 | V11.4.1 |
+| SM30 | 14 | V11.4.3 |
+| SM20 / UL30 | 14 | V11.4.4 |
+| SM24 / SM25 | 16 | V11.4.3 |
+
+The shipped M3OTA version for SL10 and SL10K is not confirmed. Check the installed app version before using this command on those devices. An app updated after the OS release may also differ from the table.
+
+**Direct Broadcast**
+
+* **Action**: `com.m3.intent.action.UPDATE_PACKAGES`
+* **Target package**: `com.m3.m3ota`
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `file_name` | `String` | Yes | `update` or `update.zip` (see version table below) |
+
+For the released OS versions in the table above, pass the filename **without** `.zip`:
+
+```shell
+adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update"
+```
+
+```csharp
+var request = new Android.Content.Intent("com.m3.intent.action.UPDATE_PACKAGES");
+request.SetPackage("com.m3.m3ota");
+request.PutExtra("file_name", "update");
+context.SendBroadcast(request);
+```
+
+Some other M3OTA versions use a different receiver. For a file stored as `/sdcard/Download/update.zip`, the source code expects:
+
+| Installed M3OTA version | `file_name` value | Receiver path |
+|---|---|---|
+| V11.0.3–V11.0.4 | `update.zip` | Uses the supplied filename as-is |
+| V11.0.5–V11.2.4 | `update` | Appends `.zip` |
+| V11.2.6–V11.2.7 | `update.zip` | Uses the supplied filename as-is |
+| V11.2.8 | `update` | Appends `.zip` |
+| V11.3.0–V11.3.3 | `update.zip` | Uses the supplied filename as-is |
+| V11.3.5 and later confirmed versions | `update` | Appends `.zip` |
+| V2.0.7, V2.0.8, V2.2.0, V2.2.3 | `update` | Appends `.zip` |
+
+For a version requiring the complete filename, use:
+
+```shell
+adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update.zip"
+```
+
+The table records source-code behavior; it does not establish which OTA packages a device can install. If the installed version is absent from the table, inspect that build before sending the command. StartUp V6.5.32 sends a filename **without** `.zip`, so its URL route can fail on versions whose receiver expects `update.zip`.
+
+Use an OTA ZIP compatible with the model, Android version, and current OS. The broadcast reads a file under `/sdcard/Download/`; it does not download the file.
+Available Full/incremental packages and reboot behavior depend on the installed M3OTA
+version and device OS. A sent broadcast does not confirm that installation succeeded.
+Battery restrictions for this route apply from M3OTA `V2.2.3` on the confirmed V2
+devices and `V11.2.6` on the confirmed V11 devices; earlier confirmed versions have
+different behavior. See the [M3OTA manual](https://m3-mobile.atlassian.net/wiki/spaces/M3APPMANUAL/pages/82608131/M3+OTA+KR) for the device-specific details.
 
 
 ---
