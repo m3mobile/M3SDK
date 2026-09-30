@@ -20,6 +20,7 @@ concurrency:
 jobs:
   android-jitpack:
     name: Android Compose sample from JitPack
+    if: ${{ !startsWith(github.event.release.tag_name || inputs.version, 'docs-') }}
     runs-on: ubuntu-latest
     env:
       M3_SDK_VERSION: ${{ github.event.release.tag_name || inputs.version }}
@@ -96,6 +97,7 @@ jobs:
 
   dotnet-nuget:
     name: .NET for Android sample from NuGet Gallery
+    if: ${{ !startsWith(github.event.release.tag_name || inputs.version, 'docs-') }}
     runs-on: windows-2022
     env:
       M3_SDK_VERSION: ${{ github.event.release.tag_name || inputs.version }}
