@@ -62,6 +62,7 @@ M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제
     - [플로팅 스캐너 버튼 UI](#플로팅-스캐너-버튼-ui)
   - [StartUp Setting API](#startup-setting-api)
     - [StartUp 설정 초기화](#startup-설정-초기화)
+    - [URL로 OS 업데이트 요청 (Broadcast)](#url로-os-업데이트-요청-broadcast)
   - [KeyTool API](#keytool-api)
     - [Function 키 모드 제어](#function-키-모드-제어)
     - [키 기능 설정](#키-기능-설정)
@@ -1566,6 +1567,46 @@ context.sendOrderedBroadcast(request, null)
 ### StartUp Setting API
 
 StartUp SDK 자체의 설정을 관리합니다.
+
+#### URL로 OS 업데이트 요청 (Broadcast)
+
+Start Up이 URL에서 OTA ZIP 파일을 다운로드한 뒤 M3OTA에 설치를 요청합니다.
+이 항목은 Start Up이 제공하는 Broadcast 사용법이며, SDK 메서드 추가가 아닙니다.
+
+* **필요 Start Up 버전**: `6.5.32` 이상
+* **필요 앱**: 단말기에 맞는 M3OTA (`com.m3.m3ota`)
+* **Action**: `com.android.server.startupservice.system`
+* **Target package**: `com.m3.startup`
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `setting` | `String` | O | `ota_url` |
+| `value` | `String` | O | 다운로드 가능한 OTA ZIP 파일의 전체 URL |
+
+```shell
+adb shell am broadcast -a com.android.server.startupservice.system -p com.m3.startup --es setting ota_url --es value "https://example.com/OS/OTA/update.zip"
+```
+
+```kotlin
+val request = Intent("com.android.server.startupservice.system").apply {
+    setPackage("com.m3.startup")
+    putExtra("setting", "ota_url")
+    putExtra("value", "https://example.com/OS/OTA/update.zip")
+}
+context.sendBroadcast(request)
+```
+
+예제 URL은 실제 배포 URL로 바꿉니다. URL 마지막 경로에 `.zip` 파일명을 포함하고,
+대상 모델·Android 버전·현재 OS에 맞는 패키지를 사용합니다. 다운로드 후 Start Up은
+`com.m3.intent.action.UPDATE_PACKAGES` Broadcast를 `com.m3.m3ota`로 보내며,
+`file_name`에는 `.zip` 확장자를 뺀 파일명을 전달합니다.
+
+이 시스템 명령은 별도의 `config.fin` Broadcast 없이 실행됩니다.
+파일 다운로드 완료나 Broadcast 전송 성공은 OS 설치 완료를 뜻하지 않습니다.
+설치 가능 여부와 배터리 제한, 재부팅 동작은 탑재된 M3OTA 버전 및 기기의 OS에 따릅니다.
+M3OTA가 적용하는 배터리 제한은 Start Up의 다운로드 시작 조건과 구분합니다.
+
+기능 도입 근거: [Start Up V6.5.32 변경 이력](https://github.com/m3mobile/Android-App-StartUp/commit/62bfb3ebfd1adaec72ef561a5f4d9ff5ae041e94).
 
 #### StartUp 설정 초기화
 
