@@ -10,9 +10,7 @@ const MANUALS = [
   "docs/M3SDK_Xamarin_Manual_kr.md",
   "docs/M3SDK_Xamarin_Manual_en.md",
 ];
-const EXPECTED_DIRECT_BLOCKS = 83;
-// Existing M3OTA app broadcast, intentionally outside the SDK action contract.
-const M3OTA_OTA_REQUEST = "com.m3.intent.action.UPDATE_PACKAGES";
+const EXPECTED_DIRECT_BLOCKS = 81;
 const KOTLIN_ACTION_SOURCES = {
   startUpRequest:
     "feature/startup/src/main/java/net/m3mobile/feature/startup/constants/RequestAction.kt",
@@ -415,8 +413,8 @@ function validateManualActions(manual, sdkContract) {
 
   sameSet(
     requestActions,
-    new Set([...sdkContract.requests, M3OTA_OTA_REQUEST]),
-    `${manual.relativePath} and documented request actions`,
+    sdkContract.requests,
+    `${manual.relativePath} and SDK request actions`,
   );
   sameSet(
     responseActions,
