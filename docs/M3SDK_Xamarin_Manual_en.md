@@ -1,8 +1,8 @@
 # M3 SDK Xamarin Manual
 
-**Manual version: 2.3.16 (draft) · SDK version: 2.3.15**
+**Manual version: 2.3.16 · SDK version: 2.3.15**
 
-Current public PDF (2.3.15): [M3SDK_Xamarin_Manual_en_v2.3.15.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.15/M3SDK_Xamarin_Manual_en_v2.3.15.pdf)
+PDF downloads: [M3SDK manual releases](https://github.com/m3mobile/M3SDK/releases)
 
 NuGet package: [M3Mobile.M3Sdk.Xamarin 2.3.15](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.15)
 
