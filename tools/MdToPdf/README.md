@@ -17,6 +17,19 @@ The PowerShell and Bash scripts are thin wrappers around this command. By
 default they read from `<repo>/docs` and write PDFs to
 `<repo>/build/release/manuals`.
 
+## 매뉴얼만 개정하는 경우
+
+- 매뉴얼 버전과 대상 SDK 버전을 구분한다. 문서만 바뀌면 SDK API·바이너리·패키지 버전은 유지한다.
+- PDF 내용이 바뀌면 매뉴얼 버전과 파일명도 함께 바꾼다. 기존 공개 PDF를 같은 이름의 다른 내용으로 덮어쓰지 않는다.
+- Java/Kotlin·Xamarin의 한·영 매뉴얼 4개를 동일한 개정으로 관리한다.
+- `node tools/MdToPdf/validate-manuals.js` 실행 후 PDF를 생성하고 표지, 목차 링크, 글꼴, 코드와 표의 잘림을 검토한다.
+
+```shell
+node tools/MdToPdf/convert-md-to-pdf.js --input docs/M3SDK_Manual_kr.md --input docs/M3SDK_Manual_en.md --input docs/M3SDK_Xamarin_Manual_kr.md --input docs/M3SDK_Xamarin_Manual_en.md --output build/manual-review --temp build/md-to-pdf-review --version <manual-version>
+```
+
+문서 전용 Release는 `docs-<manual-version>` 태그를 사용한다. PDF 4개가 공개되고 다운로드 URL이 정상적으로 동작하는 것을 확인한 후 저장소와 관련 사이트의 다운로드 링크를 갱신한다. 문서 개정에 SDK 빌드·패키지 배포용 `Deployment` workflow와 `prepare-release.js --version`을 사용하지 않는다.
+
 **간단하고 자동화된 마크다운 → PDF 변환 도구**
 
 안드로이드 코틀린/자바 SDK 문서를 개발자와 영업/마케팅 모두를 위한 전문적인 PDF로 자동 변환합니다.
