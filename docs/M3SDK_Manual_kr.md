@@ -1,8 +1,8 @@
 # M3 SDK 매뉴얼
 
-**매뉴얼 버전: 2.3.16 (초안) · 대상 SDK 버전: 2.3.15**
+**매뉴얼 버전: 2.3.16 · 대상 SDK 버전: 2.3.15**
 
-현재 공개 PDF(2.3.15): [M3SDK_Manual_kr_v2.3.15.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.3.15/M3SDK_Manual_kr_v2.3.15.pdf)
+PDF 다운로드: [M3SDK 매뉴얼 Release](https://github.com/m3mobile/M3SDK/releases)
 
 M3 SDK는 M3 Mobile 장치를 구성하고 제어하기 위한 API 모음을 제공합니다.
 
