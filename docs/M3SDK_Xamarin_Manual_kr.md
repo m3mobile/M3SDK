@@ -2,7 +2,7 @@
 
 **매뉴얼 버전: 2.3.16 · 대상 SDK 버전: 2.3.15**
 
-PDF 다운로드: [M3SDK 매뉴얼 Release](https://github.com/m3mobile/M3SDK/releases)
+PDF 다운로드: [M3SDK_Xamarin_Manual_kr_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Xamarin_Manual_kr_v2.3.16.pdf)
 
 NuGet 배포 링크 : [M3Mobile.M3Sdk.Xamarin 2.3.15](https://www.nuget.org/packages/M3Mobile.M3Sdk.Xamarin/2.3.15)
 
