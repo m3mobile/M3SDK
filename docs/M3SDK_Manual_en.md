@@ -1653,26 +1653,15 @@ This documents an existing M3OTA broadcast; it does not add an SDK method.
 * **Required app**: M3OTA (`com.m3.m3ota`) running on the target device
 * **File location**: `/sdcard/Download/update.zip` for the example below
 
-The table includes only M3OTA app versions confirmed in OS release notes. Choose the value by the **M3OTA version currently installed on the device**, not by its OS build. Only consecutively confirmed versions are grouped into ranges.
-
-| Installed M3OTA version | `file_name` |
-|---|---|
-| V2.0.7–V2.0.8, V2.2.0–V2.2.1, V2.2.3 | `update` |
-| V11.0.7, V11.0.10, V11.0.12 | `update` |
-| V11.1.1, V11.1.7–V11.1.9 | `update` |
-| V11.2.0–V11.2.1, V11.2.3 | `update` |
-| V11.2.7 | `update.zip` |
-| V11.3.5, V11.4.1, V11.4.3–V11.4.4 | `update` |
-
-If the installed M3OTA version is not listed, check that version's receiver behavior first. An app updated after the OS release can differ from the version recorded in its OS release note.
+For M3OTA versions confirmed in OS releases, pass `update.zip` as `file_name` only on V11.2.7; pass `update` on all others. If the app was updated after the OS release, use the currently installed version. Check the receiver code first for an unconfirmed version.
 
 **Direct Broadcast**
 
 * **Action**: `com.m3.intent.action.UPDATE_PACKAGES`
 * **Target package**: `com.m3.m3ota`
-* **Extra**: `file_name` (required `String`). Use the value shown for the currently installed M3OTA version.
+* **Extra**: `file_name` (required `String`). Use the value above for the currently installed M3OTA version.
 
-For M3OTA versions marked `update`, omit `.zip`; the receiver appends the extension.
+For confirmed versions other than V11.2.7, omit `.zip`; the receiver appends the extension.
 
 ```shell
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update"

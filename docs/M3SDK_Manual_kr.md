@@ -1648,26 +1648,15 @@ M3OTA는 단말기에 저장된 OTA ZIP 파일의 설치 요청 Broadcast를 받
 * **필요 앱**: 대상 단말기에서 실행 중인 M3OTA (`com.m3.m3ota`)
 * **파일 위치**: 아래 예시에서는 `/sdcard/Download/update.zip`
 
-OS 릴리즈 노트에서 탑재가 확인된 M3OTA 앱 버전만 아래에 적었습니다. OS 빌드가 아닌 **현재 단말기에 설치된 M3OTA 버전**으로 값을 고르세요. 연속해서 확인된 버전만 범위로 묶었습니다.
-
-| 설치된 M3OTA 버전 | `file_name` |
-|---|---|
-| V2.0.7~V2.0.8, V2.2.0~V2.2.1, V2.2.3 | `update` |
-| V11.0.7, V11.0.10, V11.0.12 | `update` |
-| V11.1.1, V11.1.7~V11.1.9 | `update` |
-| V11.2.0~V11.2.1, V11.2.3 | `update` |
-| V11.2.7 | `update.zip` |
-| V11.3.5, V11.4.1, V11.4.3~V11.4.4 | `update` |
-
-설치된 M3OTA 버전이 표에 없으면 해당 버전의 수신 방식을 먼저 확인하세요. OS 릴리즈 후 앱을 별도로 업데이트한 단말기는 OS 릴리즈 노트의 탑재 버전과 다를 수 있습니다.
+확인된 OS 탑재 M3OTA 버전에서는 V11.2.7만 `update.zip`, 나머지는 `update`를 `file_name`에 전달합니다. OS 릴리즈 후 앱을 별도로 업데이트했다면 현재 설치된 버전을 기준으로 하세요. 확인되지 않은 버전은 수신 코드를 먼저 확인하세요.
 
 **직접 Broadcast**
 
 * **Action**: `com.m3.intent.action.UPDATE_PACKAGES`
 * **Target package**: `com.m3.m3ota`
-* **Extra**: `file_name` (`String`, 필수). 위 표에서 현재 설치된 M3OTA 버전에 해당하는 값을 사용합니다.
+* **Extra**: `file_name` (`String`, 필수). 현재 설치된 M3OTA 버전에 따라 위 기준의 값을 사용합니다.
 
-표에서 `update`로 표시된 M3OTA 버전은 확장자 `.zip`을 **빼고** 전달합니다. 수신 코드가 확장자를 붙입니다.
+V11.2.7을 제외한 확인 버전에서는 확장자 `.zip`을 **빼고** 전달합니다. 수신 코드가 확장자를 붙입니다.
 
 ```shell
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update"
