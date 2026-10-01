@@ -1607,6 +1607,8 @@ StartUp이 URL에서 OTA ZIP 파일을 다운로드한 뒤 M3OTA에 설치를 �
 * **필요 StartUp 버전**: `6.5.32` 이상
 * **필요 앱**: 단말기에 맞는 M3OTA (`com.m3.m3ota`)
 
+> **M3OTA V11.2.7 호환 제한**: 수신 코드 기준으로 이 URL 방식은 다운로드 후 설치를 시작할 수 없습니다. StartUp은 `.zip`을 뺀 파일명을 전달하지만 M3OTA V11.2.7은 그 이름을 그대로 사용합니다. 예를 들어 `update.zip`을 다운로드해도 `/sdcard/Download/update`를 찾으므로 파일을 찾지 못해 요청이 중단됩니다. URL 파일명 변경만으로는 해결되지 않습니다. [로컬 OTA 파일 요청](#로컬-ota-파일로-os-업데이트-요청-m3ota-broadcast)의 V11.2.7 예시처럼, 다운로드한 ZIP 파일명 전체를 `file_name`에 넣어 M3OTA에 별도로 요청하세요.
+
 **직접 Broadcast**
 
 * **Action**: `com.android.server.startupservice.system`
@@ -1676,7 +1678,7 @@ M3OTA `V11.2.7`의 수신 코드는 파일명을 그대로 사용하므로 `upda
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update.zip"
 ```
 
-이 예외는 StartUp의 URL Broadcast에도 영향을 줄 수 있습니다. StartUp V6.5.32는 확장자를 뺀 파일명을 전달하므로, M3OTA `V11.2.7`에서는 URL 방식이 실패할 수 있습니다. OS에 탑재된 APK와 소스 빌드의 해시까지 대조한 결과는 아니며, 앱을 별도로 업데이트한 경우 실제 설치 버전을 확인해야 합니다. 파일명 형식만으로 OTA 패키지의 설치 가능 여부를 판단할 수는 없습니다.
+M3OTA `V11.2.7`에서는 위의 파일명 전체를 전달하는 요청을 사용하세요. StartUp URL 방식의 파일명 전달은 [URL 요청의 호환 제한](#url로-os-업데이트-요청-broadcast)을 확인하세요. 이 제한은 소스 코드 대조 결과이며, OS 탑재 APK의 해시 대조와 실기기 E2E 검증은 아직 수행하지 않았습니다. 앱을 별도로 업데이트했다면 현재 설치된 버전을 확인하세요. 파일명 형식만으로 OTA 패키지의 설치 가능 여부를 판단할 수는 없습니다.
 
 대상 모델·Android 버전·현재 OS에 맞는 OTA ZIP 파일을 사용합니다. 이 Broadcast는 `/sdcard/Download/` 아래 파일을 읽으며 파일을 다운로드하지 않습니다. Full/경량 패키지 설치 가능 여부와 재부팅 동작은
 단말기에 탑재된 M3OTA 버전과 OS에 따라 다릅니다. Broadcast 전송 성공은 설치

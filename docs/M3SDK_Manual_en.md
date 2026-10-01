@@ -1611,6 +1611,8 @@ This documents an existing StartUp broadcast; it does not add an SDK method.
 * **Required StartUp version**: `6.5.32` or later
 * **Required app**: M3OTA (`com.m3.m3ota`) for the target device
 
+> **M3OTA V11.2.7 compatibility limitation**: Based on the receiver code, this URL route cannot start installation after downloading the file. StartUp removes `.zip` from the filename, but M3OTA V11.2.7 uses the received name as-is. For example, after downloading `update.zip`, M3OTA looks for `/sdcard/Download/update` and stops the request because that file does not exist. Changing the URL filename alone does not resolve the mismatch. Follow the V11.2.7 example in [the local OTA file request section](#install-a-local-ota-zip-with-m3ota-broadcast) and send a separate M3OTA request with the downloaded ZIP file's full name in `file_name`.
+
 **Direct Broadcast**
 
 * **Action**: `com.android.server.startupservice.system`
@@ -1681,7 +1683,7 @@ The M3OTA `V11.2.7` receiver uses the supplied filename as-is, so pass `update.z
 adb shell am broadcast -a com.m3.intent.action.UPDATE_PACKAGES -p com.m3.m3ota --es file_name "update.zip"
 ```
 
-This exception can also affect the StartUp URL broadcast: StartUp V6.5.32 sends the filename without the extension, so the URL route may fail with M3OTA `V11.2.7`. The OS APK hash has not been matched to the source build; check the installed app if it was updated separately. The filename format does not establish whether a particular OTA package is eligible for installation.
+For M3OTA `V11.2.7`, use the request above with the full filename. See the [URL request compatibility limitation](#request-an-os-update-from-a-url-broadcast) for StartUp's filename handling. This limitation is based on source-code comparison; OS APK hash matching and on-device E2E verification have not been performed. Check the currently installed version if the app was updated separately. The filename format does not establish whether a particular OTA package is eligible for installation.
 
 Use an OTA ZIP compatible with the model, Android version, and current OS. The broadcast reads a file under `/sdcard/Download/`; it does not download the file.
 Available Full/incremental packages and reboot behavior depend on the installed M3OTA
