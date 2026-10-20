@@ -42,18 +42,18 @@ gh workflow run --repo m3mobile/M3SDK complete-release.yml --ref develop -f depl
 pwsh -File tools/workflow/build-nuget-candidate.ps1 -Version VERSION
 ```
 
-Kotlin 후보 모드는 지정한 파일 저장소에서 `sdk` 모듈을 소비한다. 공개 모드는 `com.github.m3mobile:M3SDK:VERSION`을 JitPack에서 소비한다. 저장소의 소스 모듈을 직접 참조하지 않는다. C# 후보는 동일한 클래식 Xamarin nupkg를 .NET Android 샘플에서 PackageReference로 소비한다. 샘플 APK의 debug 서명은 검증용이며 제품 앱의 서명 정책이 아니다.
+Kotlin 후보 모드는 지정한 파일 저장소에서 `sdk` 모듈을 소비한다. 공개 모드는 `com.github.m3mobile:M3SDK:VERSION`을 JitPack에서 소비한다. 저장소의 소스 모듈을 직접 참조하지 않는다. C#은 정확한 NuGet 버전 범위로 지정해 다른 버전 대체 복원을 거부한다. 공개 샘플은 재시도 가능한 격리 restore가 성공한 뒤 추가 restore 없이 SDK 의존성 설치와 빌드를 진행한다. C# 후보는 동일한 클래식 Xamarin nupkg를 .NET Android 샘플에서 PackageReference로 소비한다. 샘플 APK의 debug 서명은 검증용이며 제품 앱의 서명 정책이 아니다.
 
 ## 최초 원격 설정
 
 - workflow/스크립트를 저장소에 반영한 뒤 실행 가능하다. 로컬 파일 추가만으로 GitHub Actions가 활성화되지는 않는다.
 - 브랜치 보호/ruleset에 리뷰 승인과 `candidate-packages / android`, `candidate-packages / dotnet`, API/C# 검사를 필수로 설정한다. 실제 check 이름은 첫 실행 결과에서 확인한다.
-- `sdk-release` environment의 승인자·배포 허용 브랜치를 설정하고 `NUGET_API_KEY`를 등록한다. environment 이름만 YAML에 써도 승인 보호가 자동 설정되는 것은 아니다.
+- `sdk-release` environment의 승인자·배포 허용 브랜치를 설정한다. 실제 게시와 최종 Release 공개 모두 이 environment를 사용한다. 그리고 `NUGET_API_KEY`를 등록한다. environment 이름만 YAML에 써도 승인 보호가 자동 설정되는 것은 아니다.
 - Windows runner에는 클래식 Xamarin.Android MSBuild targets, Android API 24, .NET 9/10과 Android workload가 필요하다. 없으면 명확히 실패한다. 자체 runner를 쓸 때는 PR 코드와 배포 자격 증명을 같은 신뢰 경계에 두지 않는다.
 - Actions artifact 기본 보존기간 안에 후보를 검증·배포·완료한다. 장기 보관이 필요하면 증거와 후보 파일을 별도로 보존한다.
 - 태그/NuGet 일부만 게시된 실패는 로그로 게시 범위를 확인한다. 태그 재지정·기존 버전 덮어쓰기는 하지 않는다. 수정이 필요하면 새 버전 후보부터 다시 검증한다.
 - 게시 후 일시적인 다운로드 장애만 발생한 경우에는 원래 배포 실행의 실패한 검증 job만 재실행할 수 있다. 태그/패키지를 이미 게시한 publish job 전체를 다시 실행하지 않는다. 완료 workflow는 최종 성공한 원래 배포 실행 ID를 사용한다.
-- GitHub Packages alpha는 개발용이며 정식 배포 완료의 근거가 아니다. 정식 JitPack/NuGet 배포는 위 절차를 따른다.
+- GitHub Packages alpha의 Xamarin 경로는 같은 실행에서 검증한 후보 nupkg를 재사용한다. GitHub Packages alpha는 개발용이며 정식 배포 완료의 근거가 아니다. 정식 JitPack/NuGet 배포는 위 절차를 따른다.
 
 `impact_review.regression_models`에 지원 모델 전체의 영향 검토에서 정한 회귀 대상을 기록한다. 결과 목록은 이 계획과 정확히 일치해야 한다. passed인 회귀 모델은 devices에도 OS·앱 버전이 있어야 한다. 생략 근거가 불충분한 모델은 skipped로 승인하지 않는다.
 

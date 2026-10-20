@@ -99,6 +99,33 @@ class EvidenceTests(unittest.TestCase):
                     test_coverage=['ModelSupportTest; CI run 123'])
         self.check()
 
+    def test_blank_regression_reviewer_or_reference_is_rejected(self):
+        item = self.data['regression'][0]
+        for key in ('by', 'reference'):
+            saved = item[key]
+            item[key] = '  '
+            with self.assertRaisesRegex(ValueError, 'reviewer/reference'):
+                self.check()
+            item[key] = saved
+
+    def test_skip_requires_nonblank_proof_with_correct_types(self):
+        item = self.data['regression'][0]
+        item.update(status='skipped', reason='No affected path',
+                    affected_paths=['Device.kt'], test_coverage=['ModelSupportTest'])
+        for key, value in (('reason', ' '), ('affected_paths', [' ']),
+                           ('test_coverage', ['']), ('affected_paths', 'Device.kt')):
+            saved = item[key]
+            item[key] = value
+            with self.assertRaisesRegex(ValueError, 'skip needs'):
+                self.check()
+            item[key] = saved
+
+    def test_duplicate_reviewed_models_are_rejected(self):
+        self.data['impact_review']['regression_models'] *= 2
+        self.data['regression'] *= 2
+        with self.assertRaisesRegex(ValueError, 'Duplicate'):
+            self.check()
+
     def test_omitting_a_reviewed_regression_model_is_blocked(self):
         self.data['impact_review']['regression_models'].append('SL20K')
         with self.assertRaisesRegex(ValueError, 'cover the reviewed'):

@@ -19,6 +19,7 @@ permissions:
 jobs:
   complete:
     runs-on: ubuntu-latest
+    environment: sdk-release
     permissions:
       contents: write
       actions: read

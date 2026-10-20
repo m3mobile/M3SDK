@@ -111,16 +111,6 @@ jobs:
         shell: powershell
         run: dotnet workload install android
 
-      - name: Install consumer Android SDK dependencies
-        shell: pwsh
-        run: |
-          dotnet build samples/dotnet-android-nuget/M3SdkPublishedSample.csproj `
-            -t:InstallAndroidDependencies -p:AcceptAndroidSdkLicenses=true `
-            "-p:M3SdkVersion=$env:M3_SDK_VERSION" -p:UseLocalM3Sdk=false `
-            "-p:AndroidSdkDirectory=$env:ANDROID_HOME" `
-            -p:RestoreSources=https://api.nuget.org/v3/index.json
-          if ($LASTEXITCODE -ne 0) { throw 'Android SDK dependency installation failed' }
-
       - name: Verify exact release source
         shell: pwsh
         env:
@@ -160,6 +150,16 @@ jobs:
             if ($attempt -eq 12) { throw "NuGet restore failed after $attempt attempts." }
             Start-Sleep -Seconds 30
           }
+
+      - name: Install consumer Android SDK dependencies
+        shell: pwsh
+        run: |
+          dotnet build samples/dotnet-android-nuget/M3SdkPublishedSample.csproj `
+            -t:InstallAndroidDependencies --no-restore -p:AcceptAndroidSdkLicenses=true `
+            "-p:M3SdkVersion=$env:M3_SDK_VERSION" -p:UseLocalM3Sdk=false `
+            "-p:AndroidSdkDirectory=$env:ANDROID_HOME" `
+            "-p:RestorePackagesPath=$env:RUNNER_TEMP/public-nuget-cache"
+          if ($LASTEXITCODE -ne 0) { throw 'Android SDK dependency installation failed' }
 
       - name: Build published NuGet sample
         shell: powershell

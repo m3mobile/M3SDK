@@ -79,3 +79,6 @@ It tests the C# contracts, builds the classic Xamarin DLL, packs the actual NuGe
 builds this sample using PackageReference with an isolated cache and a feed mapping pinned to
 that candidate package. ProjectReference is rejected. Release verification uses .NET 10 and
 an installed Android workload. See [development workflow](../../docs/development-workflow.md).
+
+The NuGet reference uses an exact version range. A missing requested version must fail restore;
+a newer available package must not substitute for the release under verification.

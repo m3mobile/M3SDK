@@ -104,15 +104,20 @@ def validate(root, evidence, kind, stage, version, run):
     require(isinstance(planned_models, list) and planned_models and
             all(isinstance(model, str) and model.strip() for model in planned_models),
             "Reviewed regression model list required")
+    require(len(planned_models) == len(set(planned_models)), "Duplicate reviewed regression models")
     require(len(regressions) == len(planned_models) and
             {d.get('model') for d in regressions} == set(planned_models),
             "Regression results must cover the reviewed model list exactly")
     for decision in regressions:
-        require(decision.get("model") and decision.get("by") and decision.get("reference"),
+        require(all(isinstance(decision.get(k), str) and decision[k].strip()
+                    for k in ("model", "by", "reference")),
                 "Regression model/reviewer/reference required")
         require(decision.get("status") in ("passed", "skipped"), "Regression pending/failed")
         if decision["status"] == "skipped":
-            require(all(decision.get(k) for k in ("reason", "affected_paths", "test_coverage")),
+            require(isinstance(decision.get("reason"), str) and decision["reason"].strip() and
+                    all(isinstance(decision.get(k), list) and decision[k] and
+                        all(isinstance(item, str) and item.strip() for item in decision[k])
+                        for k in ("affected_paths", "test_coverage")),
                     "Regression skip needs reason, affected paths and test evidence")
         else:
             require(decision['model'] in {d['model'] for d in devices},
