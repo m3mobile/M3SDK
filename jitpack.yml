@@ -2,4 +2,4 @@ jdk:
   - openjdk17
 
 install:
-  - ./gradlew assembleRelease publishToMavenLocal
+  - ./gradlew --no-daemon testDebugUnitTest apiCheck assembleRelease publishToMavenLocal

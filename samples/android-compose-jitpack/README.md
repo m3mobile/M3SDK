@@ -61,3 +61,12 @@ Wake-Up requires KeyTool 1.3.8 or later; 1.3.9 or later is recommended. Confirm 
 physical buttons and restore the required device state after verification.
 
 Default UI resources are English. Only Korean localization is included under `values-ko`.
+
+## Candidate package verification
+
+Use `-Pm3SdkRepository=ABSOLUTE_FILE_REPOSITORY` with `-Pm3SdkVersion=VERSION` to consume
+an isolated candidate Maven package. This mode resolves the published `sdk` module; without
+that property the sample resolves the JitPack `M3SDK` coordinate. `mavenLocal()` is never consulted.
+The Release build checks the resolved dependency graph and rejects SDK project dependencies.
+The signed Release APK uses a verification debug key and is installable without rebuilding it.
+See [development workflow](../../docs/development-workflow.md).

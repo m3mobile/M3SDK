@@ -1,0 +1,16 @@
+{
+  "app": "StartUp",
+  "sheet": "StartUp",
+  "records": [
+    {
+      "source_sha": "REPLACE_WITH_ACTUAL_40_CHARACTER_COMMIT_SHA",
+      "date": "REPLACE_WITH_COMMIT_DATE_YYYY-MM-DD",
+      "branch": "REPLACE_WITH_CONFIRMED_STANDARD_OR_CUSTOM_BRANCH",
+      "version": "REPLACE_WITH_CONFIRMED_APP_VERSION",
+      "author": "REPLACE_WITH_CONFIRMED_AUTHOR",
+      "category": "R",
+      "note": "REPLACE_WITH_CONFIRMED_JIRA_CUSTOMER_AND_TECHNICAL_CHANGE",
+      "release_note": "확인한 사용자 관점의 변경 내용과 적용 모델·조건을 입력한다. 예시를 실제 기록으로 사용하지 않는다."
+    }
+  ]
+}

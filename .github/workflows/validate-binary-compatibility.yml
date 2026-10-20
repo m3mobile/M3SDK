@@ -1,10 +1,18 @@
-name: API Check
+name: SDK Pull Request Checks
 
 on:
   pull_request:
-    branches: [ "develop" ]
+  push:
+    branches: [develop, main]
+
+permissions:
+  contents: read
 
 jobs:
+  candidate-packages:
+    uses: ./.github/workflows/verify-candidate.yml
+    with:
+      version: 0.0.0-ci.${{ github.run_id }}
   check-binary-compatibility:
     runs-on: ubuntu-latest
     steps:

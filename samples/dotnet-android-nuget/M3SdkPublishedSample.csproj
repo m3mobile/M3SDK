@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(UseLocalM3Sdk)' != 'true'">
-    <PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="$(M3SdkVersion)" />
+    <PackageReference Include="M3Mobile.M3Sdk.Xamarin" Version="[$(M3SdkVersion)]" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseLocalM3Sdk)' == 'true'">

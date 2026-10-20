@@ -1,12 +1,22 @@
 name: Verify Published Samples
 
 on:
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      source_sha:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       version:
         description: "Published SDK tag/package version"
+        required: true
+        type: string
+      source_sha:
+        description: Expected tagged source commit
         required: true
         type: string
 
@@ -14,16 +24,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: published-samples-${{ github.event.release.tag_name || inputs.version }}
+  group: published-samples-${{ github.run_id }}
   cancel-in-progress: false
 
 jobs:
   android-jitpack:
     name: Android Compose sample from JitPack
-    if: ${{ !startsWith(github.event.release.tag_name || inputs.version, 'docs-') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     env:
-      M3_SDK_VERSION: ${{ github.event.release.tag_name || inputs.version }}
+      M3_SDK_VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,6 +43,11 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
+
+      - name: Verify exact release source
+        env:
+          EXPECTED_SHA: ${{ inputs.source_sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
 
       - name: Assert no local SDK dependency
         shell: bash
@@ -60,34 +75,12 @@ jobs:
             sleep 30
           done
 
-      - name: Sign and verify release sample
+      - name: Verify signed release sample
         shell: bash
         run: |
           set -euo pipefail
-          unsigned="samples/android-compose-jitpack/app/build/outputs/apk/release/app-release-unsigned.apk"
-          aligned="$RUNNER_TEMP/android-compose-release-aligned.apk"
-          signed="samples/android-compose-jitpack/app/build/outputs/apk/release/app-release.apk"
-          keystore="$RUNNER_TEMP/android-compose-release.keystore"
           build_tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
-
-          keytool -genkeypair \
-            -keystore "$keystore" \
-            -storepass android \
-            -alias androidsamplekey \
-            -keypass android \
-            -dname "CN=M3SDK Published Sample, O=M3 Mobile, C=KR" \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000
-          "$build_tools/zipalign" -f 4 "$unsigned" "$aligned"
-          "$build_tools/apksigner" sign \
-            --ks "$keystore" \
-            --ks-key-alias androidsamplekey \
-            --ks-pass pass:android \
-            --key-pass pass:android \
-            --out "$signed" \
-            "$aligned"
-          "$build_tools/apksigner" verify --verbose "$signed"
+          "$build_tools/apksigner" verify --verbose samples/android-compose-jitpack/app/build/outputs/apk/release/app-release.apk
 
       - uses: actions/upload-artifact@v4
         with:
@@ -97,14 +90,18 @@ jobs:
 
   dotnet-nuget:
     name: .NET for Android sample from NuGet Gallery
-    if: ${{ !startsWith(github.event.release.tag_name || inputs.version, 'docs-') }}
     runs-on: windows-2022
+    timeout-minutes: 45
     env:
-      M3_SDK_VERSION: ${{ github.event.release.tag_name || inputs.version }}
+      M3_SDK_VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.M3_SDK_VERSION }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -113,6 +110,13 @@ jobs:
       - name: Install .NET Android workload
         shell: powershell
         run: dotnet workload install android
+
+      - name: Verify exact release source
+        shell: pwsh
+        env:
+          EXPECTED_SHA: ${{ inputs.source_sha }}
+        run: |
+          if ((git rev-parse HEAD) -ne $env:EXPECTED_SHA) { throw 'Release source mismatch' }
 
       - name: Assert no local SDK dependency
         shell: powershell
@@ -138,11 +142,24 @@ jobs:
             dotnet restore $project `
               -p:M3SdkVersion="$env:M3_SDK_VERSION" `
               -p:UseLocalM3Sdk=false `
+              "-p:AndroidSdkDirectory=$env:ANDROID_HOME" `
+              --source https://api.nuget.org/v3/index.json `
+              --packages "$env:RUNNER_TEMP/public-nuget-cache" `
               --no-cache
             if ($LASTEXITCODE -eq 0) { exit 0 }
             if ($attempt -eq 12) { throw "NuGet restore failed after $attempt attempts." }
             Start-Sleep -Seconds 30
           }
+
+      - name: Install consumer Android SDK dependencies
+        shell: pwsh
+        run: |
+          dotnet build samples/dotnet-android-nuget/M3SdkPublishedSample.csproj `
+            -t:InstallAndroidDependencies --no-restore -p:AcceptAndroidSdkLicenses=true `
+            "-p:M3SdkVersion=$env:M3_SDK_VERSION" -p:UseLocalM3Sdk=false `
+            "-p:AndroidSdkDirectory=$env:ANDROID_HOME" `
+            "-p:RestorePackagesPath=$env:RUNNER_TEMP/public-nuget-cache"
+          if ($LASTEXITCODE -ne 0) { throw 'Android SDK dependency installation failed' }
 
       - name: Build published NuGet sample
         shell: powershell
@@ -150,6 +167,8 @@ jobs:
           dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj `
             -p:M3SdkVersion="$env:M3_SDK_VERSION" `
             -p:UseLocalM3Sdk=false `
+            "-p:AndroidSdkDirectory=$env:ANDROID_HOME" `
+            -p:RestorePackagesPath="$env:RUNNER_TEMP/public-nuget-cache" `
             --no-restore `
             --configuration Release
 

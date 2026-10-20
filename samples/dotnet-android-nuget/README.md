@@ -14,7 +14,7 @@ dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -p:M3SdkVe
 Replace `RELEASED_VERSION` with the released package being verified. Restore fails with an explicit message
 when `M3SdkVersion` is omitted.
 
-For local SDK verification before the NuGet package is published, build with the local project reference:
+For source-level debugging only (this does not count as package or release verification), build with the local project reference:
 
 ```powershell
 dotnet build samples\dotnet-android-nuget\M3SdkPublishedSample.csproj -p:UseLocalM3Sdk=true -p:TargetFramework=net9.0-android --source https://api.nuget.org/v3/index.json
@@ -71,3 +71,14 @@ Wake-Up requires KeyTool 1.3.8 or later; 1.3.9 or later is recommended. Confirm 
 physical buttons and restore the required device state after verification.
 
 Default UI resources are English. Only Korean localization is included under `Resources/values-ko`.
+
+## Candidate package verification
+
+Run `pwsh -File tools/workflow/build-nuget-candidate.ps1 -Version VERSION` from the repository root.
+It tests the C# contracts, builds the classic Xamarin DLL, packs the actual NuGet payload, and
+builds this sample using PackageReference with an isolated cache and a feed mapping pinned to
+that candidate package. ProjectReference is rejected. Release verification uses .NET 10 and
+an installed Android workload. See [development workflow](../../docs/development-workflow.md).
+
+The NuGet reference uses an exact version range. A missing requested version must fail restore;
+a newer available package must not substitute for the release under verification.

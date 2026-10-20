@@ -1,340 +1,163 @@
-# 배포 흐름
-# 1. 수동 실행 시 입력받은 버전을 검증한다.
-# 2. 문서의 SDK 버전과 GitHub Release PDF 링크를 해당 버전으로 자동 치환한다.
-# 3. mdToPdf 도구로 매뉴얼 PDF를 생성하고 Android 배포 가능 여부를 검증한다.
-# 4. 변경된 문서를 커밋한 뒤 그 커밋에 릴리스 태그를 생성한다.
-# 5. Xamarin NuGet 패키지를 빌드/배포한다.
-# 6. 생성된 PDF와 NuGet 패키지를 첨부해 GitHub Release를 자동 생성한다.
-
 name: Deployment
 
 on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: "Release version, for example 2.3.1"
+        description: Verified candidate version
+        required: true
+        type: string
+      candidate_run_id:
+        description: Successful Verify SDK Candidate dispatch run (build once, promote unchanged)
+        required: true
+        type: string
+      evidence_json:
+        description: Completed pre-release evidence JSON; see docs/development-workflow.md
         required: true
         type: string
       dry_run:
-        description: "Build artifacts without pushing tag, NuGet, or GitHub Release"
+        description: Validate evidence and artifacts without publishing
         required: true
-        default: false
+        default: true
         type: boolean
 
 permissions:
-  contents: write
-  actions: write
+  contents: read
+  actions: read
 
 concurrency:
-  group: release-${{ inputs.tag_name }}
+  group: sdk-release-${{ inputs.tag_name }}
   cancel-in-progress: false
 
 jobs:
-  prepare-release:
-    name: Prepare docs, PDFs, and tag
+  gate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     outputs:
-      release_sha: ${{ steps.release_ref.outputs.release_sha }}
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+    env:
+      VERSION: ${{ inputs.tag_name }}
+      CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+      EVIDENCE_JSON: ${{ inputs.evidence_json }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
     steps:
-      - name: Checkout target branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          ref: develop
-          fetch-depth: 0
-
-      - name: Select target branch
-        shell: bash
-        run: |
-          set -euo pipefail
-          git checkout -B develop origin/develop
-
-      - name: Validate release version
-        shell: bash
-        run: |
-          set -euo pipefail
-          VERSION="${{ inputs.tag_name }}"
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
-            echo "Invalid release version: $VERSION" >&2
-            exit 1
-          fi
-
-      - name: Ensure tag does not exist
-        if: ${{ inputs.dry_run != true }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          VERSION="${{ inputs.tag_name }}"
-          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
-            echo "Tag already exists: $VERSION" >&2
-            exit 1
-          fi
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
         with:
-          distribution: temurin
-          java-version: "17"
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - name: Verify candidate workflow provenance
+        run: python tools/workflow/run-provenance.py --run-id "$CANDIDATE_RUN" --workflow verify-candidate.yml --root build/candidate
+      - name: Verify artifact hashes, review, device tests and regression decisions
+        id: identity
+        run: |
+          python -c 'import os,pathlib; pathlib.Path("build/evidence.json").write_text(os.environ["EVIDENCE_JSON"], encoding="utf-8")'
+          python tools/workflow/evidence.py validate --kind m3sdk --root build/candidate \
+            --evidence build/evidence.json --version "$VERSION" --run-id "$CANDIDATE_RUN"
+          python -c 'import json,os; d=json.load(open("build/candidate/candidate-android.json")); f=open(os.environ["GITHUB_OUTPUT"],"a"); print("source_sha="+d["source_sha"],file=f)'
+      - uses: actions/upload-artifact@v4
         with:
-          node-version: "20"
+          name: promotion-evidence
+          path: build/evidence.json
 
-      - name: Install PDF tooling
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk fonts-nanum fonts-nanum-coding
-          fc-cache -f -v
-          npm ci --prefix tools/MdToPdf
-          npm install -g md-to-pdf
-
-      - name: Prepare release metadata
-        shell: bash
-        run: |
-          set -euo pipefail
-          node tools/release/prepare-release.js \
-            --version "${{ inputs.tag_name }}" \
-            --repo-root .
-
-      - name: Validate manual structure and Broadcast contracts
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm run validate:manuals --prefix tools/MdToPdf
-
-      - name: Generate manuals
-        shell: bash
-        run: |
-          set -euo pipefail
-          node tools/MdToPdf/convert-md-to-pdf.js \
-            --input docs \
-            --output build/release/manuals \
-            --repo-root . \
-            --temp build/md-to-pdf \
-            --version "${{ inputs.tag_name }}" \
-            --clean
-
-      - name: Validate Android artifacts
-        shell: bash
-        run: |
-          set -euo pipefail
-          chmod +x gradlew
-          ./gradlew apiCheck assembleRelease publishToMavenLocal
-
-      - name: Commit release metadata and create tag
-        if: ${{ inputs.dry_run != true }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          VERSION="${{ inputs.tag_name }}"
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add README.md docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
-          if ! git diff --cached --quiet; then
-            git commit -m "deployment: $VERSION 배포"
-            git push origin HEAD:develop
-          fi
-
-          git tag -a "$VERSION" -m "Release $VERSION"
-          git push origin "$VERSION"
-
-      - name: Record release ref
-        id: release_ref
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "release_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      - name: Upload manual PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: manual-pdfs
-          path: build/release/manuals/**/*.pdf
-          if-no-files-found: error
-
-  publish-nuget:
-    name: Pack and publish Xamarin NuGet
-    runs-on: windows-2022
-    needs: prepare-release
-    steps:
-      - name: Checkout release ref
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.prepare-release.outputs.release_sha }}
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Set up NuGet
-        uses: NuGet/setup-nuget@v2
-
-      - name: Install Android SDK platform 24
-        shell: powershell
-        run: |
-          $ErrorActionPreference = "Stop"
-          $sdkRoot = "C:\Program Files (x86)\Android\android-sdk"
-          $platformJar = Join-Path $sdkRoot "platforms\android-24\android.jar"
-          $sdkManager = @(
-            "$sdkRoot\cmdline-tools\latest\bin\sdkmanager.bat",
-            "$sdkRoot\cmdline-tools\bin\sdkmanager.bat",
-            "$sdkRoot\tools\bin\sdkmanager.bat"
-          ) | Where-Object { Test-Path $_ } | Select-Object -First 1
-
-          if (-not $sdkManager) {
-            throw "sdkmanager.bat not found under $sdkRoot"
-          }
-
-          Write-Host "Using Android SDK root: $sdkRoot"
-          Write-Host "Using sdkmanager: $sdkManager"
-
-          ("y`n" * 40) | & $sdkManager --sdk_root="$sdkRoot" --licenses
-          & $sdkManager --sdk_root="$sdkRoot" "platforms;android-24"
-
-          if (-not (Test-Path $platformJar)) {
-            throw "Android API 24 platform was not installed: $platformJar"
-          }
-
-          Write-Host "Installed Android API 24 platform: $platformJar"
-
-      - name: Generate Xamarin assembly version
-        shell: powershell
-        run: |
-          node tools\release\write-xamarin-version.js `
-            --version "${{ inputs.tag_name }}" `
-            --repo-root .
-
-      - name: Build Xamarin project
-        shell: powershell
-        run: |
-          msbuild dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.csproj `
-            /p:Configuration=Release `
-            /p:Platform=AnyCPU `
-            /t:Build
-
-      - name: Pack NuGet package
-        shell: powershell
-        run: |
-          New-Item -ItemType Directory -Force -Path build\nuget | Out-Null
-          nuget pack dotnet\M3Mobile.M3Sdk.Xamarin\M3Mobile.M3Sdk.Xamarin.nuspec `
-            -BasePath dotnet\M3Mobile.M3Sdk.Xamarin `
-            -Version "${{ inputs.tag_name }}" `
-            -Properties "version=${{ inputs.tag_name }};Configuration=Release" `
-            -OutputDirectory build\nuget
-
-      - name: Publish NuGet package
-        if: ${{ inputs.dry_run != true }}
-        shell: powershell
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-        run: |
-          if (-not $env:NUGET_API_KEY) {
-            throw "NUGET_API_KEY secret is required to publish NuGet packages."
-          }
-
-          Get-ChildItem build\nuget\*.nupkg | ForEach-Object {
-            nuget push $_.FullName `
-              -ApiKey $env:NUGET_API_KEY `
-              -Source "https://api.nuget.org/v3/index.json" `
-              -SkipDuplicate
-          }
-
-      - name: Upload NuGet package
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-package
-          path: build/nuget/*.nupkg
-          if-no-files-found: error
-
-  create-github-release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    needs:
-      - prepare-release
-      - publish-nuget
+  publish:
+    needs: gate
     if: ${{ inputs.dry_run != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: sdk-release
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      release_sha: ${{ steps.tag.outputs.release_sha }}
+    env:
+      VERSION: ${{ inputs.tag_name }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
-      - name: Download manual PDFs
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
         with:
-          name: manual-pdfs
-          path: build/release/manuals
-
-      - name: Download NuGet package
-        uses: actions/download-artifact@v4
+          ref: ${{ needs.gate.outputs.source_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
         with:
-          name: nuget-package
-          path: build/nuget
-
-      - name: Create release
-        shell: bash
+          node-version: '20'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - name: Recheck reviewed artifact hashes before publishing
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
+          EVIDENCE_JSON: ${{ inputs.evidence_json }}
+          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
         run: |
-          set -euo pipefail
-          VERSION="${{ inputs.tag_name }}"
-          assets=()
-
-          while IFS= read -r file; do
-            assets+=("$file")
-          done < <(find build -type f \( -name '*.pdf' -o -name '*.nupkg' \) | sort)
-
-          if [[ ${#assets[@]} -eq 0 ]]; then
-            echo "No release assets found" >&2
-            exit 1
+          python -c 'import os,pathlib; pathlib.Path("build/evidence.json").write_text(os.environ["EVIDENCE_JSON"],encoding="utf-8")'
+          python tools/workflow/evidence.py validate --kind m3sdk --root build/candidate --evidence build/evidence.json --version "$VERSION" --run-id "$CANDIDATE_RUN"
+      - name: Validate publication prerequisites
+        run: |
+          test -n "$NUGET_API_KEY" || { echo 'NUGET_API_KEY required'; exit 1; }
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
+            echo 'Tag already exists; inspect partial release before recovery'; exit 1
           fi
-
-          notes_file="build/release-notes.md"
-          generated_notes="$(gh api "repos/$GH_REPO/releases/generate-notes" -f tag_name="$VERSION" --jq '.body' || true)"
-          changes="$(printf '%s\n' "$generated_notes" | awk '
-            /^## / { next }
-            /^\*\*Full Changelog\*\*/ { next }
-            {
-              sub(/ by @[A-Za-z0-9-]+$/, "")
-              print
-            }
-          ')"
-
-          if [[ -z "$(printf '%s' "$changes" | tr -d '[:space:]')" ]]; then
-            changes="- 변경사항은 커밋 내역을 확인하세요."
-          fi
-
-          cat > "$notes_file" <<EOF
-          ## Changes
-
-          $changes
-
-          ## Documentation
-
-          - [M3SDK_Manual_kr_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_kr_v$VERSION.pdf)
-          - [M3SDK_Manual_en_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Manual_en_v$VERSION.pdf)
-          - [M3SDK_Xamarin_Manual_kr_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_kr_v$VERSION.pdf)
-          - [M3SDK_Xamarin_Manual_en_v$VERSION.pdf](https://github.com/m3mobile/M3SDK/releases/download/$VERSION/M3SDK_Xamarin_Manual_en_v$VERSION.pdf)
-          EOF
-
-          gh release create "$VERSION" "${assets[@]}" \
-            --verify-tag \
-            --title "$VERSION" \
-            --notes-file "$notes_file"
-
-      - name: Start published sample verification
-        shell: bash
+          test -f "build/candidate/nuget/M3Mobile.M3Sdk.Xamarin.$VERSION.nupkg"
+      - name: Prepare documentation commit and publish tag
+        id: tag
+        run: |
+          node tools/release/prepare-release.js --version "$VERSION" --repo-root .
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add README.md docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
+          if ! git diff --cached --quiet; then git commit -m "release: $VERSION documentation"; fi
+          # Only documentation may differ from the tested candidate source.
+          git diff --exit-code ${{ needs.gate.outputs.source_sha }} HEAD -- . ':!docs' ':!README.md' ':!dotnet/M3Mobile.M3Sdk.Xamarin/README.md'
+          git tag -a "$VERSION" -m "Release $VERSION"
+          git push origin "refs/tags/$VERSION"
+          echo "release_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Publish the tested NuGet file without rebuilding
+        run: dotnet nuget push "build/candidate/nuget/M3Mobile.M3Sdk.Xamarin.$VERSION.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
+      - name: Create GitHub Release and record delivery
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
+          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+          RELEASE_SHA: ${{ steps.tag.outputs.release_sha }}
         run: |
-          set -euo pipefail
-          VERSION="${{ inputs.tag_name }}"
-          gh workflow run verify-published-samples.yml \
-            --repo "$GH_REPO" \
-            --ref "$VERSION" \
-            -f version="$VERSION"
+          gh release create "$VERSION" build/candidate/manuals/*.pdf build/candidate/nuget/*.nupkg \
+            --verify-tag --draft --title "$VERSION" --notes "Candidate run: $CANDIDATE_RUN. Automated public-package verification follows; manual post-release verification remains required."
+          python -c 'import json,os,pathlib; pathlib.Path("build/release-record.json").write_text(json.dumps({k:os.environ[k] for k in ["VERSION","CANDIDATE_RUN","RELEASE_SHA"]}),encoding="utf-8")'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-record
+          path: build/release-record.json
+
+  verify-public:
+    needs: publish
+    uses: ./.github/workflows/verify-published-samples.yml
+    with:
+      version: ${{ inputs.tag_name }}
+      source_sha: ${{ needs.publish.outputs.release_sha }}
+
+  summary:
+    needs: [gate, publish, verify-public]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      RESULTS: ${{ toJSON(needs) }}
+    steps:
+      - name: Report delivery state without claiming device verification
+        run: |
+          echo "$RESULTS" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Delivery is not task completion. Run Complete SDK Release with post-release device evidence.' >> "$GITHUB_STEP_SUMMARY"
