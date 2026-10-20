@@ -1,0 +1,63 @@
+name: Verify Android App Candidate
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev, develop, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-check-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read pinned M3Util commit
+        id: module
+        shell: bash
+        run: echo "sha=$(git ls-tree HEAD Android-Module-M3Util | awk '{print $3}')" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          repository: m3mobile/Android-Module-M3Util
+          ref: ${{ steps.module.outputs.sha }}
+          path: Android-Module-M3Util
+          ssh-key: ${{ secrets.M3UTIL_DEPLOY_KEY }}
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Test workflow policy
+        run: python -m unittest discover -s tools/workflow -p 'test_*.py'
+      - name: Build configured app variants and run JVM tests
+        run: |
+          chmod +x gradlew
+          python tools/workflow/run-app-checks.py
+      - name: Verify signed APKs and collect configured variants
+        run: |
+          set -euo pipefail
+          build_tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          while IFS= read -r -d '' apk; do "$build_tools/apksigner" verify --verbose "$apk"; done < <(find app/build/outputs/apk -name '*.apk' -type f -print0)
+          python tools/workflow/collect-app.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-candidate
+          path: build/candidate/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: app-test-results
+          path: |
+            app/build/test-results/
+            app/build/reports/tests/

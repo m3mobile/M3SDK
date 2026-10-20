@@ -22,6 +22,9 @@ on:
           - android
           - xamarin
 
+env:
+  ALPHA_VERSION: ${{ inputs.version }}
+
 permissions:
   contents: read
   packages: write
@@ -31,7 +34,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  verify-candidate:
+    uses: ./.github/workflows/verify-candidate.yml
+    with:
+      version: ${{ inputs.version }}
+
   publish-android-alpha:
+    needs: verify-candidate
     name: Publish Android alpha to GitHub Packages
     if: ${{ inputs.target == 'all' || inputs.target == 'android' }}
     runs-on: ubuntu-latest
@@ -47,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="${{ inputs.version }}"
+          VERSION="$ALPHA_VERSION"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+$ ]]; then
             echo "Invalid alpha version: $VERSION" >&2
             exit 1
@@ -74,6 +83,7 @@ jobs:
             -Pm3sdk.githubPackagesToken="$GITHUB_TOKEN"
 
   publish-xamarin-alpha:
+    needs: verify-candidate
     name: Publish Xamarin alpha to GitHub Packages
     if: ${{ inputs.target == 'all' || inputs.target == 'xamarin' }}
     runs-on: windows-2022
@@ -91,7 +101,7 @@ jobs:
       - name: Validate version
         shell: powershell
         run: |
-          $version = "${{ inputs.version }}"
+          $version = $env:ALPHA_VERSION
           if ($version -notmatch '^\d+\.\d+\.\d+-alpha\.\d+$') {
             throw "Invalid alpha version: $version"
           }

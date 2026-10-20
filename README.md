@@ -24,3 +24,8 @@ not reference local SDK projects.
 *   [Kotlin + Compose sample using JitPack](./samples/android-compose-jitpack)
 *   [.NET 10 for Android sample using NuGet Gallery](./samples/dotnet-android-nuget)
 *   [Release verification process](./docs/SAMPLE_RELEASE_VERIFICATION.md)
+
+
+## 개발·검증·배포
+
+[개발·검증·배포 절차](docs/development-workflow.md)를 따른다. 후보 빌드와 실제 검증/배포/완료를 구분한다.

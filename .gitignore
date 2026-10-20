@@ -203,5 +203,11 @@ STARTUP-*-guide.md
 tools/MdToPdf/output/
 tools/MdToPdf/node_modules/
 tmp-dotnet-android-check/
+__pycache__/
+.kotlin/
 
 # End of https://www.toptal.com/developers/gitignore/api/androidstudio,android,kotlin,java
+
+/.workflow.local.json
+
+/release-note-drafts/

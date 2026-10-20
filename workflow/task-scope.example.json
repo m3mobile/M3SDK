@@ -1,0 +1,9 @@
+{
+  "app": "StartUp",
+  "target_models": [],
+  "target_os_versions": [],
+  "device_tests_allowed": false,
+  "publication_allowed": false,
+  "excel_mode": "manual",
+  "history_directory": null
+}

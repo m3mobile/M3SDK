@@ -4,6 +4,28 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+// Resolve the consumer's actual graph so a project dependency cannot masquerade as a package test.
+val verifyM3SdkDependency = tasks.register("verifyM3SdkDependency") {
+    doLast {
+        val result = configurations.getByName("releaseRuntimeClasspath").incoming.resolutionResult
+        val rootId = result.root.id
+        check(result.allComponents.none {
+            it.id is org.gradle.api.artifacts.component.ProjectComponentIdentifier && it.id != rootId
+        }) { "Package verification forbids SDK project dependencies" }
+        val artifact = if (providers.gradleProperty("m3SdkRepository").isPresent) "sdk" else "M3SDK"
+        check(result.allComponents.any {
+            val id = it.id
+            id is org.gradle.api.artifacts.component.ModuleComponentIdentifier &&
+                id.group == "com.github.m3mobile" && id.module == artifact &&
+                id.version == providers.gradleProperty("m3SdkVersion").get()
+        }) { "Expected SDK package/version not resolved" }
+    }
+}
+
+tasks.matching { it.name == "preReleaseBuild" }.configureEach {
+    dependsOn(verifyM3SdkDependency)
+}
+
 val m3SdkVersion = providers.gradleProperty("m3SdkVersion").orNull
     ?: error("Provide -Pm3SdkVersion=<released JitPack tag>. Local SDK modules are intentionally unsupported.")
 
@@ -23,6 +45,8 @@ android {
 
     buildTypes {
         release {
+            // Verification APK only; installable without a separate signing/rebuild step.
+            signingConfig = signingConfigs.getByName("debug")
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
@@ -44,7 +68,7 @@ android {
 }
 
 dependencies {
-    val m3SdkArtifact = if (m3SdkVersion.endsWith("-local")) "sdk" else "M3SDK"
+    val m3SdkArtifact = if (providers.gradleProperty("m3SdkRepository").isPresent) "sdk" else "M3SDK"
     implementation("com.github.m3mobile:$m3SdkArtifact:$m3SdkVersion")
 
     implementation("androidx.core:core-ktx:1.13.1")

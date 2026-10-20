@@ -1,0 +1,113 @@
+name: Deploy Verified Android App
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Candidate app version
+        type: string
+        required: true
+      candidate_run_id:
+        description: Successful Verify Android App Candidate dispatch run
+        type: string
+        required: true
+      evidence_json:
+        description: Completed pre-release evidence JSON
+        type: string
+        required: true
+      dry_run:
+        description: Validate without publishing
+        type: boolean
+        default: true
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: app-release-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+    env:
+      VERSION: ${{ inputs.version }}
+      CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+      EVIDENCE_JSON: ${{ inputs.evidence_json }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          name: app-candidate
+          path: build/candidate
+      - name: Verify candidate workflow provenance
+        run: python tools/workflow/run-provenance.py --run-id "$CANDIDATE_RUN" --workflow verify-candidate.yml --root build/candidate
+      - name: Require code review, target tests and regression evidence
+        id: identity
+        run: |
+          python -c 'import os,pathlib; pathlib.Path("build/evidence.json").write_text(os.environ["EVIDENCE_JSON"],encoding="utf-8")'
+          python tools/workflow/evidence.py validate --kind app --root build/candidate --evidence build/evidence.json --version "$VERSION" --run-id "$CANDIDATE_RUN"
+          python -c 'import json,os; d=json.load(open("build/candidate/candidate-app.json")); f=open(os.environ["GITHUB_OUTPUT"],"a"); print("source_sha="+d["source_sha"],file=f)'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: promotion-evidence
+          path: build/evidence.json
+  publish:
+    needs: gate
+    if: ${{ inputs.dry_run != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    env:
+      VERSION: ${{ inputs.version }}
+      CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+      RELEASE_SHA: ${{ needs.gate.outputs.source_sha }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.source_sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          name: app-candidate
+          path: build/candidate
+      - name: Recheck reviewed artifact hashes before publishing
+        env:
+          EVIDENCE_JSON: ${{ inputs.evidence_json }}
+          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+        run: |
+          python -c 'import os,pathlib; pathlib.Path("build/evidence.json").write_text(os.environ["EVIDENCE_JSON"],encoding="utf-8")'
+          python tools/workflow/evidence.py validate --kind app --root build/candidate --evidence build/evidence.json --version "$VERSION" --run-id "$CANDIDATE_RUN"
+      - name: Publish the tested APK unchanged
+        run: |
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
+            echo 'Tag already exists; inspect partial delivery before recovery'; exit 1
+          fi
+          git tag "$VERSION" "$RELEASE_SHA"
+          git push origin "refs/tags/$VERSION"
+          mapfile -d '' apks < <(find build/candidate/app -type f -name '*.apk' -print0)
+          gh release create "$VERSION" "${apks[@]}" build/candidate/candidate-app.json \
+            --verify-tag --draft --title "Android App $VERSION" \
+            --notes 'Verified candidate APK. Post-release installation/device verification remains required.'
+          python -c 'import json,os,pathlib; pathlib.Path("build/release-record.json").write_text(json.dumps({k:os.environ[k] for k in ["VERSION","CANDIDATE_RUN","RELEASE_SHA"]}),encoding="utf-8")'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-record
+          path: build/release-record.json

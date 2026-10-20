@@ -1,5 +1,7 @@
 # 배포 패키지 샘플 검증 가이드
 
+전체 작업/매뉴얼/Excel 완료 조건은 [공통 절차](development-workflow.md), [StartUp 최초 설정](onboarding-startup.md), [수동 기록](release-notes-manual.md)을 따른다.
+
 ## 목적
 
 샘플 앱은 SDK 저장소의 로컬 모듈이 아니라 패키징된 SDK를 검증한다. 개발, 선택적 Alpha, 정식 검증 단계에서 같은 샘플 소스를 사용하고 package feed와 버전만 외부 설정으로 변경한다.
@@ -49,13 +51,10 @@
 2. 로컬 임시 Maven/NuGet package를 같은 두 샘플이 외부 dependency로 restore/build/install하고 대상 장치에서 runtime 동작을 확인한다.
 3. PR에서 Android SDK 테스트와 API 호환성 검사를 실행하고 Xamarin Release build 결과를 확인한다.
 4. 아래 위험 기준에 해당할 때만 GitHub Packages Alpha를 동일한 샘플 소스로 검증한다. 생략 근거는 PR 테스트 결과에 기록한다.
-5. Deployment workflow를 `dry_run=true`로 실행해 문서, Android 산출물, Xamarin nupkg를 검증한다.
-6. dry run 성공 후 같은 버전으로 `dry_run=false`를 실행해 태그, NuGet 패키지, GitHub Release를 생성한다.
-7. Deployment workflow가 GitHub Release 생성 직후 `Verify Published Samples`를 `workflow_dispatch`로 명시 실행한다. `GITHUB_TOKEN`으로 만든 Release는 일반 `published` 이벤트 workflow를 연쇄 실행하지 않기 때문이다.
-8. Android job은 해당 태그를 JitPack에서 받아 Compose 샘플 APK를 빌드한다.
-9. C# job은 같은 버전을 NuGet Gallery에서 받아 `net10.0-android` 샘플 APK를 빌드한다.
-10. 두 빌드가 통과한 후 workflow APK를 M3 장치에 설치해 아래 수동 검증을 수행한다.
-11. 공개 패키지와 실기기 검증이 모두 성공한 뒤에만 고객 공지와 안정 버전 승격을 진행한다.
+5. Verify SDK Candidate에서 같은 버전의 후보 패키지/샘플/PDF를 생성하고 보존한다.
+6. 후보 실기·매뉴얼 검수·릴리즈 노트 초안을 기록한 뒤 Deployment dry-run 및 허용된 실제 배포로 진행한다.
+7. Deployment는 공개 패키지 샘플 workflow를 동기 호출하고 실패 결과를 전파한다.
+8. 공개 샘플 실기·기기 설정 복원·Excel 반영까지 확인한 후 Complete SDK Release에서 draft를 공개한다.
 
 ## Alpha 적용 기준
 

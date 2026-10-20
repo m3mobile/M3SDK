@@ -113,7 +113,7 @@ function updateMarkdownVersions(repoRoot, version) {
 
       next = replaceAll(
         next,
-        new RegExp(`(releases/download/)${versionPattern.source}(/)`, 'g'),
+        new RegExp(`(releases/download/)(?:docs-)?${versionPattern.source}(/)`, 'g'),
         (_match, prefix, suffix) => `${prefix}${version}${suffix}`,
       );
 
@@ -148,6 +148,10 @@ function updateMarkdownVersions(repoRoot, version) {
       );
 
       next = updateVersionedManualFilenames(next, version);
+      next = next.replace(
+        /^(\*\*(?:매뉴얼 버전|Manual [Vv]ersion):\s*)[^\r\n]+$/gm,
+        (line) => line.replace(/\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/g, version),
+      );
 
       return next;
     });

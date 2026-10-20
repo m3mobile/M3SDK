@@ -1,0 +1,145 @@
+{
+  "version": "",
+  "source_sha": "",
+  "candidate_run_id": "",
+  "candidate_manifests": {},
+  "code_review": {
+    "status": "pending",
+    "by": "",
+    "reference": ""
+  },
+  "app_verification": {
+    "status": "pending",
+    "by": "",
+    "reference": ""
+  },
+  "devices": [
+    {
+      "model": "",
+      "os": "",
+      "app_version": ""
+    }
+  ],
+  "pre_release": {
+    "ui": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "broadcast": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "persistence": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "restart_reboot": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "kotlin_package": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "csharp_package": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    }
+  },
+  "regression": [
+    {
+      "model": "",
+      "status": "pending",
+      "by": "",
+      "reference": "",
+      "reason": "",
+      "affected_paths": [],
+      "test_coverage": []
+    }
+  ],
+  "deployment_run_id": "",
+  "published_packages": {
+    "status": "pending",
+    "by": "",
+    "reference": ""
+  },
+  "post_release": {
+    "kotlin_device": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "csharp_device": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    }
+  },
+  "device_restored": {
+    "status": "pending",
+    "by": "",
+    "reference": ""
+  },
+  "impact_review": {
+    "status": "pending",
+    "by": "",
+    "reference": "",
+    "regression_models": [],
+    "not_applicable_checks": []
+  },
+  "manuals": {
+    "app": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "kotlin_ko": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "kotlin_en": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "csharp_ko": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "csharp_en": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "pdf_visual_review": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    }
+  },
+  "release_notes": {
+    "draft": {
+      "status": "pending",
+      "by": "",
+      "reference": ""
+    },
+    "excel": {
+      "status": "pending",
+      "by": "",
+      "reference": "",
+      "mode": "manual",
+      "workbook": "M3_APP_RELEASE_NOTE.xlsx",
+      "sheet": "",
+      "range": "",
+      "verification": ""
+    }
+  }
+}

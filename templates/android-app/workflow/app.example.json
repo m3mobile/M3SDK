@@ -1,0 +1,6 @@
+{
+  "app": "REPLACE_APP_NAME",
+  "package_name": "REPLACE_PACKAGE_NAME",
+  "build_tasks": [":app:testDebugUnitTest", ":app:assembleRelease"],
+  "variants": [{"name": "release", "metadata": "app/build/outputs/apk/release/output-metadata.json"}]
+}
