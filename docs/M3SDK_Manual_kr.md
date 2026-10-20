@@ -2270,7 +2270,7 @@ M3Mobile.instance.setSdUsbStorageMountingBlocked(true, "com.example.USB_RESULT")
 `block_sd_usb_storage_mounting`은 문자열이 아닌 Boolean으로 전달해야 하며, 생략하면 기존 마운트 설정을 유지합니다.
 이 API는 `usb_mode`를 전달하지 않으므로 USB 연결 모드는 유지됩니다. 기존 USB 모드 설정 API는 마운트 설정을 변경하지 않습니다.
 
-`usb_result_action`을 지정하면 해당 Action으로 `usb_success`(Boolean)와 실패 시 `usb_error_message`(String)를 비동기 수신합니다.
+`usb_result_action`을 지정하면 해당 Action으로 다음 결과를 비동기 수신합니다.
 요청 전에 리시버를 등록해야 하며, 브로드캐스트 전송 완료 자체는 설정 적용 성공을 의미하지 않습니다.
 
 | 결과 Extra | 타입 | 설명 |
@@ -2281,7 +2281,7 @@ M3Mobile.instance.setSdUsbStorageMountingBlocked(true, "com.example.USB_RESULT")
 SDK는 결과 리시버를 자동 등록하거나 결과를 기다리지 않습니다. 응답 미수신을 성공으로 판단하지 마세요.
 StartUp 6.9.0 규격에서는 `usb_mode` 생략·빈 문자열·`unchanged`가 USB 연결 모드 유지에 해당합니다.
 직접 Broadcast로 두 설정을 함께 변경할 때만 같은 Intent에 `usb_mode`를 추가합니다.
-`getCurrentUsbModes()`는 PC 연결 모드 조회이며 SD/USB 저장장치 마운트 상태 조회가 아닙니다.
+현재 USB 모드 조회 API는 PC 연결 모드 조회이며 SD/USB 저장장치 마운트 상태 조회가 아닙니다.
 
 StartUp 6.9.0의 Broadcast 수신 경로는 요청용 USB 설정을 활성화하므로 화면의
 `Enable USB Settings`(`Use for USB`) 체크를 먼저 켤 필요가 없습니다.

@@ -2275,7 +2275,7 @@ M3Mobile.instance.setSdUsbStorageMountingBlocked(true, "com.example.USB_RESULT")
 Pass `block_sd_usb_storage_mounting` as a Boolean, not a string. Omitting it preserves the existing mounting setting.
 This API omits `usb_mode`, preserving the USB connection mode. Existing USB mode APIs leave the mounting setting unchanged.
 
-When `usb_result_action` is specified, the result is sent asynchronously to that action with `usb_success` (Boolean) and, on failure, `usb_error_message` (String).
+When `usb_result_action` is specified, the result is sent asynchronously to that action:
 Register a receiver before sending the request. Sending the broadcast does not guarantee that the setting was applied successfully.
 
 | Result Extra | Type | Description |
@@ -2286,7 +2286,7 @@ Register a receiver before sending the request. Sending the broadcast does not g
 The SDK does not automatically register a result receiver or wait for the result. A missing response is not success.
 Under the StartUp 6.9.0 protocol, an omitted, empty, or `unchanged` `usb_mode` preserves the USB connection mode.
 For a direct broadcast that changes both settings, add `usb_mode` to the same Intent.
-`getCurrentUsbModes()` reports the PC connection mode, not the SD/USB storage mounting state.
+The current USB mode query API reports the PC connection mode, not the SD/USB storage mounting state.
 
 The StartUp 6.9.0 broadcast receiver enables USB settings for the request, so the UI
 `Enable USB Settings` (`Use for USB`) checkbox does not need to be selected beforehand.

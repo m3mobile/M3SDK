@@ -2578,7 +2578,7 @@ StartUp 6.9.0 규격에서는 `usb_mode` 생략·빈 문자열·`unchanged`가 U
 
 요청 전에 리시버를 등록해야 합니다. SDK는 결과 리시버를 자동 등록하거나 결과를 기다리지 않습니다.
 브로드캐스트 전송 완료 자체는 설정 적용 성공을 의미하지 않으며, 응답 미수신을 성공으로 판단하지 마세요.
-`GetCurrentUsbModes()`는 PC 연결 모드 조회이며 SD/USB 저장장치 마운트 상태 조회가 아닙니다.
+현재 USB 모드 조회 API는 PC 연결 모드 조회이며 SD/USB 저장장치 마운트 상태 조회가 아닙니다.
 
 StartUp 6.9.0의 Broadcast 수신 경로는 요청용 USB 설정을 활성화하므로 화면의
 `Enable USB Settings`(`Use for USB`) 체크를 먼저 켤 필요가 없습니다.

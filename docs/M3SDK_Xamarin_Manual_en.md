@@ -2583,7 +2583,7 @@ When `usb_result_action` is specified, the result is sent asynchronously to that
 
 Register a receiver before sending the request. The SDK does not automatically register a receiver or wait for the result.
 Sending the broadcast does not guarantee successful application, and a missing response is not success.
-`GetCurrentUsbModes()` reports the PC connection mode, not the SD/USB storage mounting state.
+The current USB mode query API reports the PC connection mode, not the SD/USB storage mounting state.
 
 The StartUp 6.9.0 broadcast receiver enables USB settings for the request, so the UI
 `Enable USB Settings` (`Use for USB`) checkbox does not need to be selected beforehand.
