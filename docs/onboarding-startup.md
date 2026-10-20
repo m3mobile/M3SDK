@@ -1,20 +1,23 @@
 # StartUp 담당자에게 M3SDK workflow 전달
 
+이 안내서는 공유 PR을 develop에 병합한 뒤 동료에게 전달하는 기준이다.
+
 이번 공유 대상은 **M3SDK 저장소 한 곳**이다. StartUp과 KeyTool 저장소에 workflow를 반영하거나 PR을 만드는 작업은 포함하지 않는다. 앱 작업은 동료의 기존 브랜치와 절차를 사용한다.
 
 ## 동료가 받을 저장소
 
 - 저장소: `m3mobile/M3SDK`, 기본 브랜치 `develop`.
 - 공유 PR: https://github.com/m3mobile/M3SDK/pull/37
-- 병합 전 공유 브랜치: `ci/sdk-release-workflow`. 병합 후에는 develop의 반영 커밋을 사용한다.
+- 작업 시작 기준: 최신 `develop`에서 별도 기능 브랜치를 만든다. 공유 PR의 작업 브랜치를 동료의 기능 개발 브랜치로 사용하지 않는다.
+- workflow 도입에는 기본 브랜치 `develop` 병합이 필요하다. `main` 동시 병합은 필수 조건이 아니다. 이 저장소에는 `dev` 브랜치가 없다.
 - 읽을 문서: AGENTS.md → docs/development-workflow.md → docs/release-notes-manual.md.
 - 기존 앱이나 SDK 체크아웃에 미커밋 변경이 있으면 지우거나 강제로 전환하지 않는다. 별도 폴더/작업 트리에서 시작한다.
 
 ```powershell
 gh auth status
 gh repo clone m3mobile/M3SDK
-git -C M3SDK fetch origin
-git -C M3SDK switch --track origin/ci/sdk-release-workflow
+git -C M3SDK switch develop
+git -C M3SDK pull --ff-only origin develop
 python M3SDK/tools/workflow/preflight.py --sdk-root M3SDK
 ```
 
@@ -43,12 +46,12 @@ python M3SDK/tools/workflow/preflight.py --sdk-root M3SDK
 
 ## GitHub에서 적용할 때
 
-- PR CI는 병합 전에도 실행된다. 새 workflow_dispatch 메뉴는 기본 브랜치에 정의가 반영된 뒤 등록된다.
+- develop에 반영된 workflow를 Actions에서 사용한다. 후보·배포·완료 실행 명령의 기준 ref는 develop이며, 실제 기능 검증은 배포할 후보 커밋에 맞춘다. PR CI 결과를 정식 수동 후보 실행 결과로 대체하지 않는다.
 - 후보 검증: Verify SDK Candidate. 배포 전 자동 검증, 격리 Maven/NuGet, 패키지 소비 샘플, 매뉴얼 PDF를 생성한다.
 - 배포: Deployment. 기본 dry-run이며 실제 게시에는 별도 허용과 검증 증거가 필요하다.
 - 완료: Complete SDK Release. 공개 패키지·배포 후 실기·기록 반영 증거를 요구한다.
 - NUGET_API_KEY와 sdk-release environment 보호 정책은 관리자가 확인한다. 기존 secret의 존재와 값/권한의 유효성은 다른 문제다.
-- 기본 브랜치 반영 후 실제 CI check 이름으로 리뷰·필수 검사 정책을 설정한다. 아직 등록되지 않은 필수 검사로 다른 PR을 잠그지 않는다.
+- 관리자는 실제 CI check 이름으로 리뷰·필수 검사 정책과 sdk-release 승인자·허용 브랜치를 확인한다. workflow 병합만으로 저장소 보호 정책이나 배포 자격 증명 유효성이 설정·검증되지는 않는다.
 - 원격 상태 조회: `python tools/workflow/repository-readiness.py --repo m3mobile/M3SDK`. 이 명령은 secret 값과 정책을 변경하지 않는다.
 
 ## 에이전트 시작 지시문
