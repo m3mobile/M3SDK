@@ -5,8 +5,8 @@
 ## 동료가 받을 저장소
 
 - 저장소: `m3mobile/M3SDK`, 기본 브랜치 `develop`.
-- 공유 PR: https://github.com/m3mobile/M3SDK/pull/36
-- 병합 전 공유 브랜치: `codex/shared-release-workflow`. 병합 후에는 develop의 반영 커밋을 사용한다.
+- 공유 PR: https://github.com/m3mobile/M3SDK/pull/37
+- 병합 전 공유 브랜치: `ci/sdk-release-workflow`. 병합 후에는 develop의 반영 커밋을 사용한다.
 - 읽을 문서: AGENTS.md → docs/development-workflow.md → docs/release-notes-manual.md.
 - 기존 앱이나 SDK 체크아웃에 미커밋 변경이 있으면 지우거나 강제로 전환하지 않는다. 별도 폴더/작업 트리에서 시작한다.
 
@@ -14,7 +14,7 @@
 gh auth status
 gh repo clone m3mobile/M3SDK
 git -C M3SDK fetch origin
-git -C M3SDK switch --track origin/codex/shared-release-workflow
+git -C M3SDK switch --track origin/ci/sdk-release-workflow
 python M3SDK/tools/workflow/preflight.py --sdk-root M3SDK
 ```
 
