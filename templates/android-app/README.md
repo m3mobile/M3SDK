@@ -1,5 +1,7 @@
 # 다른 Android 앱에 적용
 
+앱 저장소 적용을 별도로 요청받은 경우에만 아래 절차를 수행한다. M3SDK 공유만 요청받았다면 앱 저장소에 수정·push·PR을 만들지 않는다.
+
 공통 절차는 M3SDK docs/development-workflow.md, docs/onboarding-startup.md, docs/release-notes-manual.md를 기준으로 한다.
 
 1. 이 폴더의 .github/workflows와 AGENTS.md를 새 앱 저장소에 반영한다. 기존 파일이 있으면 병합 검토하며 덮어쓰지 않는다.
