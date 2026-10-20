@@ -28,9 +28,9 @@
 # GitHub에 workflow를 반영한 뒤 실행. 이 명령들은 배포/실기 검증을 자동 수행하지 않음.
 gh workflow run --repo m3mobile/M3SDK verify-candidate.yml --ref develop -f version=VERSION
 # 완료된 후보의 artifacts를 내려받아 테스트/증거 작성 후:
-gh workflow run --repo m3mobile/M3SDK deployment.yml --ref develop -f tag_name=VERSION -f candidate_run_id=RUN_ID -f evidence_json=@evidence.json -F dry_run=true
+gh workflow run --repo m3mobile/M3SDK deployment.yml --ref develop -f tag_name=VERSION -f candidate_run_id=RUN_ID -F evidence_json=@evidence.json -F dry_run=true
 # 실제 배포는 같은 입력으로 dry_run=false. 성공 후 공개 샘플의 실기 검증을 마친 뒤:
-gh workflow run --repo m3mobile/M3SDK complete-release.yml --ref develop -f deployment_run_id=DEPLOY_RUN_ID -f evidence_json=@evidence.json
+gh workflow run --repo m3mobile/M3SDK complete-release.yml --ref develop -f deployment_run_id=DEPLOY_RUN_ID -F evidence_json=@evidence.json
 ```
 
 배포 전 로컬 Kotlin 패키지 소비 확인:

@@ -14,7 +14,11 @@ git -C Android-App-StartUp fetch origin
 git -C Android-App-StartUp switch --track origin/codex/shared-release-workflow
 git -C M3SDK fetch origin
 git -C M3SDK switch --track origin/codex/shared-release-workflow
+# GitHub 로그인 계정의 M3Util 읽기 권한 사용. 개인 credential 설정은 변경하지 않는다.
+git -C Android-App-StartUp -c credential.helper= -c 'credential.helper=!gh auth git-credential' -c submodule.Android-Module-M3Util.url=https://github.com/m3mobile/Android-Module-M3Util.git submodule update --init
 ```
+
+`gh auth status`로 먼저 본인 계정의 GitHub 로그인을 확인한다. 미로그인이면 본인 인증을 마친 뒤 진행한다. CI deploy key는 개인 PC에 복사하지 않는다.
 
 기존 체크아웃은 변경을 지우거나 강제로 전환하지 않는다. 별도 작업 트리에서 시작한다. 두 저장소의 AGENTS.md와 development-workflow.md를 먼저 읽는다.
 
@@ -56,6 +60,21 @@ python -m unittest discover -s tools/workflow -p 'test_*.py'
 8. 배포 후 공개 패키지 검증과 실제 동작을 확인하고, 기기 설정 및 Excel 기록 반영까지 확인한 뒤 Complete 단계로 간다.
 
 실기 금지이면 해당 증거는 pending이고 배포/완료를 우회하지 않는다. 비적용 항목은 impact_review의 검토 목록과 항목별 판단자·근거·사유가 있어야 한다. 실패는 원인 수정 후 재검증한다. 사람의 인증/직접 조작이 필요한 경우만 요청한다.
+
+## StartUp 후보·배포·완료 실행 예시
+
+기본 브랜치에 workflow가 반영된 뒤 앱 저장소에서 실행한다. 후보와 실제 버전을 맞추고, 증거 JSON은 실제 검증 결과로 작성한다. 아래 배포 명령은 dry-run이며 파일 게시를 하지 않는다.
+
+```powershell
+gh workflow run --repo m3mobile/Android-App-StartUp verify-candidate.yml --ref main
+# 성공한 수동 후보의 APK를 검증하고 evidence.json을 작성한 뒤:
+gh workflow run --repo m3mobile/Android-App-StartUp deployment.yml --ref main -f version=VERSION -f candidate_run_id=RUN_ID -F evidence_json=@evidence.json -F dry_run=true
+# 실제 게시가 허용되면 같은 입력에 dry_run=false 사용.
+# 게시 후 검증·Excel 반영까지 마친 뒤:
+gh workflow run --repo m3mobile/Android-App-StartUp complete-release.yml --ref main -f deployment_run_id=DEPLOY_RUN_ID -F evidence_json=@evidence.json
+```
+
+실제 게시/최종 완료 명령은 권한과 해당 증거가 준비된 시점에만 실행한다. `-F evidence_json=@evidence.json`은 파일 내용을 전달한다. 소문자 `-f`는 파일명을 문자열로 전달하므로 사용하지 않는다.
 
 ## 공유와 원격 설정
 
