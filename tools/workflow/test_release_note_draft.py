@@ -58,6 +58,19 @@ class DraftTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             self.generate()
 
+    def test_existing_receipt_is_not_overwritten(self):
+        folder = self.root/'output'
+        folder.mkdir()
+        (folder/'release-note-receipt.json').write_text('preserve')
+        with self.assertRaises(FileExistsError):
+            self.generate()
+        self.assertFalse((folder/'release-note.tsv').exists())
+
+    def test_compact_commit_date_is_rejected(self):
+        self.data['records'][0]['date'] = '20261020'
+        with self.assertRaises(ValueError):
+            self.generate()
+
 
 if __name__ == '__main__':
     unittest.main()

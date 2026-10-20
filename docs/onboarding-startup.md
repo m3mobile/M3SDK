@@ -69,3 +69,5 @@ workflow는 기본 브랜치 병합 전에도 PR CI로 검증할 수 있다. 새
 ## 에이전트 시작 지시문
 
 > StartUp과 M3SDK의 AGENTS.md, 공통 절차와 onboarding-startup.md를 읽고 작업해 주세요. 먼저 변경 상태와 대상 모델·허용 범위를 확인하고 기존 변경을 보존하세요. 앱·SDK·샘플·매뉴얼·릴리즈 기록을 함께 진행하고, 실패는 수정 후 재검증하세요. 실기/배포 미허용 항목은 pending으로 남기고 임의로 완료하지 마세요. Excel 연결이 없으면 수동 인계 파일을 만들고 반영 확인을 별도로 남기세요. 진행 상황을 알리되 권한·인증·사람의 조작이 필요한 경우에만 도움을 요청하세요.
+
+원격 준비 상태는 `python tools/workflow/repository-readiness.py --repo OWNER/REPO`로 조회한다. secret 값이나 정책은 변경하지 않는다. 기본 브랜치 반영 전에는 candidate_registered_on_default=false가 정상이며 PR CI로 먼저 검증한다.

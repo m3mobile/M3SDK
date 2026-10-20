@@ -98,6 +98,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ env.M3_SDK_VERSION }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
       - uses: actions/setup-dotnet@v4
         with:

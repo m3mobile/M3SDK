@@ -24,6 +24,8 @@ def draft(source, destination):
     for item in data['records']:
         if not all(isinstance(item.get(k), str) and item[k].strip() for k in FIELDS):
             raise ValueError('Every Excel field must be explicitly supplied; no author/Jira/version guessing')
+        if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', item['date']):
+            raise ValueError('Commit date must use YYYY-MM-DD')
         date.fromisoformat(item['date'])
         if item['category'] not in ('F', 'B', 'R', 'F, B'):
             raise ValueError('Use the existing F/B/R classification')
@@ -34,6 +36,9 @@ def draft(source, destination):
         seen.add(item['source_sha'])
     destination.mkdir(parents=True, exist_ok=True)
     output = destination / 'release-note.tsv'
+    receipt_path = destination / 'release-note-receipt.json'
+    if output.exists() or receipt_path.exists():
+        raise FileExistsError('Use a new draft directory; reviewed files are never overwritten')
     # Exclusive creation avoids overwriting a draft that another person already reviewed.
     with output.open('x', encoding='utf-8-sig', newline='') as stream:
         writer = csv.writer(stream, delimiter='\t', lineterminator='\n')
@@ -44,7 +49,8 @@ def draft(source, destination):
                    tsv_sha256=hashlib.sha256(output.read_bytes()).hexdigest(),
                    commits=[item['source_sha'] for item in data['records']],
                    instructions='Review exact header, branch, version and existing records; insert new record blocks without overwriting merged rows. Confirm synchronization after manual entry.')
-    (destination / 'release-note-receipt.json').write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    with receipt_path.open('x', encoding='utf-8') as stream:
+        stream.write(json.dumps(receipt, ensure_ascii=False, indent=2) + '\n')
     return receipt
 
 
