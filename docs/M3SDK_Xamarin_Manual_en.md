@@ -92,6 +92,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Set USB Mode to MIDI](#set-usb-mode-to-midi)
     - [Set USB Mode to PTP](#set-usb-mode-to-ptp)
     - [Disable USB Data (Charging Only)](#disable-usb-data-charging-only)
+    - [Block or Allow SD Card and USB Storage Mounting](#block-or-allow-sd-card-and-usb-storage-mounting)
     - [Get Current USB Modes](#get-current-usb-modes)
   - [Wifi API](#wifi-api)
     - [Get Wi-Fi MAC Address](#get-wi-fi-mac-address)
@@ -2536,6 +2537,61 @@ m3.SetUsbModeNone();
 
 > This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
 
+
+#### Block or Allow SD Card and USB Storage Mounting
+
+Controls SD card and USB storage mounting independently of the USB connection mode.
+
+*   **Supported Models**: All models
+*   **Requires StartUp Version**: `6.9.0` or later
+*   **blocked**: `true` blocks mounting and unmounts currently mounted target devices. `false` allows mounting and attempts to mount connected, unmounted target devices.
+*   **resultAction**: Optional broadcast action for the result. Omitted when null or empty.
+
+```csharp
+m3.SetSdUsbStorageMountingBlocked(true);
+m3.SetSdUsbStorageMountingBlocked(false);
+
+// Register a result receiver before making this call.
+m3.SetSdUsbStorageMountingBlocked(true, "com.example.USB_RESULT");
+
+// The StartUp API group exposes the same operation.
+m3.StartUp.SetSdUsbStorageMountingBlocked(true);
+```
+
+**Direct Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: Not set (implicit broadcast)
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `block_sd_usb_storage_mounting` | `Boolean` | When changing mounting settings | `true`: block, `false`: allow |
+| `usb_result_action` | `String` | X | Action for receiving the result |
+
+Pass `block_sd_usb_storage_mounting` as a Boolean, not a string. Omitting it preserves the existing mounting setting.
+This API omits `usb_mode`, preserving the USB connection mode. Existing USB mode APIs leave the mounting setting unchanged.
+Under the StartUp 6.9.0 protocol, an omitted, empty, or `unchanged` `usb_mode` preserves the USB connection mode.
+For a direct broadcast that changes both settings, add `usb_mode` to the same Intent.
+
+When `usb_result_action` is specified, the result is sent asynchronously to that action:
+
+| Result Extra | Type | Description |
+|---|---|---|
+| `usb_success` | `Boolean` | Processing success reported by StartUp |
+| `usb_error_message` | `String` | Error message on failure |
+
+Register a receiver before sending the request. The SDK does not automatically register a receiver or wait for the result.
+Sending the broadcast does not guarantee successful application, and a missing response is not success.
+`GetCurrentUsbModes()` reports the PC connection mode, not the SD/USB storage mounting state.
+
+The StartUp 6.9.0 broadcast receiver enables USB settings for the request, so the UI
+`Enable USB Settings` (`Use for USB`) checkbox does not need to be selected beforehand.
+The call does not also update the UI checkbox or saved task settings.
+Processing runs on a work queue, so the result may be delayed.
+If volume processing fails after the policy changes, the changed policy may remain in effect.
+Thus, `usb_success=false` does not mean the previous state was restored.
+A direct broadcast changing both the mode and mounting policy does not guarantee rollback of earlier changes on failure either.
 
 #### Get Current USB Modes
 

@@ -490,6 +490,16 @@ namespace M3Sdk.Xamarin.Startup
         }
 
         /// <inheritdoc />
+        public void SetSdUsbStorageMountingBlocked(bool blocked, string resultAction = null)
+        {
+            GuardStartUp("SetSdUsbStorageMountingBlocked", "6.9.0");
+            var extras = BooleanExtra(Constants.StartUp.ExtraBlockSdUsbStorageMounting, blocked);
+            if (!string.IsNullOrEmpty(resultAction))
+                extras.PutString(Constants.StartUp.ExtraUsbResultAction, resultAction);
+            SendSystem(Constants.StartUp.TypeUsbSetting, extras);
+        }
+
+        /// <inheritdoc />
         public Task<string> GetWifiMacAsync()
         {
             return GetWifiMacAsync(CancellationToken.None);

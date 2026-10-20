@@ -484,6 +484,16 @@ public sealed class CategoryActivity : Activity
     private void UsbSample()
     {
         var section = Section(Resource.String.usb);
+        section.Add(new TextView(this)
+        {
+            Text = GetString(Resource.String.storage_mounting_description)
+        });
+        AddButton(section, Resource.String.block_storage_mounting, () =>
+            RunOneWay(section, "SetSdUsbStorageMountingBlocked(true)", () =>
+                _sdk!.SetSdUsbStorageMountingBlocked(true)));
+        AddButton(section, Resource.String.allow_storage_mounting, () =>
+            RunOneWay(section, "SetSdUsbStorageMountingBlocked(false)", () =>
+                _sdk!.SetSdUsbStorageMountingBlocked(false)));
         AddButton(section, Resource.String.get_usb_modes, () =>
             RunValue(section, "getCurrentUsbModes", () => string.Join(", ", _sdk!.GetCurrentUsbModes())));
     }

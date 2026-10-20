@@ -608,6 +608,13 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void SetSdUsbStorageMountingBlocked(bool blocked, string resultAction = null)
+        {
+            ThrowIfDisposed();
+            _startUp.SetSdUsbStorageMountingBlocked(blocked, resultAction);
+        }
+
+        /// <inheritdoc />
         public Task<string> GetWifiMacAsync()
         {
             return GetWifiMacAsync(CancellationToken.None);

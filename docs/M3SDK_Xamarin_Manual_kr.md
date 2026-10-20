@@ -92,6 +92,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [USB 모드를 MIDI로 설정](#usb-모드를-midi로-설정)
     - [USB 모드를 PTP로 설정](#usb-모드를-ptp로-설정)
     - [USB 데이터 비활성화 (충전 전용)](#usb-데이터-비활성화-충전-전용)
+    - [SD 카드·USB 저장장치 마운트 차단 설정](#sd-카드usb-저장장치-마운트-차단-설정)
     - [현재 USB 모드 조회](#현재-usb-모드-조회)
   - [Wifi API](#wifi-api)
     - [Wi-Fi MAC 주소 조회](#wi-fi-mac-주소-조회)
@@ -2531,6 +2532,61 @@ m3.SetUsbModeNone();
 
 > 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
 
+
+#### SD 카드·USB 저장장치 마운트 차단 설정
+
+USB 연결 모드와 독립적으로 SD 카드·USB 저장장치의 마운트를 차단하거나 허용합니다.
+
+*   **지원 모델**: 모든 모델
+*   **필요 StartUp 버전**: `6.9.0` 이상
+*   **blocked**: `true`이면 마운트를 차단하고 현재 마운트된 대상 장치를 언마운트합니다. `false`이면 차단을 해제하고 연결된 대상 장치 중 마운트되지 않은 장치의 마운트를 시도합니다.
+*   **resultAction**: 선택적인 결과 브로드캐스트 Action입니다. `null` 또는 빈 문자열이면 전달하지 않습니다.
+
+```csharp
+m3.SetSdUsbStorageMountingBlocked(true);
+m3.SetSdUsbStorageMountingBlocked(false);
+
+// 결과를 받을 리시버를 먼저 등록한 후 호출합니다.
+m3.SetSdUsbStorageMountingBlocked(true, "com.example.USB_RESULT");
+
+// StartUp API 그룹을 통해서도 호출할 수 있습니다.
+m3.StartUp.SetSdUsbStorageMountingBlocked(true);
+```
+
+**직접 Broadcast**
+
+*   **Action**: `com.android.server.startupservice.system`
+*   **Target package**: 지정하지 않음 (implicit broadcast)
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `setting` | `String` | O | `usb_setting` |
+| `block_sd_usb_storage_mounting` | `Boolean` | 마운트 설정 변경 시 | `true`: 차단, `false`: 허용 |
+| `usb_result_action` | `String` | X | 결과를 수신할 Action |
+
+`block_sd_usb_storage_mounting`은 문자열이 아닌 Boolean으로 전달해야 하며, 생략하면 기존 마운트 설정을 유지합니다.
+이 API는 `usb_mode`를 전달하지 않으므로 USB 연결 모드는 유지됩니다. 기존 USB 모드 설정 API는 마운트 설정을 변경하지 않습니다.
+StartUp 6.9.0 규격에서는 `usb_mode` 생략·빈 문자열·`unchanged`가 USB 연결 모드 유지에 해당합니다.
+직접 Broadcast로 두 설정을 함께 변경할 때만 같은 Intent에 `usb_mode`를 추가합니다.
+
+`usb_result_action`을 지정하면 해당 Action으로 다음 결과를 비동기 수신합니다.
+
+| 결과 Extra | 타입 | 설명 |
+|---|---|---|
+| `usb_success` | `Boolean` | StartUp이 보고한 처리 성공 여부 |
+| `usb_error_message` | `String` | 실패 시 오류 메시지 |
+
+요청 전에 리시버를 등록해야 합니다. SDK는 결과 리시버를 자동 등록하거나 결과를 기다리지 않습니다.
+브로드캐스트 전송 완료 자체는 설정 적용 성공을 의미하지 않으며, 응답 미수신을 성공으로 판단하지 마세요.
+`GetCurrentUsbModes()`는 PC 연결 모드 조회이며 SD/USB 저장장치 마운트 상태 조회가 아닙니다.
+
+StartUp 6.9.0의 Broadcast 수신 경로는 요청용 USB 설정을 활성화하므로 화면의
+`Enable USB Settings`(`Use for USB`) 체크를 먼저 켤 필요가 없습니다.
+이 호출이 화면 체크 값이나 저장된 작업 설정을 함께 갱신하는 것은 아닙니다.
+처리는 작업 큐에서 수행되므로 결과가 지연될 수 있습니다.
+정책 변경 후 볼륨 처리가 실패하면 이미 바뀐 정책이 유지될 수 있습니다.
+즉, `usb_success=false`가 이전 상태로의 복원을 의미하지 않습니다.
+직접 Broadcast로 모드와 마운트를 함께 변경하는 경우에도 중간 실패 시 앞선 변경의 자동 복원을 보장하지 않습니다.
 
 #### 현재 USB 모드 조회
 

@@ -497,6 +497,17 @@ internal fun CategoryScreen(category: SampleCategory) {
         }
 
         SampleCard(SampleCategory.USB, category, stringResource(R.string.usb), results["usb"]) {
+            Text(stringResource(R.string.storage_mounting_description))
+            SdkActionButton(onClick = {
+                oneWay("usb", "setSdUsbStorageMountingBlocked(true)") {
+                    sdk.setSdUsbStorageMountingBlocked(true)
+                }
+            }) { Text(stringResource(R.string.block_storage_mounting)) }
+            SdkActionButton(onClick = {
+                oneWay("usb", "setSdUsbStorageMountingBlocked(false)") {
+                    sdk.setSdUsbStorageMountingBlocked(false)
+                }
+            }) { Text(stringResource(R.string.allow_storage_mounting)) }
             SdkActionButton(onClick = {
                 val body = try {
                     "SUCCESS\n${sdk.getCurrentUsbModes().joinToString()}"

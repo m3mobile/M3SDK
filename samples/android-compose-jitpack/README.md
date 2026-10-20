@@ -47,6 +47,16 @@ commas. These requests are one-way and persisted by StartUp; start a real MediaP
 after each change to verify whether the status-bar indicator is hidden. Changes do not affect an
 active session, so stop and restart it before verification, then restore the required exception list.
 
+The USB screen provides `Block SD/USB storage mounting` and `Allow SD/USB storage mounting`,
+calling `setSdUsbStorageMountingBlocked(true/false)`. These require a candidate or released
+SDK package containing the new API and StartUp 6.9.0 or later on any M3 model; older packages
+cannot build this sample revision. The buttons omit `resultAction` and report
+`REQUEST_SENT_UNVERIFIED`. Verify SD card and USB OTG unmounting, blocked reconnection,
+and mounting after allowing it, then restore the original setting. `Get current USB modes`
+only reports the PC connection mode and cannot confirm storage mounting.
+The API also accepts a result action for a separately registered receiver; these buttons do
+not implement that receiver.
+
 The application enables M3 SDK strict mode and shows the following for every operation:
 
 - `SUCCESS` when a response or observable value is available.

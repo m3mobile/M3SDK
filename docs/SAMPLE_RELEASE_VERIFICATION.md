@@ -30,7 +30,7 @@
 | Scanner | Scan Result Listener | 수신값 |
 | StartUp Setting | Reset StartUp Settings | 단방향 요청 |
 | Time | Get Timezone | 응답값 |
-| USB | Get Current USB Modes | 응답값 |
+| USB | Get Current USB Modes, SD/USB 저장장치 마운트 차단·허용 | 모드 조회값 / 마운트 요청은 `REQUEST_SENT_UNVERIFIED` + 실제 저장장치 상태 확인 |
 | Wi-Fi | Get Factory Wi-Fi MAC, Set Wi-Fi Enabled true/false | MAC 응답값 또는 StartUp 오류, Wi-Fi 활성화/비활성화 실제 확인 |
 | AppCenter | Change Admin Password, Keep Admin Mode On Sleep true/false | `REQUEST_SENT_UNVERIFIED` + AppCenter 2.2.0 이상에서 실제 동작 확인 |
 | KeyTool | Set Key Function, 매핑+Wake-Up 오버로드, Scan Key Wake-Up, Home/Recent 활성화·비활성화 | `REQUEST_SENT_UNVERIFIED` + 실제 버튼/Wake-Up 확인 |
@@ -74,6 +74,31 @@ Alpha는 기본 필수 단계가 아니다. 다음 중 하나에 해당할 때 �
 - 정식 배포 후 고객 공지 전에 JitPack/NuGet Gallery 패키지를 재검증할 수 있다.
 
 ## 장치 검증 체크리스트
+
+### SD/USB 저장장치 마운트
+
+아래는 수행할 검증 항목이며 통과 기록이 아니다.
+
+- 신규 API를 포함한 동일 후보 버전의 Kotlin/C# 패키지로 각 샘플을 빌드했는가.
+- 실제 모델·Android 버전·StartUp 버전(6.9.0 이상)과 시작 전 차단 상태·PC 연결 모드를 기록했는가.
+- 양쪽 샘플의 USB 화면에서 차단·허용 버튼이 요청 값과 함께 `REQUEST_SENT_UNVERIFIED`를 표시하는가.
+- SD 카드와 USB OTG 저장장치를 각각 연결한 상태에서 차단 시 언마운트되는가.
+- 차단 상태에서 대상 저장장치를 다시 연결해도 마운트되지 않는가.
+- 허용 시 이미 연결된 미마운트 장치의 마운트를 시도하고 결과가 실제 상태와 일치하는가.
+- 마운트 전용 요청 전후 PC 연결 모드가 유지되는가. `Get Current USB Modes`를 마운트 상태 판정에 사용하지 않았는가.
+- 기존 USB 모드 API를 호출해도 마운트 차단 상태가 유지되는가. USB 모드 API의 기존 지원 모델 조건은 별도로 지켰는가.
+- 결과 리시버를 먼저 등록한 별도 검증에서 `usb_success`의 Boolean 값과 실패 메시지를 확인했는가.
+  현재 샘플의 버튼은 결과 리시버를 등록하지 않으므로 이 항목을 버튼 실행만으로 통과시키지 않는다.
+- 결과 Action null·빈 문자열 생략, `blocked=false`의 Boolean 전송, 마운트 extra 미지정 시 기존 값 유지가 확인되는가.
+- StartUp의 `Use for USB` 체크 상태에 따른 동작, 설정 저장, 앱 재시작·단말 재부팅 후 복원 동작을 6.9.0 소스·규격과 대조했는가.
+- UI 체크를 해제해도 Broadcast 요청이 처리되는가. 요청 후 UI/저장 작업이 자동 변경된 것으로 오인하지 않았는가.
+- 볼륨 처리 실패 시 `usb_success=false`와 실제 정책 상태를 함께 확인했는가.
+  실패 결과만으로 이전 정책으로 복원되었다고 판단하지 않는다.
+- 결과 리시버가 작업 큐 대기와 볼륨 상태 확인 지연을 허용하는가. 무응답/시간 초과를 성공 또는 자동 복원으로 처리하지 않는가.
+- 공통 수신·저장·복원 경로와 OS별 동작을 검토해 회귀 모델을 선정하고, 실행/생략 근거를 기록했는가.
+- 공개 패키지로 빌드한 양쪽 샘플에서도 별도로 확인하고, 원래 차단 상태와 PC 연결 모드로 복원했는가.
+
+### 기존 기능
 
 - 샘플 화면의 SDK 의존성 버전이 릴리스 태그와 같은가.
 - StartUp, ScanEmul, KeyTool 패키지와 버전이 예상값으로 표시되는가.

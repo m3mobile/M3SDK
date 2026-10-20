@@ -117,6 +117,8 @@ namespace M3Sdk.Xamarin.Internal
             internal const string ExtraNtpServer = "ntp_server";
             internal const string ExtraTimeZone = "timezone";
             internal const string ExtraUsbMode = "usb_mode";
+            internal const string ExtraBlockSdUsbStorageMounting = "block_sd_usb_storage_mounting";
+            internal const string ExtraUsbResultAction = "usb_result_action";
             internal const string ExtraWifiSsid = "ssid";
             internal const string ExtraAccessPointSsid = "ssid";
             internal const string ExtraAccessPointSecurity = "security";
