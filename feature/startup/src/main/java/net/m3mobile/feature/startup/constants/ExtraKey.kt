@@ -60,6 +60,8 @@ internal object ExtraKey {
     const val SET_NTP_SERVER = "ntp_server"
     const val SET_TIME_ZONE = "timezone"
     const val SET_USB_MODE = "usb_mode"
+    const val BLOCK_SD_USB_STORAGE_MOUNTING = "block_sd_usb_storage_mounting"
+    const val USB_RESULT_ACTION = "usb_result_action"
     const val SET_WIFI_SSID = "ssid"
     const val SET_AP_SSID = "ssid"
     const val SET_AP_SECURITY = "security"

@@ -402,6 +402,21 @@ namespace M3Sdk.Xamarin.Startup
         void SetUsbModeNone();
 
         /// <summary>
+        /// Blocks or allows SD card and USB storage mounting without changing the USB connection mode.
+        /// </summary>
+        /// <param name="blocked">True blocks mounting and unmounts currently mounted target devices.
+        /// False allows mounting and attempts to mount connected, unmounted target devices.</param>
+        /// <param name="resultAction">Optional action for the asynchronous result broadcast.
+        /// Null or empty omits the result action.</param>
+        /// <remarks>
+        /// Supported on all models. Requires StartUp version <c>6.9.0</c> or later.
+        /// Register a receiver before calling to receive <c>usb_success</c> (Boolean) and,
+        /// on failure, <c>usb_error_message</c> (String).
+        /// Sending the request does not guarantee successful application.
+        /// </remarks>
+        void SetSdUsbStorageMountingBlocked(bool blocked, string resultAction = null);
+
+        /// <summary>
         /// Asynchronously gets the device Wi-Fi MAC address.
         /// </summary>
         /// <returns>A task that resolves to the Wi-Fi MAC address.</returns>

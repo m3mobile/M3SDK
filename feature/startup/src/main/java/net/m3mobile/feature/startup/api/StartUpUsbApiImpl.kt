@@ -1,6 +1,7 @@
 package net.m3mobile.feature.startup.api
 
 import android.content.Context
+import net.m3mobile.feature.startup.requester.usb.SetSdUsbStorageMountingBlockedRequester
 import net.m3mobile.feature.startup.requester.usb.SetUsbModeMidiRequester
 import net.m3mobile.feature.startup.requester.usb.SetUsbModeMtpRequester
 import net.m3mobile.feature.startup.requester.usb.SetUsbModeNoneRequester
@@ -27,5 +28,9 @@ internal class StartUpUsbApiImpl(private val context: Context): StartUpUsbApi {
 
     override fun setUsbModeNone() {
         SetUsbModeNoneRequester(context).request()
+    }
+
+    override fun setSdUsbStorageMountingBlocked(blocked: Boolean, resultAction: String?) {
+        SetSdUsbStorageMountingBlockedRequester(context, blocked, resultAction).request()
     }
 }

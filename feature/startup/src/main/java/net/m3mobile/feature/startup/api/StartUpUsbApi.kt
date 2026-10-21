@@ -50,4 +50,22 @@ public interface StartUpUsbApi {
     @SupportedModels(DeviceModel.US20, DeviceModel.US30)
     @RequiresStartUp("6.5.10")
     public fun setUsbModeNone()
+
+    /**
+     * Blocks or allows SD card and USB storage mounting without changing the USB connection mode.
+     *
+     * Supported on all models with StartUp version `6.9.0` or later.
+     *
+     * @param blocked `true` blocks mounting and unmounts currently mounted target devices.
+     * `false` allows mounting and attempts to mount connected, unmounted target devices.
+     * @param resultAction Optional broadcast action for the asynchronous result. Null or empty
+     * omits the result action. Register a receiver before calling this method to receive
+     * `usb_success` (Boolean) and, on failure, `usb_error_message` (String).
+     * Sending the request does not guarantee that the setting was applied successfully.
+     */
+    @RequiresStartUp("6.9.0")
+    public fun setSdUsbStorageMountingBlocked(
+        blocked: Boolean,
+        resultAction: String? = null
+    )
 }

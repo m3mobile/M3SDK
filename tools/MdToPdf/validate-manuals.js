@@ -10,7 +10,8 @@ const MANUALS = [
   "docs/M3SDK_Xamarin_Manual_kr.md",
   "docs/M3SDK_Xamarin_Manual_en.md",
 ];
-const EXPECTED_DIRECT_BLOCKS = 83;
+// Includes the SD/USB storage mounting API in all four manuals.
+const EXPECTED_DIRECT_BLOCKS = 84;
 // Existing M3OTA app broadcast, intentionally outside the SDK action contract.
 const M3OTA_OTA_REQUEST = "com.m3.intent.action.UPDATE_PACKAGES";
 const KOTLIN_ACTION_SOURCES = {

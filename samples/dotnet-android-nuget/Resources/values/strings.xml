@@ -89,6 +89,9 @@
   <string name="reset_startup">Reset StartUp settings</string>
   <string name="get_timezone">Get timezone</string>
   <string name="get_usb_modes">Get current USB modes</string>
+  <string name="block_storage_mounting">Block SD/USB storage mounting</string>
+  <string name="allow_storage_mounting">Allow SD/USB storage mounting</string>
+  <string name="storage_mounting_description">All models, StartUp 6.9.0+. Blocking unmounts SD cards and USB storage. Allowing attempts to mount connected storage. These buttons send requests without a result receiver; verify the actual storage state and restore the original setting after testing. Current USB modes describe the PC connection, not storage mounting.</string>
   <string name="enable_wifi">Enable Wi-Fi</string>
   <string name="disable_wifi">Disable Wi-Fi</string>
   <string name="get_factory_wifi_mac">Get factory Wi-Fi MAC</string>
