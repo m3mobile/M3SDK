@@ -51,7 +51,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
   - [Permission API](#permission-api)
     - [권한 부여](#권한-부여)
     - [권한 취소](#권한-취소)
-    - [애플리케이션 PROJECT_MEDIA 허용](#애플리케이션-projectmedia-허용)
+    - [애플리케이션 PROJECT_MEDIA 허용](#allow-project-media)
     - [MediaProjection 화면 녹화 표시 예외 설정](#mediaprojection-화면-녹화-표시-예외-설정)
   - [Quick Tile API](#quick-tile-api)
     - [빠른 설정 타일 지정](#빠른-설정-타일-지정)
@@ -92,7 +92,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [USB 모드를 MIDI로 설정](#usb-모드를-midi로-설정)
     - [USB 모드를 PTP로 설정](#usb-모드를-ptp로-설정)
     - [USB 데이터 비활성화 (충전 전용)](#usb-데이터-비활성화-충전-전용)
-    - [SD 카드·USB 저장장치 마운트 차단 설정](#sd-카드usb-저장장치-마운트-차단-설정)
+    - [SD 카드·USB 저장장치 마운트 차단 설정](#sd-usb-storage-mounting)
     - [현재 USB 모드 조회](#현재-usb-모드-조회)
   - [Wifi API](#wifi-api)
     - [Wi-Fi MAC 주소 조회](#wi-fi-mac-주소-조회)
@@ -1101,7 +1101,7 @@ m3.RevokePermission("com.example.app", "android.permission.CAMERA");
 > 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
 
 
-#### 애플리케이션 PROJECT_MEDIA 허용
+#### <a id="allow-project-media"></a>애플리케이션 PROJECT_MEDIA 허용
 
 설치된 화면 캡처 애플리케이션에 Android `PROJECT_MEDIA` AppOps를 허용합니다. 호출자가
 패키지명을 전달하므로 DroidVNC-NG에 한정되지 않습니다.
@@ -2533,7 +2533,7 @@ m3.SetUsbModeNone();
 > 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
 
 
-#### SD 카드·USB 저장장치 마운트 차단 설정
+#### <a id="sd-usb-storage-mounting"></a>SD 카드·USB 저장장치 마운트 차단 설정
 
 USB 연결 모드와 독립적으로 SD 카드·USB 저장장치의 마운트를 차단하거나 허용합니다.
 

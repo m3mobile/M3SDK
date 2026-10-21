@@ -46,7 +46,7 @@ The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
   - [Permission API](#permission-api)
     - [Grant Permission](#grant-permission)
     - [Revoke Permission](#revoke-permission)
-    - [Allow PROJECT_MEDIA for an Application](#allow-projectmedia-for-an-application)
+    - [Allow PROJECT_MEDIA for an Application](#allow-project-media)
     - [Configure MediaProjection Screen-recording Indicator Exceptions](#configure-mediaprojection-screen-recording-indicator-exceptions)
   - [Quick Tile API](#quick-tile-api)
     - [Set Quick Tiles](#set-quick-tiles)
@@ -1000,7 +1000,7 @@ M3Mobile.instance.revokePermission(packageName: String, permission: String)
 > This is a one-way request. Sending the broadcast does not guarantee that the setting was applied. Verify the resulting state separately in the MDM.
 
 
-#### Allow PROJECT_MEDIA for an Application
+#### <a id="allow-project-media"></a>Allow PROJECT_MEDIA for an Application
 
 Allows the Android `PROJECT_MEDIA` app operation for an installed screen-capture application. The
 caller supplies the package name, so the API is not limited to DroidVNC-NG.
