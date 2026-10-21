@@ -82,6 +82,14 @@ function headings(content) {
 function validateToc(manual) {
   const allHeadings = headings(manual.content);
   const anchorSet = new Set(allHeadings.map((heading) => heading.anchor));
+  // Explicit anchors keep TOC links stable across GitHub and PDF heading sluggers.
+  const plain = markdownWithoutFencedCode(manual.content);
+  for (const match of plain.matchAll(/<a\s+id=["']([^"']+)["'][^>]*>/gi)) {
+    if (anchorSet.has(match[1])) {
+      fail(`${manual.relativePath}: duplicate explicit anchor: #${match[1]}`);
+    }
+    anchorSet.add(match[1]);
+  }
   const tocHeading = allHeadings.find(
     (heading) =>
       heading.level === 2 &&
