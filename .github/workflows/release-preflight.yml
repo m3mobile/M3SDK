@@ -1,0 +1,32 @@
+name: SDK Release Preflight
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # No ref condition here: GitHub must enforce the environment's develop-only policy.
+    environment: sdk-release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Check environment access without publishing or revealing secrets
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: python tools/workflow/release_preflight.py --output build/release-preflight.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-preflight-${{ github.run_attempt }}
+          path: build/release-preflight.json
+          if-no-files-found: error
+      - name: Report only the verified scope
+        run: cat build/release-preflight.json >> "$GITHUB_STEP_SUMMARY"
