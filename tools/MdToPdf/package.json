@@ -7,6 +7,7 @@
     "pdf": "node convert-md-to-pdf.js",
     "pdf:docs": "node convert-md-to-pdf.js --input ../../docs --output ../../build/release/manuals --repo-root ../.. --temp ../../build/md-to-pdf --clean",
     "validate:manuals": "node validate-manuals.js",
+    "test:manuals": "node --test validate-manuals.test.js",
     "test": "node convert-md-to-pdf.js --help"
   },
   "keywords": [

@@ -1,4 +1,4 @@
-"""Release gates must fail closed for missing, stale, or tampered evidence."""
+"""App-template evidence remains required; SDK files use the machine gate tests."""
 import contextlib
 import io
 import json
@@ -17,22 +17,16 @@ class EvidenceTests(unittest.TestCase):
         self.version = '2.3.17'
         self.sha = 'a' * 40
         (self.root / 'sample.apk').write_bytes(b'tested sample')
-        manifest(self.root, 'android', self.sha, '123', self.version)
-        dotnet = Path(self.temp.name) / 'dotnet'
-        dotnet.mkdir()
-        (dotnet / 'sdk.nupkg').write_bytes(b'package')
-        manifest(dotnet, 'dotnet', self.sha, '123', self.version)
-        for path in dotnet.iterdir():
-            (self.root / path.name).write_bytes(path.read_bytes())
+        manifest(self.root, 'app', self.sha, '123', self.version)
         self.record = dict(status='passed', by='Reviewer', reference='test-log:42')
         self.data = dict(source_sha=self.sha, version=self.version, candidate_run_id='123',
                          candidate_manifests={p.name: digest(p) for p in self.root.glob('candidate-*.json')},
                          code_review=self.record.copy(), app_verification=self.record.copy(),
                          impact_review=dict(**self.record, regression_models=['SM25']),
-                         manuals={k: self.record.copy() for k in ('app', 'kotlin_ko', 'kotlin_en', 'csharp_ko', 'csharp_en', 'pdf_visual_review')},
+                         manuals={'app': self.record.copy()},
                          release_notes=dict(draft=self.record.copy(), excel=dict(status='pending')),
                          pre_release={k: self.record.copy() for k in (
-                             'ui', 'broadcast', 'persistence', 'restart_reboot', 'kotlin_package', 'csharp_package')},
+                             'ui', 'broadcast', 'persistence', 'restart_reboot')},
                          devices=[dict(model='SM24', os='1.2.2', app_version='1.4.3'),
                                   dict(model='SM25', os='test-os', app_version='1.4.3')],
                          regression=[dict(model='SM25', status='passed', by='Reviewer', reference='test-log:60')])
@@ -41,7 +35,7 @@ class EvidenceTests(unittest.TestCase):
         evidence = self.root.parent / 'evidence.json'
         evidence.write_text(json.dumps(self.data), encoding='utf-8')
         with contextlib.redirect_stdout(io.StringIO()):
-            return validate(self.root, evidence, 'm3sdk', stage, self.version, '123')
+            return validate(self.root, evidence, 'app', stage, self.version, '123')
 
     def test_complete_pre_release(self):
         self.assertEqual(self.sha, self.check())
@@ -80,14 +74,6 @@ class EvidenceTests(unittest.TestCase):
     def test_unlisted_file_is_blocked(self):
         (self.root / 'extra.nupkg').write_bytes(b'unreviewed')
         with self.assertRaisesRegex(ValueError, 'Unexpected files'):
-            self.check()
-
-    def test_mixed_source_commits_are_blocked(self):
-        path = self.root / 'candidate-dotnet.json'
-        data = json.loads(path.read_text())
-        data['source_sha'] = 'b' * 40
-        path.write_text(json.dumps(data))
-        with self.assertRaisesRegex(ValueError, 'Mixed source'):
             self.check()
 
     def test_regression_skip_needs_explicit_proof(self):
@@ -143,7 +129,7 @@ class EvidenceTests(unittest.TestCase):
 
     def test_completion_needs_public_package_and_device_restore(self):
         self.data.update(published_packages=self.record.copy(),
-                         post_release={k: self.record.copy() for k in ('kotlin_device', 'csharp_device')},
+                         post_release={'app_device': self.record.copy()},
                          device_restored=self.record.copy())
         self.data['release_notes']['excel'] = dict(**self.record, workbook='example.xlsx', sheet='Example', range='A7:G8', verification='owner-confirmed:test')
         self.check('complete')
@@ -152,7 +138,7 @@ class EvidenceTests(unittest.TestCase):
             self.check('complete')
 
     def test_manual_review_and_note_draft_are_required_before_release(self):
-        for key in ('app', 'kotlin_ko', 'kotlin_en', 'csharp_ko', 'csharp_en', 'pdf_visual_review'):
+        for key in ('app',):
             with self.subTest(key=key):
                 self.data['manuals'][key]['status'] = 'pending'
                 with self.assertRaises(ValueError):
@@ -175,7 +161,7 @@ class EvidenceTests(unittest.TestCase):
 
     def test_excel_pending_is_not_completion(self):
         self.data.update(published_packages=self.record.copy(), device_restored=self.record.copy(),
-                         post_release={k: self.record.copy() for k in ('kotlin_device', 'csharp_device')})
+                         post_release={'app_device': self.record.copy()})
         self.check()
         with self.assertRaises(ValueError):
             self.check('complete')
@@ -185,8 +171,6 @@ class EvidenceTests(unittest.TestCase):
 
     def test_generic_app_manifest_is_supported(self):
         manifest(self.root, 'app', self.sha, '123', self.version)
-        for name in ('android', 'dotnet'):
-            (self.root / f'candidate-{name}.json').unlink()
         self.data['candidate_manifests'] = {'candidate-app.json': digest(self.root / 'candidate-app.json')}
         evidence = self.root.parent / 'evidence.json'
         evidence.write_text(json.dumps(self.data))
@@ -194,7 +178,7 @@ class EvidenceTests(unittest.TestCase):
             validate(self.root, evidence, 'app', 'pre', self.version, '123')
 
     def test_manifest_path_traversal_is_blocked(self):
-        path = self.root / 'candidate-android.json'
+        path = self.root / 'candidate-app.json'
         item = json.loads(path.read_text())
         item['files'] = {'../outside.apk': '0' * 64}
         path.write_text(json.dumps(item))
@@ -204,13 +188,23 @@ class EvidenceTests(unittest.TestCase):
 
     def test_keytool_requires_only_keytool_manifest(self):
         manifest(self.root, 'keytool', self.sha, '123', self.version)
-        (self.root / 'candidate-android.json').unlink()
-        (self.root / 'candidate-dotnet.json').unlink()
+        (self.root / 'candidate-app.json').unlink()
         self.data['candidate_manifests'] = {'candidate-keytool.json': digest(self.root / 'candidate-keytool.json')}
         evidence = self.root.parent / 'evidence.json'
         evidence.write_text(json.dumps(self.data))
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(self.sha, validate(self.root, evidence, 'keytool', 'pre', self.version, '123'))
+
+    def test_sdk_cannot_use_the_legacy_human_gate(self):
+        with self.assertRaisesRegex(ValueError, 'does not accept human evidence'):
+            validate(self.root, self.root.parent / 'unused.json', 'm3sdk', 'pre', self.version, '123')
+
+    def test_app_template_remains_pending_and_app_only(self):
+        template = Path(__file__).resolve().parents[2] / 'templates/android-app/release-evidence-template.json'
+        data = json.loads(template.read_text(encoding='utf-8'))
+        self.assertEqual(data['code_review']['status'], 'pending')
+        self.assertEqual(set(data['post_release']), {'app_device'})
+        self.assertEqual(set(data['manuals']), {'app'})
 
 
 if __name__ == '__main__':

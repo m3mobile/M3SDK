@@ -10,6 +10,7 @@ $generatedVersion = Join-Path $repo 'dotnet/M3Mobile.M3Sdk.Xamarin/Properties/Ge
 $originalVersion = if (Test-Path -LiteralPath $generatedVersion) { [System.IO.File]::ReadAllBytes($generatedVersion) } else { $null }
 Push-Location $repo
 try {
+    Invoke-Checked python @('tools/workflow/check-xamarin-sources.py')
     Invoke-Checked dotnet @('test', 'dotnet/M3Mobile.M3Sdk.Xamarin.Tests/M3Mobile.M3Sdk.Xamarin.Tests.csproj', '-p:RestoreSources=https://api.nuget.org/v3/index.json', '--configuration', 'Release', '--logger', 'trx', '--results-directory', 'build/workflow-tests')
     Invoke-Checked node @('tools/release/write-xamarin-version.js', '--version', $Version, '--repo-root', '.')
     $sdk = @($env:ANDROID_HOME, $env:ANDROID_SDK_ROOT, "$env:LOCALAPPDATA/Android/Sdk") |

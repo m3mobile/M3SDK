@@ -67,7 +67,7 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x gradlew
-          ./gradlew apiCheck assembleRelease
+          ./gradlew assembleRelease
 
       - name: Publish Android artifacts
         if: ${{ inputs.dry_run != true }}

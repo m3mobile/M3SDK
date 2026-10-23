@@ -44,7 +44,7 @@ jobs:
         run: |
           python -c 'import os,re; assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?", os.environ["VERSION"])'
           python -m unittest discover -s tools/workflow -p 'test_*.py'
-          node --test tools/release/prepare-release.test.js
+          node --test tools/release/prepare-release.test.js tools/MdToPdf/validate-manuals.test.js
       - name: Test, check API, and publish to isolated file repository
         run: |
           chmod +x gradlew
@@ -71,7 +71,7 @@ jobs:
             --output build/candidate/manuals \
             --repo-root . --temp build/md-to-pdf --version "$VERSION" --clean
       - name: Record candidate identity
-        run: python tools/workflow/evidence.py manifest --root build/candidate --name android --source-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" --version "$VERSION"
+        run: python tools/workflow/artifacts.py manifest --root build/candidate --name android --source-sha "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" --version "$VERSION"
       - uses: actions/upload-artifact@v4
         with:
           name: sdk-candidate-android
@@ -115,7 +115,7 @@ jobs:
         run: ./tools/workflow/build-nuget-candidate.ps1 -Version $env:VERSION
       - name: Record candidate identity
         shell: pwsh
-        run: python tools/workflow/evidence.py manifest --root build/candidate --name dotnet --source-sha $env:GITHUB_SHA --run-id $env:GITHUB_RUN_ID --version $env:VERSION
+        run: python tools/workflow/artifacts.py manifest --root build/candidate --name dotnet --source-sha $env:GITHUB_SHA --run-id $env:GITHUB_RUN_ID --version $env:VERSION
       - uses: actions/upload-artifact@v4
         with:
           name: sdk-candidate-dotnet

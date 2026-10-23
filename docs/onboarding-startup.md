@@ -39,17 +39,17 @@ python M3SDK/tools/workflow/preflight.py --sdk-root M3SDK
 3. 앱 매뉴얼과 SDK 국·영문 4종을 기능과 대조하고 생성 PDF를 검수한다.
 4. SDK 후보 Maven/NuGet을 양쪽 샘플의 패키지 의존성으로 소비해 검증한다. SDK 프로젝트 직접 참조로 대체하지 않는다.
 5. 릴리즈 노트 TSV 초안을 준비한다. Excel 연결이 없으면 수동 인계하고 반영 확인은 pending으로 남긴다.
-6. 허용된 후보 실기·모델별 회귀 또는 근거 있는 생략·리뷰 증거를 확보한 뒤 배포 dry-run을 확인한다.
-7. 실제 배포가 허용되면 같은 후보를 게시하고, 공개 패키지 빌드·배포 후 실기·기기 복원·Excel 반영을 확인한 뒤 Complete로 간다.
+6. 허용된 후보 실기·모델별 회귀와 리뷰 결과를 작업 기록으로 관리한다. 담당자가 후보 CI 결과를 확인한 뒤 배포 dry-run으로 출처·버전·SHA·파일 해시를 자동 검사한다.
+7. 실제 배포가 허용되면 같은 후보를 게시하고 공개 패키지 빌드를 확인한다. 현재 Complete에는 성공한 배포 ID만 입력한다. 배포 후 실기·기기 복원·Excel 반영 여부는 별도로 기록한다.
 
-실기 금지이면 해당 증거는 pending이며 배포/완료를 우회하지 않는다. 비적용 항목은 영향 리뷰와 항목별 판단자·참조·사유가 필요하다. 실제 명령·증거 항목은 development-workflow.md를 따른다.
+실기 금지이면 해당 작업은 pending이며 자동 패키지 검증으로 대체하지 않는다. 실제 배포도 허용 범위 안에서만 수행한다. SDK Actions는 사람의 증거 JSON을 받지 않는다. 실제 명령과 자동 기록은 development-workflow.md를 따른다.
 
 ## GitHub에서 적용할 때
 
 - develop에 반영된 workflow를 Actions에서 사용한다. 후보·배포·완료 실행 명령의 기준 ref는 develop이며, 실제 기능 검증은 배포할 후보 커밋에 맞춘다. PR CI 결과를 정식 수동 후보 실행 결과로 대체하지 않는다.
 - 후보 검증: Verify SDK Candidate. 배포 전 자동 검증, 격리 Maven/NuGet, 패키지 소비 샘플, 매뉴얼 PDF를 생성한다.
-- 배포: Deployment. 기본 dry-run이며 실제 게시에는 별도 허용과 검증 증거가 필요하다.
-- 완료: Complete SDK Release. 공개 패키지·배포 후 실기·기록 반영 증거를 요구한다.
+- 배포: Deployment. 기본 dry-run이며 실제 게시에는 별도 허용이 필요하다. 후보 출처와 파일 무결성은 자동 검사한다.
+- 완료: Deployment의 두 공개 샘플 검사 성공 후 finalize가 같은 실행의 새 Release ID를 자동 공개한다. 별도 완료 실행은 없다. 게시 없는 리허설은 development-workflow.md를 따른다.
 - NUGET_API_KEY와 sdk-release environment 보호 정책은 관리자가 확인한다. 기존 secret의 존재와 값/권한의 유효성은 다른 문제다.
 - 관리자는 실제 CI check 이름으로 리뷰·필수 검사 정책과 sdk-release 승인자·허용 브랜치를 확인한다. workflow 병합만으로 저장소 보호 정책이나 배포 자격 증명 유효성이 설정·검증되지는 않는다.
 - 원격 상태 조회: `python tools/workflow/repository-readiness.py --repo m3mobile/M3SDK`. 이 명령은 secret 값과 정책을 변경하지 않는다.
