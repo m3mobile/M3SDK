@@ -22,7 +22,7 @@ SDK에서는 수동 `evidence_json` 입력이나 증거 템플릿 제출을 사�
 - `release-plan.json`과 `release.bundle`: 쓰기 없는 prepare가 문서만 바꾼 정확한 커밋·후보 기록·게시 파일 해시를 묶는다. publish는 bundle의 커밋을 그대로 사용하며 새로 빌드하거나 문서 커밋을 다시 만들지 않는다.
 - `release-record.json`: 실제 게시 job이 새로 만든 Release ID와 배포 context·계획 digest를 묶는다. dry-run/rehearsal에는 생성하지 않는다.
 - finalize는 실제 needs 결과, 수동 시작·develop·publish 모드, 현재 run ID/SHA, 새 Release ID·tag·source SHA·소유 run 표식과 후보 시도/파일을 재검사한다. 현재 배포 run은 아직 in_progress여도 정상이며 completed/success로 위조하지 않는다. 기존 draft는 자동으로 인수하지 않는다.
-- prepare/gate artifact는 upload가 반환한 정확한 artifact ID로 전달한다. 재실행 시 새 이름에 run_attempt를 붙이며 무조건 overwrite하지 않는다. 기존 publish가 만든 release-record는 소비/완료 job만 재실행할 때 재사용한다.
+- prepare/gate artifact는 upload가 반환한 정확한 artifact ID로 전달한다. 재실행 시 새 이름에 run_attempt를 붙이며 무조건 overwrite하지 않는다. 기존 publish가 만든 release-record는 소비/완료 job만 재실행할 때 재사용한다. 시험 보고서와 공개 샘플 APK도 run_attempt별 이름을 사용한다. 이미 업로드한 후보 패키지를 다시 만들려면 새 후보 run을 시작한다.
 - 자동 기록에는 실기·리뷰·Excel 확인을 수행했다는 상태를 만들지 않는다. 앱 템플릿의 기존 수동 증거 양식은 `templates/android-app`에 분리돼 있으며 앱 정책은 이번 SDK 변경으로 바꾸지 않는다.
 
 ```powershell

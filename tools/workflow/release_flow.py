@@ -235,7 +235,7 @@ def main():
             allowed = False
         write_json(Path('build/rehearsal-result.json'), dict(kind='rehearsal',
                    decision='would_publish' if allowed else 'blocked', context=ctx,
-                   prerequisites=json.loads(os.environ['NEEDS']), external_writes=0))
+                   prerequisites=json.loads(os.environ['NEEDS']), sdk_publication_writes=0))
         expected = os.environ.get('EXPECTED_DECISION', 'would_publish')
         require(('would_publish' if allowed else 'blocked') == expected, 'Unexpected rehearsal decision')
     else:

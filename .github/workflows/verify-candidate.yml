@@ -80,7 +80,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sdk-android-test-results
+          name: sdk-android-test-results-${{ github.run_attempt }}
           path: |
             **/build/test-results/**
             **/build/reports/tests/**
@@ -124,5 +124,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sdk-dotnet-test-results
+          name: sdk-dotnet-test-results-${{ github.run_attempt }}
           path: build/workflow-tests/
