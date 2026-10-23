@@ -40,16 +40,6 @@
       "status": "pending",
       "by": "",
       "reference": ""
-    },
-    "kotlin_package": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "csharp_package": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
     }
   },
   "regression": [
@@ -70,12 +60,7 @@
     "reference": ""
   },
   "post_release": {
-    "kotlin_device": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "csharp_device": {
+    "app_device": {
       "status": "pending",
       "by": "",
       "reference": ""
@@ -95,31 +80,6 @@
   },
   "manuals": {
     "app": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "kotlin_ko": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "kotlin_en": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "csharp_ko": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "csharp_en": {
-      "status": "pending",
-      "by": "",
-      "reference": ""
-    },
-    "pdf_visual_review": {
       "status": "pending",
       "by": "",
       "reference": ""

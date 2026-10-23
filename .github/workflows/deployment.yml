@@ -8,37 +8,53 @@ on:
         required: true
         type: string
       candidate_run_id:
-        description: Successful Verify SDK Candidate dispatch run (build once, promote unchanged)
-        required: true
-        type: string
-      evidence_json:
-        description: Completed pre-release evidence JSON; see docs/development-workflow.md
+        description: Successful manual Verify SDK Candidate run
         required: true
         type: string
       dry_run:
-        description: Validate evidence and artifacts without publishing
-        required: true
+        description: Gate and prepare only, without publication
         default: true
         type: boolean
+      rehearsal:
+        description: Isolated rehearsal on this exact branch/SHA; no external publication
+        default: false
+        type: boolean
+      rehearsal_case:
+        description: Rehearsal-only failure injection
+        default: normal
+        type: choice
+        options: [normal, android-failure, dotnet-failure, consumer-skip, tamper]
 
 permissions:
   contents: read
   actions: read
 
+env:
+  RELEASE_MODE: ${{ inputs.rehearsal && 'rehearsal' || (inputs.dry_run && 'dry-run' || 'publish') }}
+
 concurrency:
-  group: sdk-release-${{ inputs.tag_name }}
+  group: sdk-release-${{ inputs.rehearsal && 'rehearsal' || 'production' }}-${{ inputs.tag_name }}
   cancel-in-progress: false
 
 jobs:
+  rehearsal:
+    if: inputs.rehearsal
+    uses: ./.github/workflows/rehearse-release.yml
+    with:
+      version: ${{ inputs.tag_name }}
+      candidate_run_id: ${{ inputs.candidate_run_id }}
+      scenario: ${{ inputs.rehearsal_case }}
+
   gate:
+    if: ${{ !inputs.rehearsal }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     outputs:
       source_sha: ${{ steps.identity.outputs.source_sha }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
     env:
       VERSION: ${{ inputs.tag_name }}
       CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
-      EVIDENCE_JSON: ${{ inputs.evidence_json }}
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
@@ -53,23 +69,62 @@ jobs:
           pattern: sdk-candidate-*
           merge-multiple: true
           path: build/candidate
-      - name: Verify candidate workflow provenance
-        run: python tools/workflow/run-provenance.py --run-id "$CANDIDATE_RUN" --workflow verify-candidate.yml --root build/candidate
-      - name: Verify artifact hashes, review, device tests and regression decisions
+      - name: Verify completed develop candidate and exact files
         id: identity
-        run: |
-          python -c 'import os,pathlib; pathlib.Path("build/evidence.json").write_text(os.environ["EVIDENCE_JSON"], encoding="utf-8")'
-          python tools/workflow/evidence.py validate --kind m3sdk --root build/candidate \
-            --evidence build/evidence.json --version "$VERSION" --run-id "$CANDIDATE_RUN"
-          python -c 'import json,os; d=json.load(open("build/candidate/candidate-android.json")); f=open(os.environ["GITHUB_OUTPUT"],"a"); print("source_sha="+d["source_sha"],file=f)'
+        run: python tools/workflow/release_flow.py gate
       - uses: actions/upload-artifact@v4
+        id: upload
         with:
-          name: promotion-evidence
-          path: build/evidence.json
+          name: promotion-verification-${{ github.run_attempt }}
+          path: build/candidate-verification.json
+          if-no-files-found: error
+
+  prepare:
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.gate.outputs.artifact_id }}
+          merge-multiple: true
+          path: build
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.source_sha }}
+          fetch-depth: 0
+          path: release-source
+      - name: Prepare exact documentation commit, bundle and publication plan without writing remotely
+        run: python tools/workflow/release_flow.py prepare
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: release-plan-${{ github.run_attempt }}
+          path: build/plan/
+          if-no-files-found: error
 
   publish:
-    needs: gate
-    if: ${{ inputs.dry_run != true }}
+    needs: [gate, prepare]
+    if: ${{ !inputs.rehearsal && !inputs.dry_run && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: sdk-release
@@ -77,7 +132,7 @@ jobs:
       contents: write
       actions: read
     outputs:
-      release_sha: ${{ steps.tag.outputs.release_sha }}
+      release_sha: ${{ steps.identity.outputs.release_sha }}
     env:
       VERSION: ${{ inputs.tag_name }}
       GH_TOKEN: ${{ github.token }}
@@ -85,12 +140,9 @@ jobs:
       NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          ref: ${{ needs.gate.outputs.source_sha }}
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+          python-version: '3.13'
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
@@ -101,47 +153,37 @@ jobs:
           pattern: sdk-candidate-*
           merge-multiple: true
           path: build/candidate
-      - name: Recheck reviewed artifact hashes before publishing
-        env:
-          EVIDENCE_JSON: ${{ inputs.evidence_json }}
-          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
-        run: |
-          python -c 'import os,pathlib; pathlib.Path("build/evidence.json").write_text(os.environ["EVIDENCE_JSON"],encoding="utf-8")'
-          python tools/workflow/evidence.py validate --kind m3sdk --root build/candidate --evidence build/evidence.json --version "$VERSION" --run-id "$CANDIDATE_RUN"
-      - name: Validate publication prerequisites
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          merge-multiple: true
+          path: build/plan
+      - name: Restore exact prepared commit and recheck candidate before any publication
+        id: identity
         run: |
           test -n "$NUGET_API_KEY" || { echo 'NUGET_API_KEY required'; exit 1; }
-          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1; then
-            echo 'Tag already exists; inspect partial release before recovery'; exit 1
-          fi
-          test -f "build/candidate/nuget/M3Mobile.M3Sdk.Xamarin.$VERSION.nupkg"
-      - name: Prepare documentation commit and publish tag
-        id: tag
+          git clone build/plan/release.bundle release-source
+          python tools/workflow/release_flow.py check
+          echo "release_sha=$(git -C release-source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Publish prepared tag without rebuilding packages
         run: |
-          node tools/release/prepare-release.js --version "$VERSION" --repo-root .
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add README.md docs dotnet/M3Mobile.M3Sdk.Xamarin/README.md
-          if ! git diff --cached --quiet; then git commit -m "release: $VERSION documentation"; fi
-          # Only documentation may differ from the tested candidate source.
-          git diff --exit-code ${{ needs.gate.outputs.source_sha }} HEAD -- . ':!docs' ':!README.md' ':!dotnet/M3Mobile.M3Sdk.Xamarin/README.md'
-          git tag -a "$VERSION" -m "Release $VERSION"
+          git fetch build/plan/release.bundle HEAD
+          git -c user.name='github-actions[bot]' -c user.email='github-actions[bot]@users.noreply.github.com' tag -a "$VERSION" "${{ steps.identity.outputs.release_sha }}" -m "Release $VERSION"
           git push origin "refs/tags/$VERSION"
-          echo "release_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-      - name: Publish the tested NuGet file without rebuilding
+      - name: Publish the tested NuGet file
         run: dotnet nuget push "build/candidate/nuget/M3Mobile.M3Sdk.Xamarin.$VERSION.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
-      - name: Create GitHub Release and record delivery
-        env:
-          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
-          RELEASE_SHA: ${{ steps.tag.outputs.release_sha }}
+      - name: Create a new draft and bind its actual ID to this run
         run: |
-          gh release create "$VERSION" build/candidate/manuals/*.pdf build/candidate/nuget/*.nupkg \
-            --verify-tag --draft --title "$VERSION" --notes "Candidate run: $CANDIDATE_RUN. Automated public-package verification follows; manual post-release verification remains required."
-          python -c 'import json,os,pathlib; pathlib.Path("build/release-record.json").write_text(json.dumps({k:os.environ[k] for k in ["VERSION","CANDIDATE_RUN","RELEASE_SHA"]}),encoding="utf-8")'
+          notes=$(python -c 'import sys; sys.path.insert(0,"tools/workflow"); from release_flow import marker; from artifacts import read_json; from pathlib import Path; print(marker(read_json(Path("build/plan/release-plan.json"))))')
+          RELEASE_ID=$(gh api "repos/$GH_REPO/releases" --method POST -f tag_name="$VERSION" -f name="$VERSION" -f body="$notes" -F draft=true --jq .id)
+          export RELEASE_ID
+          python tools/workflow/release_flow.py record
+          gh release upload "$VERSION" build/candidate/manuals/*.pdf build/candidate/nuget/*.nupkg
       - uses: actions/upload-artifact@v4
         with:
           name: release-record
           path: build/release-record.json
+          if-no-files-found: error
 
   verify-public:
     needs: publish
@@ -150,14 +192,54 @@ jobs:
       version: ${{ inputs.tag_name }}
       source_sha: ${{ needs.publish.outputs.release_sha }}
 
+  finalize:
+    needs: [gate, prepare, publish, verify-public]
+    if: ${{ !inputs.rehearsal && !inputs.dry_run && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop' && needs.gate.result == 'success' && needs.prepare.result == 'success' && needs.publish.result == 'success' && needs.verify-public.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      NEEDS: ${{ toJSON(needs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          merge-multiple: true
+          path: build/plan
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-record
+          path: build
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - name: Publish only this run's Release ID after both public consumers succeed
+        run: python tools/workflow/release_flow.py finalize
+      - uses: actions/upload-artifact@v4
+        with:
+          name: completion-${{ github.run_attempt }}
+          path: build/completion.json
+          if-no-files-found: error
+
   summary:
-    needs: [gate, publish, verify-public]
+    needs: [gate, prepare, publish, verify-public, finalize, rehearsal]
     if: always()
     runs-on: ubuntu-latest
     env:
       RESULTS: ${{ toJSON(needs) }}
     steps:
-      - name: Report delivery state without claiming device verification
-        run: |
+      - run: |
           echo "$RESULTS" >> "$GITHUB_STEP_SUMMARY"
-          echo 'Delivery is not task completion. Run Complete SDK Release with post-release device evidence.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Dry-run/rehearsal do not publish. Device verification remains pending. Remote reviewer policy is configured separately.' >> "$GITHUB_STEP_SUMMARY"

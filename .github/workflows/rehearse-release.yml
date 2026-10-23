@@ -1,0 +1,245 @@
+name: Rehearse SDK Release
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      candidate_run_id:
+        required: true
+        type: string
+      scenario:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  RELEASE_MODE: rehearsal
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    env:
+      VERSION: ${{ inputs.version }}
+      CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - id: identity
+        run: python tools/workflow/release_flow.py gate --rehearsal
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: rehearsal-gate-${{ github.run_attempt }}
+          path: build/candidate-verification.json
+          if-no-files-found: error
+
+  prepare:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.gate.outputs.artifact_id }}
+          merge-multiple: true
+          path: build
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.source_sha }}
+          fetch-depth: 0
+          path: release-source
+      - run: python tools/workflow/release_flow.py prepare --rehearsal
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: rehearsal-plan-${{ github.run_attempt }}
+          path: build/plan/
+          if-no-files-found: error
+
+  sink:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SCENARIO: ${{ inputs.scenario }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          merge-multiple: true
+          path: build/plan
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - name: Restore prepared commit and enforce the real integrity gate
+        run: |
+          git clone build/plan/release.bundle release-source
+          if [ "$SCENARIO" = tamper ] && [ "$GITHUB_RUN_ATTEMPT" = 1 ]; then echo tamper >> "build/candidate/nuget/M3Mobile.M3Sdk.Xamarin.$VERSION.nupkg"; fi
+          python tools/workflow/release_flow.py check --rehearsal
+      - name: Exercise tag transport only inside a temporary bare repository
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git init --bare "$RUNNER_TEMP/rehearsal.git"
+          git -C release-source -c user.name=Rehearsal -c user.email=rehearsal@example.invalid tag -a "$VERSION" -m Rehearsal
+          git -C release-source push "$RUNNER_TEMP/rehearsal.git" "refs/tags/$VERSION"
+          test "$(git --git-dir="$RUNNER_TEMP/rehearsal.git" rev-parse "$VERSION^{commit}")" = "$(git -C release-source rev-parse HEAD)"
+
+  android:
+    needs: [prepare, sink]
+    if: inputs.scenario != 'consumer-skip' || github.run_attempt > 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SCENARIO: ${{ inputs.scenario }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          merge-multiple: true
+          path: build/plan
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - name: Fresh runner consumes the transported Maven package
+        run: |
+          if [ "$SCENARIO" = android-failure ] && [ "$GITHUB_RUN_ATTEMPT" = 1 ]; then echo 'Injected Android consumer failure'; exit 1; fi
+          git clone build/plan/release.bundle release-source
+          cd release-source
+          if grep -RE 'project\([^)]*sdk|projects\.sdk' samples/android-compose-jitpack; then exit 1; fi
+          chmod +x gradlew
+          ./gradlew --no-daemon -p samples/android-compose-jitpack :app:testDebugUnitTest :app:assembleRelease \
+            "-Pm3SdkVersion=$VERSION" "-Pm3SdkRepository=$GITHUB_WORKSPACE/build/candidate/maven" \
+            '-Dorg.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=768m' --max-workers=2
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rehearsal-android-consumer-${{ github.run_attempt }}
+          path: release-source/samples/android-compose-jitpack/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+  dotnet:
+    needs: [prepare, sink]
+    runs-on: windows-2022
+    timeout-minutes: 45
+    env:
+      SCENARIO: ${{ inputs.scenario }}
+      VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          merge-multiple: true
+          path: build/plan
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.candidate_run_id }}
+          pattern: sdk-candidate-*
+          merge-multiple: true
+          path: build/candidate
+      - name: Fresh runner consumes the transported NuGet package
+        shell: pwsh
+        run: |
+          if ($env:SCENARIO -eq 'dotnet-failure' -and $env:GITHUB_RUN_ATTEMPT -eq '1') { throw 'Injected .NET consumer failure' }
+          git clone build/plan/release.bundle release-source
+          if ($LASTEXITCODE -ne 0) { throw 'Bundle restore failed' }
+          ./tools/workflow/consume-nuget.ps1 -Version $env:VERSION -Source release-source -Feed build/candidate/nuget
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rehearsal-dotnet-consumer-${{ github.run_attempt }}
+          path: release-source/samples/dotnet-android-nuget/bin/Release/**/*.apk
+          if-no-files-found: error
+
+  finalize:
+    needs: [gate, prepare, sink, android, dotnet]
+    if: ${{ always() && needs.prepare.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_REPO: ${{ github.repository }}
+      NEEDS: ${{ toJSON(needs) }}
+      EXPECTED_DECISION: ${{ (inputs.scenario == 'normal' || github.run_attempt > 1) && 'would_publish' || 'blocked' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: ${{ needs.prepare.outputs.artifact_id }}
+          merge-multiple: true
+          path: build/plan
+      - name: Read-only collector checks actual job failure/skip and shared completion decision
+        run: python tools/workflow/release_flow.py rehearsal-finalize
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rehearsal-result-${{ github.run_attempt }}
+          path: build/rehearsal-result.json
+          if-no-files-found: error

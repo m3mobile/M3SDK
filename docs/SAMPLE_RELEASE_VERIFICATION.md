@@ -54,7 +54,7 @@
 5. Verify SDK Candidate에서 같은 버전의 후보 패키지/샘플/PDF를 생성하고 보존한다.
 6. 후보 실기·매뉴얼 검수·릴리즈 노트 초안을 기록한 뒤 Deployment dry-run 및 허용된 실제 배포로 진행한다.
 7. Deployment는 공개 패키지 샘플 workflow를 동기 호출하고 실패 결과를 전파한다.
-8. 공개 샘플 실기·기기 설정 복원·Excel 반영까지 확인한 후 Complete SDK Release에서 draft를 공개한다.
+8. Deployment의 finalize는 두 공개 샘플 검사 성공과 같은 실행의 새 Release ID·후보 기록을 확인해 draft를 자동 공개한다. 수동 증거 JSON은 입력하지 않는다. 공개 샘플 실기·기기 복원·Excel 반영은 허용 범위에서 별도로 수행·기록하고, 미수행은 pending으로 남긴다.
 
 ## Alpha 적용 기준
 

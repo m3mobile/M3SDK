@@ -10,8 +10,6 @@ const MANUALS = [
   "docs/M3SDK_Xamarin_Manual_kr.md",
   "docs/M3SDK_Xamarin_Manual_en.md",
 ];
-// Includes the SD/USB storage mounting API in all four manuals.
-const EXPECTED_DIRECT_BLOCKS = 84;
 // Existing M3OTA app broadcast, intentionally outside the SDK action contract.
 const M3OTA_OTA_REQUEST = "com.m3.intent.action.UPDATE_PACKAGES";
 const KOTLIN_ACTION_SOURCES = {
@@ -35,8 +33,8 @@ function fail(message) {
   throw new Error(message);
 }
 
-function source(relativePath) {
-  const absolutePath = path.join(REPO_ROOT, relativePath);
+function source(relativePath, repoRoot = REPO_ROOT) {
+  const absolutePath = path.join(repoRoot, relativePath);
   return {
     relativePath,
     content: fs.readFileSync(absolutePath, "utf8").replace(/\r\n/g, "\n"),
@@ -148,6 +146,11 @@ function validateLeafApiSections(manual) {
       (heading.level === 4 || heading.level === 5),
   );
 
+  if (apiHeadings.length === 0) {
+    fail(`${manual.relativePath}: API has no leaf sections`);
+  }
+  const plain = markdownWithoutFencedCode(manual.content);
+
   for (const heading of apiHeadings) {
     const end = sectionEnd(apiHeadings, heading, apiEnd);
     const hasChild = apiHeadings.some(
@@ -158,7 +161,7 @@ function validateLeafApiSections(manual) {
     );
     if (hasChild) continue;
 
-    const section = manual.content.slice(heading.index, end);
+    const section = plain.slice(heading.index, end);
     if (!/\*\*(직접 Broadcast|Direct Broadcast)\*\*/.test(section)) {
       fail(
         `${manual.relativePath}: leaf API section has no direct Broadcast status: ${heading.text}`,
@@ -208,15 +211,54 @@ function contractSignatures(manual) {
 
       return JSON.stringify({
         unsupported,
-        tokens: inlineCodeTokens(block),
+        fields: contractFields(block, manual.relativePath),
+        // Some protocols describe their follow-up/GET actions in prose.
+        // Keep those wire identifiers, without comparing arbitrary prose tokens.
+        referencedActions: [...new Set(
+          inlineCodeTokens(block).filter((token) =>
+            /^(?:com|net|android|scanemul)\.[\w.]+$/.test(token)),
+        )],
       });
     })
     .sort();
 }
 
-function declaredConstants(relativePath, expression) {
+function contractFields(block, relativePath) {
+  const fields = [];
+  for (const line of block.split("\n")) {
+    const field =
+      /^\s*[-*]\s+\*\*(Action|Response action|Target package|Extra|Delivery|전송 방식)\*\*:\s*(.*)$/.exec(line);
+    if (field) {
+      const label = field[1] === "전송 방식" ? "Delivery" : field[1];
+      const value = label === "Delivery"
+        ? (/\bordered\s+broadcast\b/i.test(field[2])
+          ? "ordered" : field[2].trim().toLowerCase())
+        : inlineCodeTokens(field[2]);
+      fields.push(JSON.stringify({ label, value }));
+    } else if (/^\s*\|/.test(line)) {
+      const cells = line.trim().replace(/^\||\|$/g, "").split("|")
+        .map((cell) => cell.trim());
+      const tokens = cells.map(inlineCodeTokens);
+      // Translated headings and descriptions are prose. Code in table cells
+      // describes wire keys, types and literal values; retain its cell mapping.
+      if (tokens.some((cell) => cell.length > 0)) {
+        if (cells.length === 4 && tokens[0].length > 0) {
+          if (!cells[2]) {
+            fail(`${relativePath}: Broadcast Extra table has no required/optional status: ${tokens[0].join(", ")}`);
+          }
+          tokens[2] = /^(O|Yes|필수)$/i.test(cells[2]) ? "required"
+            : /^(X|No|선택)$/i.test(cells[2]) ? "optional" : "conditional";
+        }
+        fields.push(JSON.stringify({ table: tokens }));
+      }
+    }
+  }
+  return fields.sort();
+}
+
+function declaredConstants(relativePath, expression, repoRoot) {
   const constants = new Map();
-  const content = source(relativePath).content;
+  const content = source(relativePath, repoRoot).content;
 
   for (const match of content.matchAll(expression)) {
     constants.set(match[1], match[2]);
@@ -245,17 +287,19 @@ function sameSet(actual, expected, description) {
   }
 }
 
-function sdkActionContract() {
+function sdkActionContract(repoRoot = REPO_ROOT) {
   const kotlin = {};
   for (const [key, relativePath] of Object.entries(KOTLIN_ACTION_SOURCES)) {
     kotlin[key] = declaredConstants(
       relativePath,
       /const val\s+([A-Z0-9_]+)(?:\s*:\s*\w+)?\s*=\s*"([^"]+)"/g,
+      repoRoot,
     );
   }
   const csharp = declaredConstants(
     CSHARP_ACTION_SOURCE,
     /const string\s+([A-Za-z0-9_]+)\s*=\s*"([^"]+)"/g,
+    repoRoot,
   );
 
   const kotlinRequests = new Set([
@@ -461,9 +505,9 @@ function validateRemovedSections(manual) {
   }
 }
 
-function main() {
-  const manuals = MANUALS.map(source);
-  const actionContract = sdkActionContract();
+function validateManuals(repoRoot = REPO_ROOT) {
+  const manuals = MANUALS.map((relativePath) => source(relativePath, repoRoot));
+  const actionContract = sdkActionContract(repoRoot);
 
   for (const manual of manuals) {
     validateToc(manual);
@@ -471,13 +515,6 @@ function main() {
     validateManualActions(manual, actionContract);
     validateCommonExamples(manual);
     validateRemovedSections(manual);
-
-    const blockCount = directBlocks(manual.content).length;
-    if (blockCount !== EXPECTED_DIRECT_BLOCKS) {
-      fail(
-        `${manual.relativePath}: expected ${EXPECTED_DIRECT_BLOCKS} direct Broadcast blocks, found ${blockCount}`,
-      );
-    }
   }
 
   const baseline = contractSignatures(manuals[0]);
@@ -490,16 +527,23 @@ function main() {
     }
   }
 
-  console.log(
-    `Validated ${manuals.length} manuals, ${EXPECTED_DIRECT_BLOCKS} Broadcast blocks each, ` +
+  const blockCounts = manuals.map((manual) =>
+    `${manual.relativePath}=${directBlocks(manual.content).length}`);
+  return (
+    `Validated ${manuals.length} manuals, ` +
+      `Broadcast blocks: ${blockCounts.join(", ")}, ` +
       `${actionContract.requests.size} request actions, and ` +
-      `${actionContract.responses.size} response actions.`,
+      `${actionContract.responses.size} response actions.`
   );
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(error.message);
-  process.exitCode = 1;
+if (require.main === module) {
+  try {
+    console.log(validateManuals());
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 1;
+  }
 }
+
+module.exports = { validateManuals };

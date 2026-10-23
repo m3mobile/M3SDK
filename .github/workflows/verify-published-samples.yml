@@ -84,7 +84,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: android-compose-published-sample-${{ env.M3_SDK_VERSION }}
+          name: android-compose-published-sample-${{ env.M3_SDK_VERSION }}-${{ github.run_attempt }}
           path: samples/android-compose-jitpack/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
 
@@ -174,6 +174,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: dotnet-android-published-sample-${{ env.M3_SDK_VERSION }}
+          name: dotnet-android-published-sample-${{ env.M3_SDK_VERSION }}-${{ github.run_attempt }}
           path: samples/dotnet-android-nuget/bin/Release/**/*.apk
           if-no-files-found: error

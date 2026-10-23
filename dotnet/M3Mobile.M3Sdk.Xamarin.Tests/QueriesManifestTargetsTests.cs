@@ -79,7 +79,8 @@ namespace M3Sdk.Xamarin.Tests
         {
             var repository = new DirectoryInfo(AppContext.BaseDirectory);
             while (repository != null &&
-                   !Directory.Exists(Path.Combine(repository.FullName, ".git")))
+                   !Directory.Exists(Path.Combine(repository.FullName, ".git")) &&
+                   !File.Exists(Path.Combine(repository.FullName, ".git")))
             {
                 repository = repository.Parent;
             }
