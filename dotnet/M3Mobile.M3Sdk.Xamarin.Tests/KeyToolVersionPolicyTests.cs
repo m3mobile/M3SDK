@@ -7,6 +7,20 @@ namespace M3Sdk.Xamarin.Tests
     public sealed class KeyToolVersionPolicyTests
     {
         [Fact]
+        public void BackRequiresItsOwnReleaseAndOnlySm24SupportsIt()
+        {
+            Assert.Equal("1.4.3", KeyToolVersionPolicy.BackButtonMinimumVersion);
+            Assert.False(KeyToolVersionPolicy.VersionSatisfied("1.4.2", KeyToolVersionPolicy.BackButtonMinimumVersion));
+            Assert.True(KeyToolVersionPolicy.VersionSatisfied("1.4.3", KeyToolVersionPolicy.BackButtonMinimumVersion));
+            foreach (DeviceModel model in System.Enum.GetValues(typeof(DeviceModel)))
+                Assert.Equal(model == DeviceModel.SM24, KeyToolVersionPolicy.BackButtonSupported(model));
+            Assert.True(KeyToolVersionPolicy.BackNavigationRequested(DeviceModel.SM24, "back"));
+            Assert.True(KeyToolVersionPolicy.BackNavigationRequested(DeviceModel.SM25, "Back"));
+            Assert.False(KeyToolVersionPolicy.BackNavigationRequested(DeviceModel.SM25, "Home"));
+            Assert.False(KeyToolVersionPolicy.BackNavigationRequested(DeviceModel.SL20, "Back"));
+        }
+
+        [Fact]
         public void KeyFunctionMinimumVersionsMatchDeviceIntroduction()
         {
             Assert.Equal("1.2.6", KeyToolVersionPolicy.KeyFunctionMinimumVersion(DeviceModel.SL20));

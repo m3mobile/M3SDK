@@ -13,9 +13,11 @@ public final class net/m3mobile/feature/keytool/KeyToolAppUnavailableException :
 }
 
 public abstract interface class net/m3mobile/feature/keytool/api/KeyToolKeyApi {
+	public abstract fun disableBackButton ()V
 	public abstract fun disableFN ()V
 	public abstract fun disableHomeButton ()V
 	public abstract fun disableRecentButton ()V
+	public abstract fun enableBackButton ()V
 	public abstract fun enableFN ()V
 	public abstract fun enableHomeButton ()V
 	public abstract fun enableRecentButton ()V

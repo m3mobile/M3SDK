@@ -70,6 +70,10 @@ Wake-Up controls for SL20P and SM24, and exposes Home and Recent controls for SM
 Wake-Up requires KeyTool 1.3.8 or later; 1.3.9 or later is recommended. Confirm changes with the
 physical buttons and restore the required device state after verification.
 
+The Back controls call `enableBackButton()` and `disableBackButton()` on SM24 with KeyTool
+1.4.3 or later. They are also visible on SM25 to demonstrate the unsupported-model error.
+Verify the screen Back button after each request; the SDK does not confirm SystemUI application.
+
 Default UI resources are English. Only Korean localization is included under `values-ko`.
 
 ## Candidate package verification

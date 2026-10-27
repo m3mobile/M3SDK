@@ -111,6 +111,40 @@ namespace M3Sdk.Xamarin.KeyTool
         }
 
         /// <inheritdoc />
+        public void EnableBackButton()
+        {
+            SetBackButton("EnableBackButton", Constants.KeyTool.Default);
+        }
+
+        /// <inheritdoc />
+        public void DisableBackButton()
+        {
+            SetBackButton("DisableBackButton", Constants.KeyTool.Disable);
+        }
+
+        private void SetBackButton(string methodName, string function)
+        {
+            GuardBackButton(methodName);
+            Send(KeySettingRequest.ForKeyFunction("Back", function));
+        }
+
+        private void GuardBackButton(string methodName)
+        {
+            // Always enforce the SM24-only contract, even with SDK strict mode disabled.
+            if (!KeyToolVersionPolicy.BackButtonSupported(DeviceModelDetector.Current))
+                throw new UnsupportedDeviceModelException(
+                    "\"" + methodName + "\" is available on SM24 only. Current model is "
+                    + DeviceModelDetector.Current + ".");
+
+            _guard.AssertKeyToolAppVersion(
+                methodName,
+                Constants.KeyTool.Sl20AppName,
+                Constants.KeyTool.Sl20PackageName,
+                DeviceModelDetector.Current,
+                KeyToolVersionPolicy.BackButtonMinimumVersion);
+        }
+
+        /// <inheritdoc />
         public void EnableLeftScanWakeUp()
         {
             SetScanWakeUp("EnableLeftScanWakeUp", Constants.KeyTool.LeftScan, true);
@@ -203,7 +237,16 @@ namespace M3Sdk.Xamarin.KeyTool
             if (string.IsNullOrWhiteSpace(function))
                 throw new ArgumentException("A KeyTool function title is required.", nameof(function));
 
-            GuardSl20("SetKeyFunction", supportedModels, requiredVersion);
+            if (KeyToolVersionPolicy.BackNavigationRequested(DeviceModelDetector.Current, key))
+            {
+                if (wakeUpEnabled.HasValue)
+                    throw new ArgumentException("Back navigation does not support key_wakeup.", nameof(wakeUpEnabled));
+                GuardBackButton("SetKeyFunction");
+            }
+            else
+            {
+                GuardSl20("SetKeyFunction", supportedModels, requiredVersion);
+            }
             Send(KeySettingRequest.ForKeyFunction(key, function, wakeUpEnabled));
         }
 

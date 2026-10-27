@@ -4,11 +4,21 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import net.m3mobile.core.UnsatisfiedVersionException
+import net.m3mobile.core.UnsupportedDeviceModelException
 import net.m3mobile.core.device.DeviceModel
 import net.m3mobile.feature.keytool.constants.KeyToolContract
 import net.m3mobile.feature.keytool.internal.KeyToolVersionPolicy
 
 internal class KeyToolAppGuard(private val context: Context) {
+
+    fun assertBackButtonAvailable(methodName: String, model: DeviceModel) {
+        if (!KeyToolVersionPolicy.backButtonSupported(model)) {
+            throw UnsupportedDeviceModelException(
+                "\"$methodName\" is available on SM24 only. Current model is $model."
+            )
+        }
+        assertSl20AppVersion(methodName, model, KeyToolVersionPolicy.BACK_BUTTON_MINIMUM_VERSION)
+    }
 
     fun assertSl20AppVersion(
         methodName: String,

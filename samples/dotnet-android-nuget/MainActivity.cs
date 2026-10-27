@@ -577,6 +577,15 @@ public sealed class CategoryActivity : Activity
             RunOneWay(section, "EnableRecentButton", () => _sdk!.EnableRecentButton()));
         AddButton(section, Resource.String.disable, () =>
             RunOneWay(section, "DisableRecentButton", () => _sdk!.DisableRecentButton()));
+        if (global::Android.OS.Build.Model?.Contains("SM24") == true ||
+            global::Android.OS.Build.Model?.Contains("SM25") == true)
+        {
+            section.Add(SectionTitle(Resource.String.back_button));
+            AddButton(section, Resource.String.enable, () =>
+                RunOneWay(section, "EnableBackButton", () => _sdk!.EnableBackButton()));
+            AddButton(section, Resource.String.disable, () =>
+                RunOneWay(section, "DisableBackButton", () => _sdk!.DisableBackButton()));
+        }
     }
 
     private void AppCenterSample()

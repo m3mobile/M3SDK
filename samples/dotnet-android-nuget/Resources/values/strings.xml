@@ -117,6 +117,7 @@
   <string name="navigation_buttons_description">KeyTool 1.4.1 or later is required. Requests are one-way; verify the actual Home or Recent button after each call.</string>
   <string name="home_button">Home button</string>
   <string name="recent_button">Recent button</string>
+  <string name="back_button">Back button (SM24, KeyTool 1.4.3+)</string>
   <string name="enable">Enable</string>
   <string name="disable">Disable</string>
   <string name="not_run">Not run</string>

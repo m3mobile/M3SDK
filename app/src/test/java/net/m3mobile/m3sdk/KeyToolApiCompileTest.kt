@@ -18,6 +18,8 @@ class KeyToolApiCompileTest {
         val disableHomeButton: () -> Unit = M3Mobile.instance::disableHomeButton
         val enableRecentButton: () -> Unit = M3Mobile.instance::enableRecentButton
         val disableRecentButton: () -> Unit = M3Mobile.instance::disableRecentButton
+        val enableBackButton: () -> Unit = M3Mobile.instance::enableBackButton
+        val disableBackButton: () -> Unit = M3Mobile.instance::disableBackButton
 
         @Suppress("UNUSED_VARIABLE")
         val publicMethods = listOf(
@@ -27,7 +29,9 @@ class KeyToolApiCompileTest {
             enableHomeButton,
             disableHomeButton,
             enableRecentButton,
-            disableRecentButton
+            disableRecentButton,
+            enableBackButton,
+            disableBackButton
         )
     }
 }

@@ -119,6 +119,7 @@
     <string name="navigation_buttons_description">KeyTool 1.4.1 이상이 필요합니다. 단방향 요청이므로 호출 후 실제 Home 또는 Recent 버튼을 확인하세요.</string>
     <string name="home_button">Home 버튼</string>
     <string name="recent_button">Recent 버튼</string>
+    <string name="back_button">Back 버튼 (SM24, KeyTool 1.4.3 이상)</string>
     <string name="enable">활성화</string>
     <string name="disable">비활성화</string>
     <string name="not_run">실행하지 않음</string>
