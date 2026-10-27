@@ -84,4 +84,15 @@ public interface KeyToolKeyApi {
     /** Disables the Recent navigation button through KeyTool. */
     @SupportedModels(DeviceModel.SM24, DeviceModel.SM25)
     public fun disableRecentButton()
+
+    /** Enables the Back navigation button on SM24. Requires KeyTool 1.4.3 or later. */
+    @SupportedModels(DeviceModel.SM24)
+    public fun enableBackButton()
+
+    /**
+     * Disables the Back navigation button on SM24. Requires KeyTool 1.4.3 or later.
+     * A normal return confirms request transmission, not SystemUI application.
+     */
+    @SupportedModels(DeviceModel.SM24)
+    public fun disableBackButton()
 }

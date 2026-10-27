@@ -146,6 +146,20 @@ namespace M3Sdk.Xamarin
         }
 
         /// <inheritdoc />
+        public void EnableBackButton()
+        {
+            ThrowIfDisposed();
+            _keyTool.EnableBackButton();
+        }
+
+        /// <inheritdoc />
+        public void DisableBackButton()
+        {
+            ThrowIfDisposed();
+            _keyTool.DisableBackButton();
+        }
+
+        /// <inheritdoc />
         public void ChangeKioskAdminPassword(string currentPassword, string newPassword)
         {
             ThrowIfDisposed();

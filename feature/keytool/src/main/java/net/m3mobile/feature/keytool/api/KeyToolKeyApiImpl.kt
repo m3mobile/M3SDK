@@ -66,6 +66,19 @@ internal class KeyToolKeyApiImpl(private val context: Context): KeyToolKeyApi {
         setNavigationButton("disableRecentButton", RECENT, DISABLE)
     }
 
+    override fun enableBackButton() {
+        setBackButton("enableBackButton", DEFAULT)
+    }
+
+    override fun disableBackButton() {
+        setBackButton("disableBackButton", DISABLE)
+    }
+
+    private fun setBackButton(methodName: String, function: String) {
+        appGuard.assertBackButtonAvailable(methodName, currentDeviceModel)
+        broadcast.send(KeySettingRequestFactory.keyFunctionRequest(BACK, function))
+    }
+
     private fun setNavigationButton(methodName: String, key: String, function: String) {
         assertSl20AppVersion(methodName, KeyToolVersionPolicy.NAVIGATION_MINIMUM_VERSION)
         broadcast.send(KeySettingRequestFactory.keyFunctionRequest(key, function))
@@ -79,7 +92,12 @@ internal class KeyToolKeyApiImpl(private val context: Context): KeyToolKeyApi {
     ) {
         require(key.isNotBlank()) { "A KeyTool key title is required." }
         require(function.isNotBlank()) { "A KeyTool function title is required." }
-        assertSl20AppVersion("setKeyFunction", requiredVersion)
+        if (KeyToolVersionPolicy.backNavigationRequested(currentDeviceModel, key)) {
+            require(wakeUpEnabled == null) { "Back navigation does not support key_wakeup." }
+            appGuard.assertBackButtonAvailable("setKeyFunction", currentDeviceModel)
+        } else {
+            assertSl20AppVersion("setKeyFunction", requiredVersion)
+        }
         broadcast.send(
             KeySettingRequestFactory.keyFunctionRequest(key, function, wakeUpEnabled)
         )
@@ -92,6 +110,7 @@ internal class KeyToolKeyApiImpl(private val context: Context): KeyToolKeyApi {
     private companion object {
         const val HOME = "Home"
         const val RECENT = "Recent"
+        const val BACK = "Back"
         const val DEFAULT = "Default"
         const val DISABLE = "Disable"
     }

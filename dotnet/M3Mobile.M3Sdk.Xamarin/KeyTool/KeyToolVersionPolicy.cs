@@ -7,7 +7,19 @@ namespace M3Sdk.Xamarin.KeyTool
     {
         internal const string FnMinimumVersion = "1.2.6";
         internal const string NavigationMinimumVersion = "1.4.1";
+        internal const string BackButtonMinimumVersion = "1.4.3";
         internal const string ScanWakeUpMinimumVersion = "1.3.8";
+
+        internal static bool BackButtonSupported(DeviceModel model)
+        {
+            return model == DeviceModel.SM24;
+        }
+
+        internal static bool BackNavigationRequested(DeviceModel model, string key)
+        {
+            return (model == DeviceModel.SM24 || model == DeviceModel.SM25)
+                && string.Equals(key, "Back", StringComparison.OrdinalIgnoreCase);
+        }
 
         internal static string KeyFunctionMinimumVersion(DeviceModel model)
         {

@@ -704,6 +704,17 @@ internal fun CategoryScreen(category: SampleCategory) {
                     oneWay("keytool", "disableRecentButton") { sdk.disableRecentButton() }
                 }
             )
+            if (Build.MODEL.contains("SM24") || Build.MODEL.contains("SM25")) {
+                Text(stringResource(R.string.back_button), style = MaterialTheme.typography.titleSmall)
+                ActionRow(
+                    first = stringResource(R.string.enable) to {
+                        oneWay("keytool", "enableBackButton") { sdk.enableBackButton() }
+                    },
+                    second = stringResource(R.string.disable) to {
+                        oneWay("keytool", "disableBackButton") { sdk.disableBackButton() }
+                    }
+                )
+            }
         }
     }
 }

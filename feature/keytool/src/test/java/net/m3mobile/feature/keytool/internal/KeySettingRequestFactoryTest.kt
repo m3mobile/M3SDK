@@ -10,6 +10,17 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class KeySettingRequestFactoryTest {
+    @Test
+    fun backEnableAndDisableUseExistingContractWithoutWakeUp() {
+        listOf("Default", "Disable").forEach { value ->
+            val request = KeySettingRequestFactory.keyFunctionRequest("Back", value)
+            assertEquals(KeyToolContract.SL20_PACKAGE, request.packageName)
+            assertEquals(RequestAction.ACTION_SET_KEY, request.action)
+            assertEquals(mapOf("key_title" to "Back", "key_function" to value), request.extras())
+            assertEquals(true, request.ordered)
+        }
+    }
+
 
     @Test
     fun functionOnlyUsesUnifiedContractWithoutWakeUp() {

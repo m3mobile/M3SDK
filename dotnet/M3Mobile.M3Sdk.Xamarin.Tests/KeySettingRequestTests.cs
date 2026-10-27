@@ -7,6 +7,21 @@ namespace M3Sdk.Xamarin.Tests
     public sealed class KeySettingRequestTests
     {
         [Fact]
+        public void BackEnableAndDisableUseExistingContractWithoutWakeUp()
+        {
+            foreach (var value in new[] { "Default", "Disable" })
+            {
+                var request = KeySettingRequest.ForKeyFunction("Back", value);
+                Assert.Equal(Constants.KeyTool.Sl20PackageName, request.PackageName);
+                Assert.Equal(Constants.KeyTool.SetKey, request.Action);
+                Assert.Equal("Back", request.Extra(Constants.KeyTool.ExtraKeyTitle));
+                Assert.Equal(value, request.Extra(Constants.KeyTool.ExtraKeyFunction));
+                Assert.Null(request.Extra(Constants.KeyTool.ExtraKeyWakeUp));
+                Assert.True(request.Ordered);
+            }
+        }
+
+        [Fact]
         public void FunctionOnlyUsesUnifiedContractWithoutWakeUp()
         {
             var request = KeySettingRequest.ForKeyFunction(

@@ -6,7 +6,13 @@ internal object KeyToolVersionPolicy {
 
     const val FN_MINIMUM_VERSION = "1.2.6"
     const val NAVIGATION_MINIMUM_VERSION = "1.4.1"
+    const val BACK_BUTTON_MINIMUM_VERSION = "1.4.3"
     const val SCAN_WAKE_UP_MINIMUM_VERSION = "1.3.8"
+
+    fun backButtonSupported(model: DeviceModel): Boolean = model == DeviceModel.SM24
+
+    fun backNavigationRequested(model: DeviceModel, key: String): Boolean =
+        (model == DeviceModel.SM24 || model == DeviceModel.SM25) && key.equals("Back", ignoreCase = true)
 
     fun keyFunctionMinimumVersion(model: DeviceModel): String = when (model) {
         DeviceModel.SM24 -> "1.3.8"

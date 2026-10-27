@@ -70,6 +70,7 @@ M3 SDK Xamarin 패키지는 Xamarin.Android 애플리케이션에서 M3 Mobile �
     - [Function 키 모드 제어](#function-키-모드-제어)
     - [키 기능 설정](#키-기능-설정)
     - [Home 및 Recent 버튼 제어](#home-및-recent-버튼-제어)
+      - [Back 버튼 제어 (SM24)](#back-버튼-제어-sm24)
     - [스캔 키 Wake-Up 제어](#스캔-키-wake-up-제어)
   - [AppCenter Kiosk API](#appcenter-kiosk-api)
     - [키오스크 관리자 비밀번호 변경](#키오스크-관리자-비밀번호-변경)
@@ -1876,6 +1877,7 @@ KeyTool 앱을 통해 물리 키 설정을 제어합니다. 평면 SDK facade와
 | 키 기능 설정 | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
 | 키 기능 설정 + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
 | Home/Recent 제어 | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| Back 제어 | `SM24` | `com.m3.keytoolsl20` | `1.4.3` |
 | 스캔 키 Wake-Up | `SL20P` | `net.m3.keytool` | 버전 미확정, 패키지만 검사 |
 | 스캔 키 Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
 
@@ -2001,6 +2003,40 @@ m3.KeyTool.DisableRecentButton();
 > 단방향 요청입니다. Broadcast 전송은 실제 설정 적용 성공을 보장하지 않습니다. MDM에서 적용 상태를 별도로 확인하세요.
 
 ordered broadcast로 전송하며 KeyTool SL20 `1.4.1` 이상이 필요합니다.
+
+
+#### Back 버튼 제어 (SM24)
+
+* **지원 모델**: `SM24` 전용. `SM25`는 지원하지 않습니다.
+* **필요 패키지**: `com.m3.keytoolsl20` 버전 `1.4.3` 이상
+
+```csharp
+m3.EnableBackButton();
+m3.DisableBackButton();
+```
+
+활성화는 `Default`, 비활성화는 `Disable`을 전달합니다. SDK strict mode가 꺼져 있어도
+Back 전용 API의 모델·KeyTool 버전 검사는 수행됩니다. 단방향 요청이므로 정상 반환은
+전송만 의미하며 실제 화면 Back 버튼의 동작까지 보장하지 않습니다.
+
+**직접 Broadcast**
+
+* **Action**: `com.m3.keytoolsl20.ACTION_SET_KEY`
+* **Target package**: `com.m3.keytoolsl20`
+* **Delivery**: ordered broadcast
+
+| Extra | 타입 | 필수 | 값 |
+|---|---|---|---|
+| `key_title` | `String` | O | `Back` |
+| `key_function` | `String` | O | `Default` 또는 `Disable` |
+
+`key_wakeup`은 넣지 않습니다. 수신하려면 KeyTool 접근성 서비스가 활성화되어 있어야 합니다.
+설정은 저장되며 서비스 재시작·재부팅 시 복원됩니다. 기존 설정에 Back 값이 없으면 활성 상태입니다.
+SM25는 Back 요청을 거부하고 저장된 Back 값을 내비게이션 제어에 적용하지 않습니다.
+
+기존 일반 키 설정 API에 `Back`을 지정해도 SM24/SM25에서는 같은 모델·버전 제한을 적용합니다.
+다른 모델의 기존 물리 Back 키 매핑은 유지됩니다. 화면 버튼·제스처·키보드 표시 상태에 따른
+실제 동작은 별도 확인해야 하며, ADB `input keyevent 4`를 화면 버튼 차단 판정에 사용하지 마십시오.
 
 
 #### 스캔 키 Wake-Up 제어

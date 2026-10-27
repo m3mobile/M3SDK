@@ -70,6 +70,7 @@ The M3 SDK Xamarin package provides C# APIs for configuring and controlling M3 M
     - [Control Function-key Mode](#control-function-key-mode)
     - [Set Key Function](#set-key-function)
     - [Control Home and Recent Buttons](#control-home-and-recent-buttons)
+      - [Control the Back Button (SM24)](#control-the-back-button-sm24)
     - [Control Scan-key Wake-Up](#control-scan-key-wake-up)
   - [AppCenter Kiosk API](#appcenter-kiosk-api)
     - [Change Kiosk Admin Password](#change-kiosk-admin-password)
@@ -1879,6 +1880,7 @@ from the flat SDK facade and from the `KeyTool` API group.
 | Set key function | `SM25` | `com.m3.keytoolsl20` | `1.3.16` |
 | Set key function + Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
 | Home/Recent control | `SM24`, `SM25` | `com.m3.keytoolsl20` | `1.4.1` |
+| Back control | `SM24` | `com.m3.keytoolsl20` | `1.4.3` |
 | Scan-key Wake-Up | `SL20P` | `net.m3.keytool` | Unverified; package check only |
 | Scan-key Wake-Up | `SM24` | `com.m3.keytoolsl20` | `1.3.8` |
 
@@ -2004,6 +2006,41 @@ These are one-way requests. Verify the actual navigation button after each call.
 > These are one-way requests. Sending a broadcast does not guarantee that a setting was applied. Verify the resulting state separately in the MDM.
 
 Send an ordered broadcast. KeyTool SL20 `1.4.1` or later is required.
+
+
+#### Control the Back Button (SM24)
+
+* **Supported model**: `SM24` only; `SM25` is not supported.
+* **Required package**: `com.m3.keytoolsl20` version `1.4.3` or later
+
+```csharp
+m3.EnableBackButton();
+m3.DisableBackButton();
+```
+
+Enable sends `Default`; disable sends `Disable`. The Back-specific model and KeyTool version
+checks run even with SDK strict mode disabled. These are one-way requests: a normal return
+confirms transmission, not the actual behavior of the screen Back button.
+
+**Direct Broadcast**
+
+* **Action**: `com.m3.keytoolsl20.ACTION_SET_KEY`
+* **Target package**: `com.m3.keytoolsl20`
+* **Delivery**: ordered broadcast
+
+| Extra | Type | Required | Value |
+|---|---|---|---|
+| `key_title` | `String` | Yes | `Back` |
+| `key_function` | `String` | Yes | `Default` or `Disable` |
+
+Omit `key_wakeup`. The KeyTool accessibility service must be enabled to receive requests.
+The setting is persisted and restored after service restart or reboot. Missing Back settings
+remain enabled. SM25 rejects Back requests and ignores stored Back values for navigation control.
+
+The generic key-setting API applies the same model/version restrictions to Back navigation
+requests on SM24/SM25. Existing physical Back mappings on other models remain unchanged.
+Verify screen buttons, gestures and keyboard-visible behavior separately; do not use ADB
+`input keyevent 4` to determine whether the SystemUI Back button is disabled.
 
 
 #### Control Scan-key Wake-Up

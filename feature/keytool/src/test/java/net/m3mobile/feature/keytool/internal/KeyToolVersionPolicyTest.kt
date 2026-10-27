@@ -7,6 +7,20 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class KeyToolVersionPolicyTest {
+    @Test
+    fun backRequiresItsOwnKeyToolReleaseAndOnlySm24SupportsIt() {
+        assertEquals("1.4.3", KeyToolVersionPolicy.BACK_BUTTON_MINIMUM_VERSION)
+        assertFalse(KeyToolVersionPolicy.versionSatisfied("1.4.2", KeyToolVersionPolicy.BACK_BUTTON_MINIMUM_VERSION))
+        assertTrue(KeyToolVersionPolicy.versionSatisfied("1.4.3", KeyToolVersionPolicy.BACK_BUTTON_MINIMUM_VERSION))
+        DeviceModel.values().forEach { model ->
+            assertEquals(model == DeviceModel.SM24, KeyToolVersionPolicy.backButtonSupported(model))
+        }
+        assertTrue(KeyToolVersionPolicy.backNavigationRequested(DeviceModel.SM24, "back"))
+        assertTrue(KeyToolVersionPolicy.backNavigationRequested(DeviceModel.SM25, "Back"))
+        assertFalse(KeyToolVersionPolicy.backNavigationRequested(DeviceModel.SM25, "Home"))
+        assertFalse(KeyToolVersionPolicy.backNavigationRequested(DeviceModel.SL20, "Back"))
+    }
+
 
     @Test
     fun keyFunctionMinimumVersionsMatchDeviceIntroduction() {

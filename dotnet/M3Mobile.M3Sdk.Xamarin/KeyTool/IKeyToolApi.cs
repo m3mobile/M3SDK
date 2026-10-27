@@ -58,6 +58,14 @@ namespace M3Sdk.Xamarin.KeyTool
         /// <remarks>A normal return confirms only that the broadcast was sent, not that SystemUI applied it.</remarks>
         void DisableRecentButton();
 
+        /// <summary>Enables the Back navigation button on SM24. Requires KeyTool 1.4.3 or later.</summary>
+        /// <remarks>A normal return confirms only that the broadcast was sent, not that SystemUI applied it.</remarks>
+        void EnableBackButton();
+
+        /// <summary>Disables the Back navigation button on SM24. Requires KeyTool 1.4.3 or later.</summary>
+        /// <remarks>A normal return confirms only that the broadcast was sent, not that SystemUI applied it.</remarks>
+        void DisableBackButton();
+
         /// <summary>
         /// Enables wake-up by the left scan key on SL20P or SM24.
         /// </summary>
