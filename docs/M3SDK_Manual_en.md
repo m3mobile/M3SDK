@@ -1,8 +1,8 @@
 # M3 SDK Manual
 
-**Manual version: 2.3.16 · SDK version: 2.3.15**
+**Manual version: 2.4.1 · SDK version: 2.4.1**
 
-PDF download: [M3SDK_Manual_en_v2.3.16.pdf](https://github.com/m3mobile/M3SDK/releases/download/docs-2.3.16/M3SDK_Manual_en_v2.3.16.pdf)
+PDF download: [M3SDK_Manual_en_v2.4.1.pdf](https://github.com/m3mobile/M3SDK/releases/download/2.4.1/M3SDK_Manual_en_v2.4.1.pdf)
 
 The M3 SDK provides a set of APIs to configure and control M3 Mobile devices.
 
@@ -144,14 +144,14 @@ Add the module dependency to your application's `build.gradle` file.
 ```kotlin
 // Kotlin
 dependencies {
-    implementation("com.github.m3mobile:M3SDK:2.3.15")
+    implementation("com.github.m3mobile:M3SDK:2.4.1")
 }
 ```
 
 ```groovy
 // Groovy
 dependencies {
-    implementation "com.github.m3mobile:M3SDK:2.3.15"
+    implementation "com.github.m3mobile:M3SDK:2.4.1"
 }
 ```
 
